@@ -1,2 +1,3 @@
 D:\Development\XNA_games\TestGame\PhysicsGame\Content\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Users\rdrey\Documents\TestGame\PhysicsGame\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\rdrey\Documents\TestGame\crash-test-global-game-jam2010\PhysicsGame\Content\obj\x86\Debug\ResolveAssemblyReference.cache
