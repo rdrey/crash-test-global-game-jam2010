@@ -25,6 +25,14 @@ namespace PhysicsGame
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+
+        #region Sound Stuff
+        SoundEffect gunShot;
+        SoundEffectInstance sound;
+        AudioEmitter emitter = new AudioEmitter();
+        AudioListener listener = new AudioListener();
+        #endregion
+
         GraphicsDeviceManager graphics;
 
         SpriteBatch spriteBatch;
@@ -54,8 +62,6 @@ namespace PhysicsGame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
 
             IsFixedTimeStep = true;
@@ -110,6 +116,8 @@ namespace PhysicsGame
 
             floor.boxBody.Position = new Vector2(300, 50);
             floor.boxBody.Rotation = 0.02f;
+
+            SoundEffect.MasterVolume = 2f;
         }
 
         /// <summary>
@@ -131,7 +139,7 @@ namespace PhysicsGame
             buildingTexture[2] = Content.Load<Texture2D>("Sprites\\building3");
             buildingTexture[3] = Content.Load<Texture2D>("Sprites\\building4");
 
-            // TODO: use this.Content to load your game content here
+            gunShot = Content.Load<SoundEffect>("Sounds\\testsound2");
         }
 
         /// <summary>
@@ -166,13 +174,19 @@ namespace PhysicsGame
 
             cannon.rotation = MathHelper.Clamp(cannon.rotation, -MathHelper.PiOver2, 0);*/
 
-            // TODO: Add your update logic here
-
             cannon.Update();
 
             physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
 
             lastGameTime = gameTime;
+
+            //looping sound
+            if (sound == null || sound.State == SoundState.Stopped)
+            {
+                emitter.Position = Vector3.Zero;
+                listener.Position = Vector3.Zero;
+                sound = gunShot.Play3D(listener, emitter, 1f, 0, true);
+            }
 
             base.Update(gameTime);
         }
