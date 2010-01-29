@@ -53,3 +53,21 @@ C:\Users\rdrey\Documents\TestGame\crash-test-global-game-jam2010\PhysicsGame\obj
 C:\Users\rdrey\Documents\TestGame\crash-test-global-game-jam2010\PhysicsGame\obj\x86\Debug\PhysicsGame.application
 C:\Users\rdrey\Documents\TestGame\crash-test-global-game-jam2010\PhysicsGame\obj\x86\Debug\PhysicsGame.exe
 C:\Users\rdrey\Documents\TestGame\crash-test-global-game-jam2010\PhysicsGame\obj\x86\Debug\PhysicsGame.pdb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\obj\x86\Debug\PhysicsGame.pdb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\background.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\cannon.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\cannonball.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\enemy.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\building1.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\building2.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\building3.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sprites\building4.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\DefaultFont.xnb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\PhysicsGame.exe
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\PhysicsGame.pdb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\FarseerPhysics.dll
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\FarseerPhysics.pdb
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\obj\x86\Debug\PhysicsGame.exe
+C:\Documents and Settings\Administrator.CRIMSON\Desktop\jam\PhysicsGame\bin\x86\Debug\Content\Sounds\testsound2.xnb
