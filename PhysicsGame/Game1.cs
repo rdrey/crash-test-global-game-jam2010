@@ -97,10 +97,10 @@ namespace PhysicsGame
 
             player1 = new CubeSet(physicsController,  buildingTexture[0], new Vector2(300,300));
 
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.North), player1.createNode(buildingTexture[0]));
 
 
             /*cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
@@ -167,6 +167,15 @@ namespace PhysicsGame
 
 
             KeyboardState keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.D))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
+            if (keyboardState.IsKeyDown(Keys.A))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
+            if (keyboardState.IsKeyDown(Keys.W))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
+            if (keyboardState.IsKeyDown(Keys.S))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
 
             /*if (keyboardState.IsKeyDown(Keys.A))
                 cannon.rotation += 0.1f;
