@@ -34,13 +34,16 @@ namespace PhysicsGame.GameObjects
 
         static Vector2 cubeSize = new Vector2(20,20);
 
+
+        PhysicsController physicsController;
         Dictionary<Vector2, CubeNode> cubeLookUp;
         //Dictionary<CubeSet, IntVector2> poseLookUp;
 
 
         public CubeSet(PhysicsController physicsController, Texture2D tex, Vector2 position)
         {
-            CubeNode rootNode = createNode(physicsController, tex);
+            this.physicsController = physicsController;
+            CubeNode rootNode = createNode(tex);
             rootNode.physicalObject.boxBody.Position = position;
 
             cubeLookUp = new Dictionary<Vector2, CubeNode>();
@@ -57,7 +60,7 @@ namespace PhysicsGame.GameObjects
             return cubeLookUp[new Vector2()];
         }
 
-        public CubeNode createNode(PhysicsController physicsController, Texture2D tex)
+        public CubeNode createNode(Texture2D tex)
         {
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
             pgo.addTexture(tex);
@@ -91,6 +94,13 @@ namespace PhysicsGame.GameObjects
 
                 nodeToAdd.physicalObject.boxBody.Position = getRootNode().physicalObject.boxBody.Position+getRealPosition(targetPosition, cubeSize);
                 // TODO change toNode's position and join to adjacent nodes
+
+                foreach (Direction dir in Enum.GetValues(typeof(Direction)))
+                {
+                    Vector2 neighbourIndex = adjacentIndex(targetPosition, dir);
+                    if (cubeLookUp.ContainsKey(neighbourIndex))
+                        physicsController.registerPhysicsGameJoint(new PhysicsGameJoint(physicsController.physicsSimulator, cubeLookUp[neighbourIndex].physicalObject, nodeToAdd.physicalObject));
+                }
 
                 return true;
             }
