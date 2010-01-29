@@ -84,10 +84,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="GameObjects\Drawable.cs" />
     <Compile Include="GameObjects\CubeSet.cs" />
     <Compile Include="GameObjects\CubeNode.cs" />
-    <Compile Include="GameObjects\IntVector2.cs" />
     <Compile Include="GameObjects\PhysicsGameJoint.cs" />
     <Compile Include="GameObjects\PhysicsGameObject.cs" />
     <Compile Include="PhysicsController.cs" />

@@ -52,7 +52,6 @@ namespace PhysicsGame.GameObjects
 
             rootNode.physicalObject.boxBody.Position = position;
 
-            // TODO change toNode's position to 0,0
         }
 
         public CubeNode getRootNode()
