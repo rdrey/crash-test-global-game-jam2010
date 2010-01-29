@@ -15,38 +15,36 @@ using FarseerGames.FarseerPhysics;
 using FarseerGames.FarseerPhysics.Dynamics;
 using FarseerGames.FarseerPhysics.Collisions;
 using FarseerGames.FarseerPhysics.Factories;
+using PhysicsGame.GameObjects;
 
 
 namespace PhysicsGame
 {
+
+
     /// <summary>
     /// This is the main type for your game
-    /// penis
     /// </summary>
+
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-
-        #region Sound Stuff
-        SoundEffect gunShot;
-        SoundEffectInstance sound;
-        AudioEmitter emitter = new AudioEmitter();
-        AudioListener listener = new AudioListener();
-        #endregion
-
         GraphicsDeviceManager graphics;
 
         SpriteBatch spriteBatch;
         SpriteFont spriteFont;
 
-        PhysicsGameObject cannon, floor;
+        PhysicsGameObject /*cannon,*/ floor;
 
         Texture2D backgroundTexture;
         Texture2D [] buildingTexture = new Texture2D[4];
 
-        PhysicsSimulator physicsSimulator;
+        PhysicsController physicsController;
+
         BasicEffect basicEffect;
 
         GameTime lastGameTime;
+
+        CubeSet player1;
 
         public Game1()
         {
@@ -62,6 +60,8 @@ namespace PhysicsGame
         /// </summary>
         protected override void Initialize()
         {
+            // TODO: Add your initialization logic here
+
             base.Initialize();
 
             IsFixedTimeStep = true;
@@ -92,33 +92,36 @@ namespace PhysicsGame
             basicEffect.Projection = projectionMatrix;
 
             GraphicsDevice.RenderState.PointSize = 10;
-
-            physicsSimulator = new PhysicsSimulator(new Vector2(0, -100));
-
+            physicsController = new PhysicsController();
 
 
+            player1 = new CubeSet(physicsController,  buildingTexture[0], new Vector2(300,300));
+
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.North), player1.createNode(physicsController, buildingTexture[0]));
 
 
-            cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
-            //cannon.addTexture(buildingTexture[0]);
+            /*cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
+            cannon.addTexture(buildingTexture[0]);
             cannon.addTexture(buildingTexture[1]);
-            /*cannon.addTexture(buildingTexture[2]);
-            cannon.addTexture(buildingTexture[3]);*/
+            cannon.addTexture(buildingTexture[2]);
+            cannon.addTexture(buildingTexture[3]);
             //cannon.setScale(2f);
             cannon.setScaleToFit();
 
             cannon.boxGeom.FrictionCoefficient = 0.05f;
             cannon.boxBody.Position = new Vector2(300, 300);
-            cannon.boxBody.Rotation = -0.9f;
+            cannon.boxBody.Rotation = -0.9f;*/
 
-            floor = new PhysicsGameObject(physicsSimulator, 400, 100, true);
+            floor = new PhysicsGameObject(physicsController.physicsSimulator, 400, 100, true);
             floor.addTexture(backgroundTexture);
 
             floor.boxBody.Position = new Vector2(300, 50);
             floor.boxBody.Rotation = 0.02f;
-
-            SoundEffect.MasterVolume = 2f;
         }
+
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -139,7 +142,7 @@ namespace PhysicsGame
             buildingTexture[2] = Content.Load<Texture2D>("Sprites\\building3");
             buildingTexture[3] = Content.Load<Texture2D>("Sprites\\building4");
 
-            gunShot = Content.Load<SoundEffect>("Sounds\\testsound2");
+            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -174,19 +177,13 @@ namespace PhysicsGame
 
             cannon.rotation = MathHelper.Clamp(cannon.rotation, -MathHelper.PiOver2, 0);*/
 
-            cannon.Update();
+            // TODO: Add your update logic here
 
-            physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
+            //cannon.Update();
+
+            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
 
             lastGameTime = gameTime;
-
-            //looping sound
-            if (sound == null || sound.State == SoundState.Stopped)
-            {
-                emitter.Position = Vector3.Zero;
-                listener.Position = Vector3.Zero;
-                sound = gunShot.Play3D(listener, emitter, 1f, 0, true);
-            }
 
             base.Update(gameTime);
         }
@@ -204,9 +201,13 @@ namespace PhysicsGame
 
             spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
 
-            cannon.draw(spriteBatch);
+            //cannon.draw(spriteBatch);
             floor.draw(spriteBatch);
 
+            foreach(PhysicsGameObject phy in physicsController.physicsObjects) {
+                phy.draw(spriteBatch);
+
+            }
 
             /*foreach (Vector2 vertex in cannon.boxGeom.WorldVertices)
             {
@@ -219,8 +220,8 @@ namespace PhysicsGame
 
             basicEffect.Begin();
 
-            cannon.draw(basicEffect, GraphicsDevice);
-            floor.draw(basicEffect, GraphicsDevice);
+            //cannon.draw(basicEffect, GraphicsDevice);
+            //floor.draw(basicEffect, GraphicsDevice);
 
             basicEffect.End();
 
