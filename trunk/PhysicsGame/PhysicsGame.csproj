@@ -86,6 +86,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameObjects\ChainPhysicsGameObject.cs" />
+    <Compile Include="GameObjects\Cubes\ChainCube.cs" />
     <Compile Include="GameObjects\Cubes\CubeFactory.cs" />
     <Compile Include="GameObjects\Cubes\CubeDescription.cs" />
     <Compile Include="GameObjects\Cubes\HeavyCube.cs" />

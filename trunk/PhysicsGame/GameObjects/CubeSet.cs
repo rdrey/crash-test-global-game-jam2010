@@ -299,9 +299,19 @@ namespace PhysicsGame.GameObjects
                 nodeToAdd.positionIndex = targetPosition;
                 cubeLookUp[targetPosition] = nodeToAdd;
 
-                // TODO FIXME only works if the objects have not rotated!!
-                nodeToAdd.physicalObject.boxBody.Position = getRootNode().physicalObject.boxBody.Position+getRealPosition(targetPosition, cubeSize);
-                
+                if (cubeDescription.type == CubeType.ChainCube)
+                {
+                    ChainCube chain = (ChainCube)nodeToAdd;
+                    ChainPhysicsGameObject chainPhys = (ChainPhysicsGameObject)chain.physicalObject;
+                    for (int i = 0; i < 10; i++)
+                        chainPhys.path.Add(new Vector2(
+                            fromPosition.X + (i * (targetPosition.X-fromPosition.X)/10f),
+                            fromPosition.Y + (i * (targetPosition.Y-fromPosition.Y)/10f)));
+                    chainPhys.makeLink();
+
+                }
+                nodeToAdd.physicalObject.boxBody.Position =
+                        getRootNode().physicalObject.boxBody.Position + getRealPosition(targetPosition, cubeSize);
 
                 // joining up blocks (from fromPosition to targetPosition)
                 //physicsController.registerPhysicsGameJoint(new PhysicsGameJoint(physicsController.physicsSimulator, this.cubeLookUp[fromPosition].physicalObject, nodeToAdd.physicalObject));

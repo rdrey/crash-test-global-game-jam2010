@@ -36,6 +36,13 @@ namespace PhysicsGame.GameObjects.Cubes
                 ret = new UnknownCube();
                 defaultTextureList = textureStore.unknownTextures;
             }
+            else if (cubeDescription.type == CubeType.ChainCube)
+            {
+                ret = new ChainCube();
+                //todo TEXTURE
+                defaultTextureList = textureStore.plainTextures;
+                pgo = new ChainPhysicsGameObject(physicsController.physicsSimulator);
+            }
             else if (cubeDescription.type == CubeType.PlainCube)
             {
                 ret = new PlainCube();
@@ -50,7 +57,7 @@ namespace PhysicsGame.GameObjects.Cubes
                 foreach (Texture2D tex in textureStore.rocketFlame)
                     pgo.getTextureSet("MainFlame").addTexture(tex);
 
-                pgo.getTextureSet("MainFlame").offset = new Vector2(cubeSize.X-1, 0);
+                pgo.getTextureSet("MainFlame").offset = new Vector2(cubeSize.X - 1, 0);
 
                 /*foreach (Texture2D tex in textureStore.rocketFlame)
                     pgo.getTextureSet("InternalFlame").addTexture(tex);
@@ -64,13 +71,13 @@ namespace PhysicsGame.GameObjects.Cubes
                         rotation = 0;
                         break;
                     case Direction.South:
-                        rotation = MathHelper.Pi/2;
+                        rotation = MathHelper.Pi / 2;
                         break;
                     case Direction.West:
                         rotation = MathHelper.Pi;
                         break;
                     case Direction.North:
-                        rotation = MathHelper.Pi*3/2;
+                        rotation = MathHelper.Pi * 3 / 2;
                         break;
                 }
                 pgo.boxBody.Rotation = rotation;
