@@ -177,7 +177,8 @@ namespace PhysicsGame
             sounds = new ModSound();
 
             sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
-            sounds.addSound("bang", Content.Load<SoundEffect>("Sounds/Dank2"));
+            sounds.addSound("dank", Content.Load<SoundEffect>("Sounds/Dank2"));
+            sounds.addSound("bang", Content.Load<SoundEffect>("Sounds/bang"));
         }
 
         protected override void UnloadContent()
@@ -188,7 +189,7 @@ namespace PhysicsGame
         private void runInitState()
         {
 
-            player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300), 1);
+            player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300), 1, sounds);
 
             player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
@@ -206,7 +207,7 @@ namespace PhysicsGame
             player1.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
 
-            player2 = new CubeSet(physicsController, textureStore, new Vector2(900, 300), 2);
+            player2 = new CubeSet(physicsController, textureStore, new Vector2(900, 300), 2, sounds);
 
             player2.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube));
@@ -467,7 +468,7 @@ namespace PhysicsGame
 
                 if (physicsController.geomSndLookup[geom1] == 0)
                 {
-                    sounds.playSound("bang", geom1, Vector2.One, force.LengthSquared()/10000f);
+                    sounds.playSound("dank", geom1, Vector2.One, force.LengthSquared()/10000f);
                 }
                 physicsController.geomSndLookup[geom1]++;
                 if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
