@@ -16,12 +16,13 @@ using FarseerGames.FarseerPhysics;
 using FarseerGames.FarseerPhysics.Dynamics;
 using FarseerGames.FarseerPhysics.Collisions;
 using FarseerGames.FarseerPhysics.Factories;
+using FarseerGames.FarseerPhysics.Dynamics.Joints;
 
 namespace PhysicsGame.GameObjects
 {
     class PhysicsGameObject : GameObject, Drawable
     {
-
+        // TODO abstract Texture stuff into a contained textureController class
         public class TextureSet
         {
             public int currentTextureListIndex;
@@ -30,7 +31,6 @@ namespace PhysicsGame.GameObjects
             public Vector2 scale;
 
             PhysicsGameObject pgo;
-
 
             public Nullable<Rectangle> sourceRect, sourceRectAdjustedForScale;
 
@@ -52,6 +52,8 @@ namespace PhysicsGame.GameObjects
                 if (currentTextureListIndex == -1)
                     currentTextureListIndex = 0;
                 textureList.Add(sprite);
+
+                setScaleToFit();
             }
 
             public void setScale(float scaleX, float scaleY)
@@ -109,12 +111,14 @@ namespace PhysicsGame.GameObjects
 
         };
 
-        public List<string> textureNames;
-        public Dictionary<string, TextureSet> textures;
-        
+        public List<string> textureNames = new List<string>();
+        public Dictionary<string, TextureSet> textures = new Dictionary<string, TextureSet>();
+
+        public List<PhysicsGameJoint> joints = new List<PhysicsGameJoint>();
         public Body boxBody;
         public Geom boxGeom;
         private float width, height;
+        public Color colorValue = Color.White;
 
         //private int changeImageCounter, changeImageFrequency;
 
@@ -122,14 +126,10 @@ namespace PhysicsGame.GameObjects
         {
             //changeImageCounter = changeImageFrequency = 100;
 
-            textureNames = new List<string>();
-            textures = new Dictionary<string, TextureSet>();
-
             addTextureSet("Default");
 
             this.width = width;
             this.height = height;
-
 
 
             boxBody = BodyFactory.Instance.CreateRectangleBody(physicsSimulator, width, height, 1);
@@ -185,7 +185,7 @@ namespace PhysicsGame.GameObjects
         {
             foreach (string name in textureNames)
             {
-                spriteBatch.Draw(textures[name].textureList[textures[name].currentTextureListIndex], boxGeom.Position, textures[name].sourceRectAdjustedForScale, Color.White, boxGeom.Rotation, new Vector2(width / 2 / textures[name].scale.X, height / 2 / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(textures[name].textureList[textures[name].currentTextureListIndex], boxGeom.Position, textures[name].sourceRectAdjustedForScale, colorValue, boxGeom.Rotation, new Vector2(width / 2 / textures[name].scale.X, height / 2 / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 1.0f);
             }
         }
 
