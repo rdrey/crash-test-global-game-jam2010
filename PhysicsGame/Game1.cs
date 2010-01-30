@@ -43,8 +43,10 @@ namespace PhysicsGame
         BasicEffect basicEffect;
 
         GameTime lastGameTime;
+        KeyboardState previousState;
 
         CubeSet player1;
+        ModSound sounds;
 
         public Game1()
         {
@@ -60,8 +62,6 @@ namespace PhysicsGame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
 
             IsFixedTimeStep = true;
@@ -142,7 +142,9 @@ namespace PhysicsGame
             buildingTexture[2] = Content.Load<Texture2D>("Sprites\\building3");
             buildingTexture[3] = Content.Load<Texture2D>("Sprites\\building4");
 
-            // TODO: use this.Content to load your game content here
+            sounds = new ModSound();
+
+            sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
         }
 
         /// <summary>
@@ -167,6 +169,7 @@ namespace PhysicsGame
 
 
             KeyboardState keyboardState = Keyboard.GetState();
+            if (previousState == null) previousState = keyboardState;
 
             if (keyboardState.IsKeyDown(Keys.D))
                 player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
@@ -176,6 +179,11 @@ namespace PhysicsGame
                 player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
             if (keyboardState.IsKeyDown(Keys.S))
                 player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
+            if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
+                sounds.playSound("sound", Vector2.Zero);
+            if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
+                sounds.stopAll();
+
 
             /*if (keyboardState.IsKeyDown(Keys.A))
                 cannon.rotation += 0.1f;
@@ -193,6 +201,8 @@ namespace PhysicsGame
             physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
 
             lastGameTime = gameTime;
+
+            previousState = keyboardState;
 
             base.Update(gameTime);
         }
