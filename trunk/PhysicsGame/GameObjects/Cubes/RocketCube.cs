@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PhysicsGame.GameObjects.Cubes
 {
@@ -14,7 +15,7 @@ namespace PhysicsGame.GameObjects.Cubes
         public RocketCube()
         {
             maxHp = 100;
-            defaultAnimationSpeed = .5f;
+            defaultAnimationSpeed = .1f;
 
         }
 
@@ -43,7 +44,25 @@ namespace PhysicsGame.GameObjects.Cubes
             }
 
 
+            if (hp == 0)
+                markForDelete = true;
+
+            if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
+                physicalObject.colorValue = new Color(Color.White, 0.25f);
+            else
+                physicalObject.colorValue = new Color(Color.White, 1.0f);
+
+
+            if(this.activationCountdown/100>1)
+                physicalObject.getTextureSet("Countdown").currentTextureListIndex=this.activationCountdown/100+1;
+            else if (!rocketsFireing)
+                physicalObject.getTextureSet("Countdown").currentTextureListIndex = 0;
+            else
+                physicalObject.getTextureSet("Countdown").currentTextureListIndex = 1;
+
             base.Update(gameTime, speedAdjust);
+            
         }
+
     }
 }

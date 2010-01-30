@@ -24,6 +24,7 @@ namespace PhysicsGame
 {
     public class TextureStore
     {
+        public List<Texture2D> rocketTimer = new List<Texture2D>();
         public List<Texture2D> rocketTextures = new List<Texture2D>();
         public List<Texture2D> rocketFlame = new List<Texture2D>();
         public List<Texture2D> shieldTextures = new List<Texture2D>();
@@ -33,12 +34,9 @@ namespace PhysicsGame
         public List<Texture2D> plainTextures = new List<Texture2D>();
         public List<Texture2D> unknownTextures = new List<Texture2D>();
 
-        public TextureStore()
-        {
-        }
-
         public TextureStore(ContentManager Content)
         {
+            loadTextures(Content, rocketTimer, 16, "Sprites/RocketTimerB/RocketTiming");
             loadTextures(Content, rocketTextures, 9, "Sprites/RocketB/Rocket");
             loadTextures(Content, rocketFlame, 17, "Sprites/FlameB/Flame");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
@@ -168,7 +166,7 @@ namespace PhysicsGame
             sounds = new ModSound();
 
             sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
-            sounds.addSound("bang", Content.Load<SoundEffect>("Sounds/bang"));
+            sounds.addSound("bang", Content.Load<SoundEffect>("Sounds/Dank2"));
         }
 
         protected override void UnloadContent()

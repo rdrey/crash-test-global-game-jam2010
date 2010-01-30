@@ -36,7 +36,7 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new RocketCube();
                 defaultTextureList = textureStore.rocketTextures;
-                ((RocketCube)ret).activationCountdown = 200;
+                ((RocketCube)ret).activationCountdown = 500;
 
                 float rotation = 0.0f;
                 switch (cubeDescription.dir)
@@ -73,6 +73,11 @@ namespace PhysicsGame.GameObjects.Cubes
 
             foreach (Texture2D tex in textureStore.selectTextures)
                 pgo.getTextureSet("Selected").addTexture(tex);
+
+            foreach (Texture2D tex in textureStore.rocketTimer)
+                pgo.getTextureSet("Countdown").addTexture(tex);
+
+            pgo.addTextureSet("Countdown");
 
 
             physicsController.registerPhysicsGameObject(pgo);
