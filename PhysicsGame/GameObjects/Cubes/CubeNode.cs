@@ -75,11 +75,10 @@ namespace PhysicsGame.GameObjects.Cubes
                 physicalObject.colorValue = new Color(Color.White, 1.0f);
 
 
-            physicalObject.getTextureSet("Default").incrementIndex(defaultAnimationSpeed * speedAdjust);
+                physicalObject.getTextureSet("Default").incrementIndex(defaultAnimationSpeed * speedAdjust);
 
-            physicalObject.getTextureSet("Selected").incrementIndex(1.0f * speedAdjust);
-
-
+                physicalObject.getTextureSet("Selected").incrementIndex(1.0f * speedAdjust);
+            
 
         }
         
