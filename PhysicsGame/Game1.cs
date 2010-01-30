@@ -28,7 +28,8 @@ namespace PhysicsGame
     /// 
     public class TextureStore
     {
-        List<Texture2D> rocketTextures;
+        public List<Texture2D> rocketTextures = new List<Texture2D>();
+        public List<Texture2D> selectTextures = new List<Texture2D>();
 
 
     }
@@ -60,6 +61,7 @@ namespace PhysicsGame
 
         GameState currentGameState = GameState.InitGame; // TODO make Init
 
+        TextureStore textureStore;
 
         public Game1()
         {
@@ -113,7 +115,7 @@ namespace PhysicsGame
 
         }
 
-        Texture2D makeTexture(Color col)
+        private Texture2D makeTexture(Color col)
         {
             Color[] dataz = new Color[1];
             dataz[0] = col;
@@ -129,17 +131,24 @@ namespace PhysicsGame
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            textureStore = new TextureStore();
+
+            textureStore.rocketTextures.Add(Content.Load<Texture2D>("Sprites/building1"));
+            //textureStore.selectTextures.Add(Content.Load<Texture2D>("Sprites/building2"));
+            textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.5f)));
+            
+
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
             spriteFont = Content.Load<SpriteFont>("DefaultFont");
             
-            backgroundTexture = Content.Load<Texture2D>("Sprites\\background");
+            backgroundTexture = Content.Load<Texture2D>("Sprites/background");
 
-            buildingTexture[0] = Content.Load<Texture2D>("Sprites\\building1");
-            buildingTexture[1] = Content.Load<Texture2D>("Sprites\\building2");
-            buildingTexture[2] = Content.Load<Texture2D>("Sprites\\building3");
-            buildingTexture[3] = Content.Load<Texture2D>("Sprites\\building4");
+            buildingTexture[0] = Content.Load<Texture2D>("Sprites/building1");
+            buildingTexture[1] = Content.Load<Texture2D>("Sprites/building2");
+            buildingTexture[2] = Content.Load<Texture2D>("Sprites/building3");
+            buildingTexture[3] = Content.Load<Texture2D>("Sprites/building4");
 
             sounds = new ModSound();
 
@@ -158,12 +167,12 @@ namespace PhysicsGame
         private void runInitState()
         {
 
-            player1 = new CubeSet(physicsController, buildingTexture[0], new Vector2(300, 300));
+            player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300));
 
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.West), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(textureStore));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(textureStore));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(textureStore));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.West ), player1.createNode(textureStore));
 
 
             /*cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
@@ -183,19 +192,19 @@ namespace PhysicsGame
             int cubeborder = 10;
 
             floors[0] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
-            floors[0].addTexture(backgroundTexture);
+            floors[0].getTextureSet("Default").addTexture(backgroundTexture);
             floors[0].boxBody.Position = new Vector2(floors[0].boxBody.Position.X + cubewidth / 2 + cubeborder, cubeborder/2);
 
             floors[1] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
-            floors[1].addTexture(backgroundTexture);
+            floors[1].getTextureSet("Default").addTexture(backgroundTexture);
             floors[1].boxBody.Position = new Vector2(floors[1].boxBody.Position.X + cubewidth / 2, cubeheight + cubeborder/2);
 
             floors[2] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
-            floors[2].addTexture(backgroundTexture);
+            floors[2].getTextureSet("Default").addTexture(backgroundTexture);
             floors[2].boxBody.Position = new Vector2(cubeborder/2, floors[2].boxBody.Position.Y + cubeheight / 2);
 
             floors[3] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
-            floors[3].addTexture(backgroundTexture);
+            floors[3].getTextureSet("Default").addTexture(backgroundTexture);
             floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2 + cubeborder);
             
             currentGameState = GameState.BuildPhase;
