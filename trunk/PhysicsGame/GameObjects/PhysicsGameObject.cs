@@ -21,8 +21,8 @@ namespace PhysicsGame.GameObjects
 {
     class PhysicsGameObject : GameObject, Drawable
     {
-        private int currentTextureListIndex;
-        private List<Texture2D> currentTextureList;
+        private List<string> textureNames;
+        private Dictionary<string, int> currentTextureListIndex;
         private Dictionary<string, List<Texture2D>> textures;
 
 
@@ -39,10 +39,11 @@ namespace PhysicsGame.GameObjects
         {
             //changeImageCounter = changeImageFrequency = 100;
 
-
-            currentTextureListIndex = 0;
-            currentTextureList = null;
+            textureNames = new List<string>();
+            currentTextureListIndex = new Dictionary<string,int>();
             textures = new Dictionary<string, List<Texture2D>>();
+
+            addTextureSet("Default");
 
             this.width = width;
             this.height = height;
@@ -66,20 +67,18 @@ namespace PhysicsGame.GameObjects
         {
         }
 
-        public void setTexture(string textureListName, int index)
+        public void setIndexOfTexture(string textureListName, int index)
         {
-            currentTextureList = textures[textureListName];
-            currentTextureListIndex = index;
+            currentTextureListIndex[textureListName] = index;
         }
 
-        public Int32 textureIndex()
+        public void addTextureSet(string textureListName)
         {
-            return currentTextureListIndex;
+            textureNames.Add(textureListName);
         }
-
-        public void setTextureSet(string textureListName)
+        public void removeTextureSet(string textureListName)
         {
-            currentTextureList = textures[textureListName];
+            textureNames.Remove(textureListName);
         }
 
         public bool addTexture(Texture2D sprite)
@@ -92,13 +91,13 @@ namespace PhysicsGame.GameObjects
                 return false;
 
             if (!textures.ContainsKey(textureListName))
+            {
                 textures[textureListName] = new List<Texture2D>();
+                currentTextureListIndex[textureListName] = 0;
+            }
 
-            List<Texture2D> list = textures[textureListName];
-            list.Add(sprite);
+            textures[textureListName].Add(sprite);
 
-            if (currentTextureList == null)
-              currentTextureList = list;
 
             return true;
         }
@@ -137,8 +136,8 @@ namespace PhysicsGame.GameObjects
 
         public void setScaleToFit()
         {
-            setScale( width  / currentTextureList[currentTextureListIndex].Width,
-                      height / currentTextureList[currentTextureListIndex].Height);
+            setScale(width / textures["Default"][currentTextureListIndex["Default"]].Width,
+                      height / textures["Default"][currentTextureListIndex["Default"]].Height);
         }
 
         public void setScaleByNumberOfPixels(int numberOfPixelsX, int numberOfPixelsY)
@@ -149,8 +148,11 @@ namespace PhysicsGame.GameObjects
 
         public void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(currentTextureList[currentTextureListIndex], boxGeom.Position, sourceRectAdjustedForScale, Color.White, boxGeom.Rotation, new Vector2(width / 2 / scale.X, height / 2 / scale.Y), scale, SpriteEffects.None, 1.0f);
-        }
+            foreach (string name in textureNames)
+            {
+                spriteBatch.Draw(textures[name][currentTextureListIndex[name]], boxGeom.Position, sourceRectAdjustedForScale, Color.White, boxGeom.Rotation, new Vector2(width / 2 / scale.X, height / 2 / scale.Y), scale, SpriteEffects.None, 1.0f);
+            }
+          }
 
 
         public void draw(BasicEffect basicEffect, GraphicsDevice graphicsDevice)
