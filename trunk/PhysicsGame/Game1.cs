@@ -243,6 +243,25 @@ namespace PhysicsGame
             physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
 
         }
+        //Collision Events
+
+        //BroadPhaseCollision
+        //Detects any collision between two geoms but doesn't have a list of contact points
+        /*
+        private bool OnBroadPhaseCollision(Geom geom1, Geom geom2)
+        {
+            geom1.OnCollision += OnCollision;//Call this for a list of contact points, really slow
+            
+            return true;
+        }
+
+         //Detects a collision between a specified geom and any other geom. Contains a list of contact points
+        private bool OnCollision(Geom geom1, Geom geom2, ContactList list)
+        {
+            //list[0].Position; //Format accepted by the position update function of a geom
+            return true;
+        }
+        */
 
         protected override void Update(GameTime gameTime)
         {
@@ -262,8 +281,9 @@ namespace PhysicsGame
                     runBuildPhase(gameTime);
                     break;
             }
-
-
+            //Registers collision events
+            //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
+            
 
             lastGameTime = gameTime;
 
