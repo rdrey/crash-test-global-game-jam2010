@@ -26,8 +26,6 @@ namespace PhysicsGame.GameObjects.Cubes
 
         //Dictionary<Direction, CubeNode> neighbours; // TODO implement if needed
 
-        public int activationCountdown = 0;
-
         public float defaultAnimationSpeed = 1.0f;
 
 
@@ -65,19 +63,8 @@ namespace PhysicsGame.GameObjects.Cubes
         }
 
 
-        public virtual void activate()
-        {
-        }
-
         public override void Update(GameTime gameTime, float speedAdjust)
         {
-            if (startedCountDown)
-            {
-                if (activationCountdown == 0)
-                    activate();
-                else
-                    activationCountdown--;
-            }
 
             if (hp == 0)
                 markForDelete = true;

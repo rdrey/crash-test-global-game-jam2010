@@ -19,6 +19,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
             CubeNode ret;
 
+
             //public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube };
 
             if (cubeDescription.type == CubeType.UnknownCube)
@@ -35,7 +36,26 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new RocketCube();
                 defaultTextureList = textureStore.rocketTextures;
-                ret.activationCountdown = 200;
+                ((RocketCube)ret).activationCountdown = 200;
+
+                float rotation = 0.0f;
+                switch (cubeDescription.dir)
+                {
+                    case Direction.East:
+                        rotation = 0;
+                        break;
+                    case Direction.South:
+                        rotation = MathHelper.Pi/2;
+                        break;
+                    case Direction.West:
+                        rotation = MathHelper.Pi;
+                        break;
+                    case Direction.North:
+                        rotation = MathHelper.Pi*3/2;
+                        break;
+                }
+                pgo.boxBody.Rotation = rotation;
+
             }
             else if (cubeDescription.type == CubeType.ShieldCube)
             {
