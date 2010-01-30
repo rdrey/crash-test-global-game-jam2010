@@ -197,15 +197,15 @@ namespace PhysicsGame
             player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));*/
-            player1.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 3), Direction.East, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-1, 3), Direction.East, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-2, 1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-2, 2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-2, 3), Direction.East, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(-1, 3), Direction.East, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
+            //player1.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
 
             player2 = new CubeSet(physicsController, textureStore, new Vector2(900, 300), 2, sounds);
 
@@ -215,15 +215,15 @@ namespace PhysicsGame
             player2.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube));*/
-            player2.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 1), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 2), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 3), Direction.East, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-1, 3), Direction.East, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-2, 1), Direction.South, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-2, 2), Direction.South, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-2, 3), Direction.East, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(-1, 3), Direction.East, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube));
+            //player2.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube));
 
             int cubewidth = 1000;
             int cubeheight = 700;
@@ -385,7 +385,7 @@ namespace PhysicsGame
             }
 
             //Menu Select
-            if (keyboardState.IsKeyDown(Keys.Enter) && previousState.IsKeyUp(Keys.Enter))
+            if (keyboardState.IsKeyDown(Keys.A) && previousState.IsKeyUp(Keys.A))
             {
                 switch (menuCount)
                 {
