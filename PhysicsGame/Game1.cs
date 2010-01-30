@@ -35,7 +35,7 @@ namespace PhysicsGame
         {
             loadTextures(Content, rocketTextures, 2, "Sprites/RocketB/Rocket");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
-            loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
+            loadTextures(Content, heavyTextures, 14, "Sprites/HeavyB/Iron");
 
         }
 
