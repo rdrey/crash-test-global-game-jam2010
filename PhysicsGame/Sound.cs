@@ -18,6 +18,7 @@ namespace PhysicsGame
         AudioEmitter emitter = new AudioEmitter();
         AudioListener listener = new AudioListener();
         Vector3 position = Vector3.Zero;
+        float pitch;
 
         public ModSound()
         {
@@ -30,10 +31,20 @@ namespace PhysicsGame
             sounds[name] = snd;
         }
 
+        public float Pitch
+        {
+            set {
+                foreach (SoundEffectInstance s in soundInstances.Values)
+                {
+                    s.Pitch = value;
+                }
+            }
+        }
+
         public void playSound (String snd, Object obj, Vector2 src, float vol) 
         {
             if (!soundInstances.ContainsKey(obj) || soundInstances[obj].State.Equals(SoundState.Stopped))
-                soundInstances[obj] = sounds[snd].Play3D(listener, emitter, vol, 0, false);
+                soundInstances[obj] = sounds[snd].Play3D(listener, emitter, vol, pitch, false);
         }
 
         public void stopAll()
