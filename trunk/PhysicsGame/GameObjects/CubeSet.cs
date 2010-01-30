@@ -32,7 +32,7 @@ namespace PhysicsGame.GameObjects
             return new Vector2(orig.X * cubeSize.X, orig.Y * cubeSize.Y);
         }
 
-        static Vector2 cubeSize = new Vector2(20,20);
+        static Vector2 cubeSize = new Vector2(50,50);
 
         Vector2 selectedCube;
 
@@ -103,8 +103,12 @@ namespace PhysicsGame.GameObjects
         public CubeNode createNode(TextureStore textureStore)
         {
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
-            pgo.getTextureSet("Default").addTexture(textureStore.rocketTextures[0]);
-            pgo.getTextureSet("Default").setScaleToFit();
+
+            foreach (Texture2D tex in textureStore.rocketTextures)
+            {
+                pgo.getTextureSet("Default").addTexture(tex);
+                pgo.getTextureSet("Default").setScaleToFit();
+            }
 
             foreach (Texture2D tex in textureStore.selectTextures)
             {
