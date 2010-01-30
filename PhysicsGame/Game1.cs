@@ -48,9 +48,18 @@ namespace PhysicsGame
         CubeSet player1;
         ModSound sounds;
 
+
+        enum GameState {Init, MainMenu, InitGame, BuildPhase, SimPhase, Pause };
+
+        GameState currentGameState = GameState.InitGame; // TODO make Init
+
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 768;
+
             Content.RootDirectory = "Content";
         }
 
@@ -95,31 +104,6 @@ namespace PhysicsGame
             physicsController = new PhysicsController();
 
 
-            player1 = new CubeSet(physicsController,  buildingTexture[0], new Vector2(300,300));
-
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(buildingTexture[0]));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.North), player1.createNode(buildingTexture[0]));
-
-
-            /*cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
-            cannon.addTexture(buildingTexture[0]);
-            cannon.addTexture(buildingTexture[1]);
-            cannon.addTexture(buildingTexture[2]);
-            cannon.addTexture(buildingTexture[3]);
-            //cannon.setScale(2f);
-            cannon.setScaleToFit();
-
-            cannon.boxGeom.FrictionCoefficient = 0.05f;
-            cannon.boxBody.Position = new Vector2(300, 300);
-            cannon.boxBody.Rotation = -0.9f;*/
-
-            floor = new PhysicsGameObject(physicsController.physicsSimulator, 400, 100, true);
-            floor.addTexture(backgroundTexture);
-
-            floor.boxBody.Position = new Vector2(300, 50);
-            floor.boxBody.Rotation = 0.02f;
         }
 
 
@@ -156,6 +140,85 @@ namespace PhysicsGame
             // TODO: Unload any non ContentManager content here
         }
 
+        private void runInitState()
+        {
+
+            player1 = new CubeSet(physicsController, buildingTexture[0], new Vector2(300, 300));
+
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(buildingTexture[0]));
+            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.West), player1.createNode(buildingTexture[0]));
+
+
+            /*cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
+            cannon.addTexture(buildingTexture[0]);
+            cannon.addTexture(buildingTexture[1]);
+            cannon.addTexture(buildingTexture[2]);
+            cannon.addTexture(buildingTexture[3]);
+            //cannon.setScale(2f);
+            cannon.setScaleToFit();
+
+            cannon.boxGeom.FrictionCoefficient = 0.05f;
+            cannon.boxBody.Position = new Vector2(300, 300);
+            cannon.boxBody.Rotation = -0.9f;*/
+
+            floor = new PhysicsGameObject(physicsController.physicsSimulator, 100, 10, true);
+            floor.addTexture(backgroundTexture);
+            floor.boxBody.Position = new Vector2(floor.boxBody.Position.X+100, 10);
+
+
+            currentGameState = GameState.BuildPhase;
+        }
+
+        private void runBuildPhase(GameTime gameTime)
+        {
+
+            KeyboardState keyboardState = Keyboard.GetState();
+
+
+            if (keyboardState.IsKeyDown(Keys.D))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
+            if (keyboardState.IsKeyDown(Keys.A))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
+            if (keyboardState.IsKeyDown(Keys.W))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
+            if (keyboardState.IsKeyDown(Keys.S))
+                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
+            if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
+                sounds.playSound("sound", Vector2.Zero);
+            if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
+                sounds.stopAll();
+
+            if (keyboardState.IsKeyDown(Keys.Space))
+            {
+                if (player1.isNodeAt(0, 1))
+                {
+                    CubeNode node = player1.getNodeAt(0, 1);
+                    node.hp = 0;
+                }
+
+            }
+
+            /*if (keyboardState.IsKeyDown(Keys.A))
+                cannon.rotation += 0.1f;
+
+            if (keyboardState.IsKeyDown(Keys.D))
+                cannon.rotation -= 0.1f;
+
+
+            cannon.rotation = MathHelper.Clamp(cannon.rotation, -MathHelper.PiOver2, 0);*/
+
+            // TODO: Add your update logic here
+
+            //cannon.Update();
+
+            player1.Update();
+
+            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
+
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -171,34 +234,17 @@ namespace PhysicsGame
             KeyboardState keyboardState = Keyboard.GetState();
             if (previousState == null) previousState = keyboardState;
 
-            if (keyboardState.IsKeyDown(Keys.D))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
-            if (keyboardState.IsKeyDown(Keys.A))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
-            if (keyboardState.IsKeyDown(Keys.W))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
-            if (keyboardState.IsKeyDown(Keys.S))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
-            if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
-                sounds.playSound("sound", Vector2.Zero);
-            if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
-                sounds.stopAll();
+            switch (currentGameState)
+            {
+                case GameState.InitGame:
+                    runInitState();
+                    break;
+                case GameState.BuildPhase:
+                    runBuildPhase(gameTime);
+                    break;
+            }
 
 
-            /*if (keyboardState.IsKeyDown(Keys.A))
-                cannon.rotation += 0.1f;
-
-            if (keyboardState.IsKeyDown(Keys.D))
-                cannon.rotation -= 0.1f;
-
-
-            cannon.rotation = MathHelper.Clamp(cannon.rotation, -MathHelper.PiOver2, 0);*/
-
-            // TODO: Add your update logic here
-
-            //cannon.Update();
-
-            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
 
             lastGameTime = gameTime;
 

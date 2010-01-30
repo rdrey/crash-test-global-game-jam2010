@@ -19,7 +19,7 @@ using FarseerGames.FarseerPhysics.Factories;
 
 namespace PhysicsGame.GameObjects
 {
-    class PhysicsGameObject : Drawable
+    class PhysicsGameObject : GameObject, Drawable
     {
         private int currentTextureListIndex;
         private List<Texture2D> currentTextureList;
