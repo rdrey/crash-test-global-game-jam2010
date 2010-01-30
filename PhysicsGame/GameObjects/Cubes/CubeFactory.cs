@@ -54,7 +54,7 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new RocketCube(cubeDescription.dir);
                 defaultTextureList = textureStore.rocketTextures;
-                ((RocketCube)ret).activationCountdown = 500;
+                ((RocketCube)ret).activationCountdown = 550;
 
                 foreach (Texture2D tex in textureStore.rocketFlame)
                     pgo.getTextureSet("MainFlame").addTexture(tex);
