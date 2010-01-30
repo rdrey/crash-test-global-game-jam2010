@@ -17,7 +17,7 @@ namespace PhysicsGame.GameObjects
     class CubeNode : GameObject
     {
         
-        CubeSet parent;
+        CubeSet parentsd;
         public Vector2 positionIndex;
 
         //Dictionary<Direction, CubeNode> neighbours; // TODO implement if needed
