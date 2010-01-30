@@ -23,7 +23,30 @@ namespace PhysicsGame
     public class TextureStore
     {
         public List<Texture2D> rocketTextures = new List<Texture2D>();
+        public List<Texture2D> shieldTextures = new List<Texture2D>();
+        public List<Texture2D> heavyTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
+
+        public TextureStore()
+        {
+        }
+
+        public TextureStore(ContentManager Content)
+        {
+            loadTextures(Content, rocketTextures, 2, "Sprites/RocketB/Rocket");
+            loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
+            loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
+
+        }
+
+        //loads textures into desired texture list from given directory
+        public void loadTextures(ContentManager Content, List<Texture2D> textureList, int numTextures, string directory)
+        {
+            for (int i = 0; i < numTextures; i++)
+            {
+                textureList.Add(Content.Load<Texture2D>(directory + "_" + ((i < 9) ? "0" : "") + (i + 1)));
+            }
+        }
     }
 
     public class Game1 : Microsoft.Xna.Framework.Game
@@ -112,9 +135,7 @@ namespace PhysicsGame
 
         protected override void LoadContent()
         {
-            textureStore = new TextureStore();
-
-            textureStore.rocketTextures.Add(Content.Load<Texture2D>("Sprites/building1"));
+            textureStore = new TextureStore(Content);
 
             for (int i = 0; i < 100; i++)
             {
