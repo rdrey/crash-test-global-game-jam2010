@@ -38,6 +38,16 @@ namespace PhysicsGame.GameObjects.Cubes
                 defaultTextureList = textureStore.rocketTextures;
                 ((RocketCube)ret).activationCountdown = 500;
 
+                foreach (Texture2D tex in textureStore.rocketFlame)
+                    pgo.getTextureSet("MainFlame").addTexture(tex);
+
+                pgo.getTextureSet("MainFlame").offset = new Vector2(cubeSize.X-1, 0);
+
+                /*foreach (Texture2D tex in textureStore.rocketFlame)
+                    pgo.getTextureSet("InternalFlame").addTexture(tex);
+
+                pgo.addTextureSet("InternalFlame");*/
+
                 float rotation = 0.0f;
                 switch (cubeDescription.dir)
                 {
@@ -70,6 +80,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
             foreach (Texture2D tex in defaultTextureList)
                 pgo.getTextureSet("Default").addTexture(tex);
+
 
             foreach (Texture2D tex in textureStore.selectTextures)
                 pgo.getTextureSet("Selected").addTexture(tex);
