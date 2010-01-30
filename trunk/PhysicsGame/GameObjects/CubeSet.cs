@@ -41,10 +41,10 @@ namespace PhysicsGame.GameObjects
         //Dictionary<CubeSet, IntVector2> poseLookUp;
 
 
-        public CubeSet(PhysicsController physicsController, Texture2D tex, Vector2 position)
+        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position)
         {
             this.physicsController = physicsController;
-            CubeNode rootNode = createNode(tex);
+            CubeNode rootNode = createNode(textureStore);
             rootNode.physicalObject.boxBody.Position = position;
 
             cubeLookUp = new Dictionary<Vector2, CubeNode>();
@@ -52,6 +52,8 @@ namespace PhysicsGame.GameObjects
             cubeLookUp[rootNode.positionIndex] = rootNode;
 
             selectedCube = rootNode.positionIndex;
+
+            rootNode.physicalObject.addTextureSet("Selected");
 
             rootNode.physicalObject.boxBody.Position = position;
 
@@ -98,11 +100,18 @@ namespace PhysicsGame.GameObjects
             return cubeLookUp[new Vector2()];
         }
 
-        public CubeNode createNode(Texture2D tex)
+        public CubeNode createNode(TextureStore textureStore)
         {
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
-            pgo.addTexture(tex);
-            pgo.setScaleToFit();
+            pgo.getTextureSet("Default").addTexture(textureStore.selectTextures[0]);
+            pgo.getTextureSet("Default").addTexture(textureStore.rocketTextures[0]);
+            pgo.getTextureSet("Default").setScaleToFit();
+
+            pgo.getTextureSet("Selected").addTexture(textureStore.rocketTextures[0]);
+            pgo.getTextureSet("Selected").addTexture(textureStore.selectTextures[0]);
+            pgo.getTextureSet("Selected").setScaleToFit();
+
+            //pgo.removeTextureSet("Default");
 
             physicsController.registerPhysicsGameObject(pgo);
 

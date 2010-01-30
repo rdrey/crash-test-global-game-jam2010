@@ -21,17 +21,93 @@ namespace PhysicsGame.GameObjects
 {
     class PhysicsGameObject : GameObject, Drawable
     {
+
+        public class TextureSet
+        {
+            public int currentTextureListIndex;
+            public List<Texture2D> textureList;
+
+            public Vector2 scale;
+
+            PhysicsGameObject pgo;
+
+
+            public Nullable<Rectangle> sourceRect, sourceRectAdjustedForScale;
+
+            public TextureSet(PhysicsGameObject pgo)
+            {
+                this.pgo = pgo;
+                currentTextureListIndex = -1;
+                textureList = new List<Texture2D>();
+                scale = new Vector2(1.0f, 1.0f);
+
+
+                sourceRect = new Rectangle(0, 0, (int)pgo.width, (int)pgo.height);
+                sourceRectAdjustedForScale = new Rectangle(0, 0, (int)pgo.width, (int)pgo.height);
+                calculateSourceRectAdjustedForScale();
+            }
+
+            public void addTexture(Texture2D sprite)
+            {
+                if (currentTextureListIndex == -1)
+                    currentTextureListIndex = 0;
+                textureList.Add(sprite);
+            }
+
+            public void setScale(float scaleX, float scaleY)
+            {
+                this.scale.X = scaleX;
+                this.scale.Y = scaleY;
+
+                calculateSourceRectAdjustedForScale();
+            }
+
+            public void setScale(float scale)
+            {
+                setScale(scale, scale);
+            }
+
+            public void setScaleToFit()
+            {
+                setScale( pgo.width / textureList[currentTextureListIndex].Width,
+                          pgo.height / textureList[currentTextureListIndex].Height);
+            }
+
+            public void setScaleByNumberOfPixels(int numberOfPixelsX, int numberOfPixelsY)
+            {
+                setScale(pgo.width / (float)numberOfPixelsX,
+                          pgo.height / (float)numberOfPixelsY);
+            }
+
+
+
+            private void calculateSourceRectAdjustedForScale()
+            {
+                if (sourceRect != null)
+                {
+                    Rectangle adjSrc = new Rectangle();
+                    adjSrc.X = sourceRect.Value.X;
+                    adjSrc.Y = sourceRect.Value.Y;
+                    adjSrc.Width = (int)(sourceRect.Value.Width / scale.X);
+                    adjSrc.Height = (int)(sourceRect.Value.Height / scale.Y);
+                    sourceRectAdjustedForScale = adjSrc;
+                }
+            }
+
+            public void setTexturePosition(int x, int y)
+            {
+                sourceRect = new Rectangle(x, y, (int)pgo.width, (int)pgo.height);
+                calculateSourceRectAdjustedForScale();
+            }
+
+        };
+
         private List<string> textureNames;
-        private Dictionary<string, int> currentTextureListIndex;
-        private Dictionary<string, List<Texture2D>> textures;
-
-
-        private Nullable<Rectangle> sourceRect, sourceRectAdjustedForScale;
+        private Dictionary<string, TextureSet > textures;
         
         public Body boxBody;
         public Geom boxGeom;
         private float width, height;
-        private Vector2 scale;
 
         //private int changeImageCounter, changeImageFrequency;
 
@@ -40,18 +116,13 @@ namespace PhysicsGame.GameObjects
             //changeImageCounter = changeImageFrequency = 100;
 
             textureNames = new List<string>();
-            currentTextureListIndex = new Dictionary<string,int>();
-            textures = new Dictionary<string, List<Texture2D>>();
+            textures = new Dictionary<string, TextureSet>();
 
             addTextureSet("Default");
 
             this.width = width;
             this.height = height;
 
-            scale = new Vector2(1.0f, 1.0f);
-            sourceRect = new Rectangle(0, 0, (int)width, (int)height);
-            sourceRectAdjustedForScale = new Rectangle(0, 0, (int)width, (int)height);
-            calculateSourceRectAdjustedForScale();
 
 
             boxBody = BodyFactory.Instance.CreateRectangleBody(physicsSimulator, width, height, 1);
@@ -67,90 +138,47 @@ namespace PhysicsGame.GameObjects
         {
         }
 
-        public void setIndexOfTexture(string textureListName, int index)
-        {
-            currentTextureListIndex[textureListName] = index;
-        }
-
-        public void addTextureSet(string textureListName)
-        {
-            textureNames.Add(textureListName);
-        }
-        public void removeTextureSet(string textureListName)
-        {
-            textureNames.Remove(textureListName);
-        }
-
-        public bool addTexture(Texture2D sprite)
-        {
-            return addTexture(sprite, "Default");
-        }
-        public bool addTexture (Texture2D sprite, string textureListName)
+        public bool addTextureSet(string textureListName)
         {
             if (textureListName == "")
                 return false;
 
-            if (!textures.ContainsKey(textureListName))
-            {
-                textures[textureListName] = new List<Texture2D>();
-                currentTextureListIndex[textureListName] = 0;
-            }
+            if (!textureNames.Contains(textureListName))
+                textureNames.Add(textureListName);
+             
+            return true;
+            
+        }
+        public bool removeTextureSet(string textureListName)
+        {
+            if (textureListName == "")
+                return false;
 
-            textures[textureListName].Add(sprite);
-
+            if (textureNames.Contains(textureListName))
+                textureNames.Remove(textureListName);
 
             return true;
         }
 
-        public void setTexturePosition(int x, int y)
+        public TextureSet getTextureSet(string textureListName)
         {
-            sourceRect = new Rectangle(x, y, (int)width, (int)height);
-            calculateSourceRectAdjustedForScale();
+            if (!textures.ContainsKey(textureListName))
+                textures[textureListName] = new TextureSet(this);
+
+            return textures[textureListName];
         }
 
-        private void calculateSourceRectAdjustedForScale()
+        /*public bool addTexture(Texture2D sprite)
         {
-            if (sourceRect != null)
-            {
-                Rectangle adjSrc = new Rectangle();
-                adjSrc.X = sourceRect.Value.X;
-                adjSrc.Y = sourceRect.Value.Y;
-                adjSrc.Width  = (int)(sourceRect.Value.Width / scale.X);
-                adjSrc.Height = (int)(sourceRect.Value.Height / scale.Y);
-                sourceRectAdjustedForScale = adjSrc;
-            }
-        }
+            return addTexture(sprite, "Default");
+        }*/
 
-        public void setScale(float scaleX, float scaleY)
-        {
-            this.scale.X = scaleX;
-            this.scale.Y = scaleY;
-
-            calculateSourceRectAdjustedForScale();
-        }
-
-        public void setScale(float scale)
-        {
-            setScale(scale, scale);
-        }
-
-        public void setScaleToFit()
-        {
-            setScale(width / textures["Default"][currentTextureListIndex["Default"]].Width,
-                      height / textures["Default"][currentTextureListIndex["Default"]].Height);
-        }
-
-        public void setScaleByNumberOfPixels(int numberOfPixelsX, int numberOfPixelsY)
-        {
-            setScale( width  / (float)numberOfPixelsX,
-                      height / (float)numberOfPixelsY);
-        }
 
         public void draw(SpriteBatch spriteBatch)
         {
             foreach (string name in textureNames)
             {
-                spriteBatch.Draw(textures[name][currentTextureListIndex[name]], boxGeom.Position, sourceRectAdjustedForScale, Color.White, boxGeom.Rotation, new Vector2(width / 2 / scale.X, height / 2 / scale.Y), scale, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(textures[name].textureList[textures[name].currentTextureListIndex], boxGeom.Position, textures[name].sourceRectAdjustedForScale, Color.White, boxGeom.Rotation, new Vector2(width / 2 / textures[name].scale.X, height / 2 / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 1.0f);
             }
           }
 
