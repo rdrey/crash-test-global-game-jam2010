@@ -11,9 +11,19 @@ namespace PhysicsGame.GameObjects.Cubes
 {
     class CubeFactory
     {
+        /*public static CubeNode createCubeNode(TextureStore textureStore, PhysicsController physicsController, CubeDescription cubeDescription, Vector2 cubeSize)
+        {
+            PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
+
+
+            return createCubeNode(textureStore, physicsController, cubeDescription, cubeSize, pgo);
+        }*/
         public static CubeNode createCubeNode(TextureStore textureStore, PhysicsController physicsController, CubeDescription cubeDescription, Vector2 cubeSize)
         {
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
+
+            //physicsController.deregisterPhysicsGameObject(pgo);
+            //pgo.textures.Clear();
 
             List<Texture2D> defaultTextureList = new List<Texture2D>();
 

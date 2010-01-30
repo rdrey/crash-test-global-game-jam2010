@@ -48,7 +48,6 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
             physicalObject.getTextureSet("MainFlame").incrementIndex(1.0f * speedAdjust);
-            //physicalObject.getTextureSet("InternalFlame").incrementIndex(1.0f * speedAdjust);
 
             if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
                 physicalObject.colorValue = new Color(Color.White, 0.25f);

@@ -23,6 +23,7 @@ namespace PhysicsGame.GameObjects.Cubes
         public CubeSet parent;
         public PhysicsController physicsController;
 
+
         public bool isTempNode = false;
         public Vector2 positionIndex;
 
@@ -111,16 +112,18 @@ namespace PhysicsGame.GameObjects.Cubes
             if (hp < 0)
                 markForDelete = true;
 
-            if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
+            /*if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
                 physicalObject.colorValue = new Color(Color.White, 0.25f);
             else
-                physicalObject.colorValue = new Color(Color.White, 1.0f);
+                physicalObject.colorValue = new Color(Color.White, 1.0f);*/
 
             physicalObject.colorValue = new Color(Color.White, (float)hp / (float)maxHp);
+            if (isTempNode)
+                physicalObject.colorValue.A /= 4;
 
-                physicalObject.getTextureSet("Default").incrementIndex(defaultAnimationSpeed * speedAdjust);
+            physicalObject.getTextureSet("Default").incrementIndex(defaultAnimationSpeed * speedAdjust);
 
-                physicalObject.getTextureSet("Selected").incrementIndex(1.0f * speedAdjust);
+            physicalObject.getTextureSet("Selected").incrementIndex(1.0f * speedAdjust);
             
 
         }

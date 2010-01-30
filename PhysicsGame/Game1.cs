@@ -191,12 +191,12 @@ namespace PhysicsGame
 
             player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300), 1, sounds);
 
-            player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
+            /*player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+            player1.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));*/
             player1.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
             player1.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
@@ -209,12 +209,12 @@ namespace PhysicsGame
 
             player2 = new CubeSet(physicsController, textureStore, new Vector2(900, 300), 2, sounds);
 
-            player2.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
+            /*player2.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube));
+            player2.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube));*/
             player2.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube));
@@ -300,14 +300,18 @@ namespace PhysicsGame
             if (keyboardState.IsKeyDown(Keys.S) && previousState.IsKeyUp(Keys.S))
                 player1.changeSelectedNode(Direction.South);
 
-            if (keyboardState.IsKeyDown(Keys.Left))
+
+            if (keyboardState.IsKeyDown(Keys.Q) && previousState.IsKeyUp(Keys.Q))
+                player1.cycleSelectedNode();
+
+            /*if (keyboardState.IsKeyDown(Keys.Left))
                 player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
             if (keyboardState.IsKeyDown(Keys.Right))
                 player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
             if (keyboardState.IsKeyDown(Keys.Up))
                 player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
             if (keyboardState.IsKeyDown(Keys.Down))
-                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
+                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));*/
 
             //if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
             //    sounds.playSound("sound", Vector2.Zero);
@@ -336,7 +340,7 @@ namespace PhysicsGame
             player1.Update(gameTime, speedAdjust);
             player2.Update(gameTime, speedAdjust);
 
-            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f*speedAdjust);
+            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
 
         }
 
