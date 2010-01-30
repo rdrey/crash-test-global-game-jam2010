@@ -39,7 +39,7 @@ namespace PhysicsGame
 
         public TextureStore(ContentManager Content)
         {
-            loadTextures(Content, rocketTextures, 2, "Sprites/RocketB/Rocket");
+            loadTextures(Content, rocketTextures, 9, "Sprites/RocketB/Rocket");
             loadTextures(Content, rocketFlame, 17, "Sprites/FlameB/Flame");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
@@ -162,11 +162,6 @@ namespace PhysicsGame
             spriteFont = Content.Load<SpriteFont>("DefaultFont");
             
             backgroundTexture = Content.Load<Texture2D>("Sprites/bg");
-
-            buildingTexture[0] = Content.Load<Texture2D>("Sprites/building1");
-            buildingTexture[1] = Content.Load<Texture2D>("Sprites/building2");
-            buildingTexture[2] = Content.Load<Texture2D>("Sprites/building3");
-            buildingTexture[3] = Content.Load<Texture2D>("Sprites/building4");
 
             sounds = new ModSound();
 
