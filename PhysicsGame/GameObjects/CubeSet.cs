@@ -34,6 +34,7 @@ namespace PhysicsGame.GameObjects
 
         static Vector2 cubeSize = new Vector2(20,20);
 
+        Vector2 selectedCube;
 
         PhysicsController physicsController;
         public Dictionary<Vector2, CubeNode> cubeLookUp;
@@ -49,6 +50,8 @@ namespace PhysicsGame.GameObjects
             cubeLookUp = new Dictionary<Vector2, CubeNode>();
             rootNode.positionIndex = new Vector2();
             cubeLookUp[rootNode.positionIndex] = rootNode;
+
+            selectedCube = rootNode.positionIndex;
 
             rootNode.physicalObject.boxBody.Position = position;
 
