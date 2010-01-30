@@ -33,7 +33,7 @@ namespace PhysicsGame
         SpriteBatch spriteBatch;
         SpriteFont spriteFont;
 
-        PhysicsGameObject /*cannon,*/ floor;
+        PhysicsGameObject [] floors = new PhysicsGameObject [4];
 
         Texture2D backgroundTexture;
         Texture2D [] buildingTexture = new Texture2D[4];
@@ -163,11 +163,26 @@ namespace PhysicsGame
             cannon.boxBody.Position = new Vector2(300, 300);
             cannon.boxBody.Rotation = -0.9f;*/
 
-            floor = new PhysicsGameObject(physicsController.physicsSimulator, 100, 10, true);
-            floor.addTexture(backgroundTexture);
-            floor.boxBody.Position = new Vector2(floor.boxBody.Position.X+100, 10);
+            int cubewidth = 600;
+            int cubeheight = 600;
+            int cubeborder = 10;
 
+            floors[0] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
+            floors[0].addTexture(backgroundTexture);
+            floors[0].boxBody.Position = new Vector2(floors[0].boxBody.Position.X + cubewidth / 2 + cubeborder, cubeborder/2);
 
+            floors[1] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
+            floors[1].addTexture(backgroundTexture);
+            floors[1].boxBody.Position = new Vector2(floors[1].boxBody.Position.X + cubewidth / 2, cubeheight + cubeborder/2);
+
+            floors[2] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
+            floors[2].addTexture(backgroundTexture);
+            floors[2].boxBody.Position = new Vector2(cubeborder/2, floors[2].boxBody.Position.Y + cubeheight / 2);
+
+            floors[3] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
+            floors[3].addTexture(backgroundTexture);
+            floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2 + cubeborder);
+            
             currentGameState = GameState.BuildPhase;
         }
 
@@ -267,7 +282,10 @@ namespace PhysicsGame
             spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
 
             //cannon.draw(spriteBatch);
-            floor.draw(spriteBatch);
+            floors[0].draw(spriteBatch);
+            floors[1].draw(spriteBatch);
+            floors[2].draw(spriteBatch);
+            floors[3].draw(spriteBatch);
 
             foreach(PhysicsGameObject phy in physicsController.physicsObjects) {
                 phy.draw(spriteBatch);
