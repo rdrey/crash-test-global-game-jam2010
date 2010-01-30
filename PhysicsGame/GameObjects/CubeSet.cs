@@ -45,6 +45,8 @@ namespace PhysicsGame.GameObjects
         PhysicsGameObject.PhysicsMapID ID = PhysicsGameObject.PhysicsMapID.anything;
         public ModSound sound;
 
+        CubeDescription currentCubeDescription = new CubeDescription();
+
         public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position, int playnum, ModSound s)
         {
             this.textureStore = textureStore;
@@ -95,7 +97,14 @@ namespace PhysicsGame.GameObjects
             cubeLookUp[selectedCube.Value].deselect();
         }
 
+        enum Option {NoOption, Type, Option1, Option2};
+
         private bool changeSelecetedNode(Vector2 newIndexPosition)
+        {
+            return changeSelecetedNode(newIndexPosition, Option.NoOption);
+        }
+
+        private bool changeSelecetedNode(Vector2 newIndexPosition, Option optionToCycle)
         {
             bool justChangingType = (selectedCube == newIndexPosition);
 
@@ -122,21 +131,40 @@ namespace PhysicsGame.GameObjects
                 {
                     // then add a temporary block at new position
 
-                    CubeType type = CubeType.UnknownCube;
                     if (justChangingType)
                     {
-                        if (getSelectedNode() is UnknownCube)
-                            type = CubeType.RocketCube;
-                        else if (getSelectedNode() is RocketCube)
-                            type = CubeType.PlainCube;
-                        else if (getSelectedNode() is PlainCube)
-                            type = CubeType.ChainCube;
-                        else if (getSelectedNode() is ChainCube)
-                            type = CubeType.ShieldCube;
-                        else if (getSelectedNode() is ShieldCube)
-                            type = CubeType.HeavyCube;
-                        else if (getSelectedNode() is HeavyCube)
-                            type = CubeType.UnknownCube;
+                        if (optionToCycle == Option.Type)
+                        {
+                            if (getSelectedNode() is UnknownCube)
+                                currentCubeDescription.type = CubeType.RocketCube;
+                            else if (getSelectedNode() is RocketCube)
+                                currentCubeDescription.type = CubeType.PlainCube;
+                            else if (getSelectedNode() is PlainCube)
+                                currentCubeDescription.type = CubeType.ChainCube;
+                            else if (getSelectedNode() is ChainCube)
+                                currentCubeDescription.type = CubeType.ShieldCube;
+                            else if (getSelectedNode() is ShieldCube)
+                                currentCubeDescription.type = CubeType.HeavyCube;
+                            else if (getSelectedNode() is HeavyCube)
+                                currentCubeDescription.type = CubeType.UnknownCube;
+
+
+                        }
+
+                        if (optionToCycle == Option.Option1)
+                        {
+                            if (getSelectedNode() is RocketCube)
+                            {
+                                if (((RocketCube)getSelectedNode()).dir == Direction.North)
+                                    currentCubeDescription.dir = Direction.East;
+                                else if (((RocketCube)getSelectedNode()).dir == Direction.East)
+                                    currentCubeDescription.dir = Direction.South;
+                                else if (((RocketCube)getSelectedNode()).dir == Direction.South)
+                                    currentCubeDescription.dir = Direction.West;
+                                else if (((RocketCube)getSelectedNode()).dir == Direction.West)
+                                    currentCubeDescription.dir = Direction.North;
+                            }
+                        }
 
 
                         cleanUpNodeAt(selectedCube.Value);
@@ -145,7 +173,7 @@ namespace PhysicsGame.GameObjects
                     //else
                     {
 
-                        addCubeNodeFromTo(selectedCube.Value, newIndexPosition, new CubeDescription(type));
+                        addCubeNodeFromTo(selectedCube.Value, newIndexPosition, currentCubeDescription);
                         getNodeAt(newIndexPosition).isTempNode = true;
 
                         changeSelection(selectedCube, newIndexPosition);
@@ -191,7 +219,12 @@ namespace PhysicsGame.GameObjects
 
         public void cycleSelectedNode()
         {
-            changeSelecetedNode(selectedCube.Value);
+            changeSelecetedNode(selectedCube.Value, Option.Type);
+        }
+
+        public void cycleOption1()
+        {
+            changeSelecetedNode(selectedCube.Value, Option.Option1);
         }
 
         public override void Update(GameTime gameTime, float speedAdjust)
