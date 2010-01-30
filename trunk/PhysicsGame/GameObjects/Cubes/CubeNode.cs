@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerGames.FarseerPhysics.Collisions;
 
 namespace PhysicsGame.GameObjects.Cubes
 {
@@ -20,6 +21,7 @@ namespace PhysicsGame.GameObjects.Cubes
     {
         
         //CubeSet parent;
+        public PhysicsController physicsController;
 
         public bool isTempNode = false;
         public Vector2 positionIndex;
@@ -46,9 +48,31 @@ namespace PhysicsGame.GameObjects.Cubes
 
         /* insert other properties here */
 
+        protected bool lulz (Geom g1, Geom g2, ContactList p) 
+        {
+            if (physicalObject.ID == PhysicsGameObject.PhysicsMapID.player1)
+            {
+                if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
+                    physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
+                    hp -= 10;//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
+            }
+            else
+            {
+                if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
+                    physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1)
+                    hp -= 10;//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
+            }
+            
+            return true;
+        }
 
         protected CubeNode()
         {
+        }
+
+        public void hackz0r () 
+        {
+            physicalObject.boxGeom.OnCollision += lulz;
         }
 
         public void select()
@@ -66,7 +90,7 @@ namespace PhysicsGame.GameObjects.Cubes
         public override void Update(GameTime gameTime, float speedAdjust)
         {
 
-            if (hp == 0)
+            if (hp < 0)
                 markForDelete = true;
 
             if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
@@ -74,6 +98,7 @@ namespace PhysicsGame.GameObjects.Cubes
             else
                 physicalObject.colorValue = new Color(Color.White, 1.0f);
 
+            physicalObject.colorValue = new Color(Color.White, (float)hp / (float)maxHp);
 
                 physicalObject.getTextureSet("Default").incrementIndex(defaultAnimationSpeed * speedAdjust);
 
