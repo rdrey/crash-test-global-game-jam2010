@@ -11,7 +11,7 @@ namespace PhysicsGame.GameObjects
 
 
 
-    class CubeSet
+    class CubeSet : GameObject
     {
 
         public static Vector2 adjacentIndex(Vector2 orig, Direction dir)
@@ -36,7 +36,7 @@ namespace PhysicsGame.GameObjects
 
 
         PhysicsController physicsController;
-        Dictionary<Vector2, CubeNode> cubeLookUp;
+        public Dictionary<Vector2, CubeNode> cubeLookUp;
         //Dictionary<CubeSet, IntVector2> poseLookUp;
 
 
@@ -52,6 +52,42 @@ namespace PhysicsGame.GameObjects
 
             rootNode.physicalObject.boxBody.Position = position;
 
+        }
+
+        public void Update() {
+
+            foreach (KeyValuePair<Vector2, CubeNode> node in cubeLookUp)
+            {
+                node.Value.Update();
+            }
+
+            List<Vector2> keys = new List<Vector2>(cubeLookUp.Keys);
+
+            foreach (Vector2 key in keys)
+            {
+                if (cubeLookUp[key].markForDelete)
+                {
+                    physicsController.deregisterPhysicsGameObject(cubeLookUp[key].physicalObject);
+                    cubeLookUp[key].physicalObject.boxBody.Dispose();
+
+                    cubeLookUp.Remove(key);
+
+
+                    //physicsController.physicsSimulator.Remove(node.Value.physicalObject.boxGeom);
+
+                }
+            }
+        }
+
+        public bool isNodeAt(int x, int y)
+        {
+            return cubeLookUp.ContainsKey(new Vector2(x, y));
+        }
+
+
+        public CubeNode getNodeAt(int x, int y)
+        {
+            return cubeLookUp[new Vector2(x, y)];
         }
 
         public CubeNode getRootNode()
@@ -89,6 +125,7 @@ namespace PhysicsGame.GameObjects
                 return false; // already has a block in target position
             else
             {
+                nodeToAdd.positionIndex = targetPosition;
                 cubeLookUp[targetPosition] = nodeToAdd;
 
                 nodeToAdd.physicalObject.boxBody.Position = getRootNode().physicalObject.boxBody.Position+getRealPosition(targetPosition, cubeSize);

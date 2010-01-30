@@ -14,8 +14,9 @@ namespace PhysicsGame.GameObjects
     //==============================================================
     //==============================================================
 
-    class CubeNode
+    class CubeNode : GameObject
     {
+        
         CubeSet parent;
         public Vector2 positionIndex;
 
@@ -23,8 +24,10 @@ namespace PhysicsGame.GameObjects
 
         public PhysicsGameObject physicalObject;
 
-        int maxHP;
-        int hp;
+        public int maxHp;
+        public int hp;
+
+        public bool markForDelete = false;
 
         /* insert other properties here */
 
@@ -32,8 +35,15 @@ namespace PhysicsGame.GameObjects
         public CubeNode(PhysicsGameObject physicalObject)
         {
             this.physicalObject = physicalObject;
+            maxHp = 100;
+            hp = maxHp;
         }
+        
+        public void Update() {
 
+            if (hp == 0)
+                markForDelete = true;
+        }
         
 
     }

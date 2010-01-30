@@ -26,6 +26,11 @@ namespace PhysicsGame
             physicsObjects.AddLast(pgo);
         }
 
+        public void deregisterPhysicsGameObject(PhysicsGameObject pgo)
+        {
+            physicsObjects.Remove(pgo);
+        }
+
         public void registerPhysicsGameJoint(PhysicsGameJoint pgj)
         {
             physicsJoints.AddLast(pgj);

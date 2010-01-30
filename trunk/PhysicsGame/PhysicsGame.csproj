@@ -88,6 +88,7 @@
     <Compile Include="GameObjects\Drawable.cs" />
     <Compile Include="GameObjects\CubeSet.cs" />
     <Compile Include="GameObjects\CubeNode.cs" />
+    <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\PhysicsGameJoint.cs" />
     <Compile Include="GameObjects\PhysicsGameObject.cs" />
     <Compile Include="PhysicsController.cs" />
