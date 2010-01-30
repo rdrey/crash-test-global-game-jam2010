@@ -35,7 +35,7 @@ namespace PhysicsGame
         {
             loadTextures(Content, rocketTextures, 2, "Sprites/RocketB/Rocket");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
-            loadTextures(Content, heavyTextures, 14, "Sprites/HeavyB/Iron");
+            loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
 
         }
 
@@ -139,11 +139,11 @@ namespace PhysicsGame
 
             for (int i = 0; i < 100; i++)
             {
-                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.01f * i)));
+                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 1.0f - (0.01f * i))));
             }
             for (int i = 0; i < 100; i++)
             {
-                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 1.0f-(0.01f * i))));
+                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.01f * i)));
             }
             
 
@@ -174,10 +174,10 @@ namespace PhysicsGame
 
             player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300));
 
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 0), Direction.North), player1.createNode(textureStore));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 1), Direction.North), player1.createNode(textureStore));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 2), Direction.North), player1.createNode(textureStore));
-            player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.West ), player1.createNode(textureStore));
+            player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North);
+            player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North);
+            player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North);
+            player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West);
 
 
             /*
@@ -223,14 +223,24 @@ namespace PhysicsGame
             KeyboardState keyboardState = Keyboard.GetState();
 
 
-            if (keyboardState.IsKeyDown(Keys.D))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
-            if (keyboardState.IsKeyDown(Keys.A))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
-            if (keyboardState.IsKeyDown(Keys.W))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
-            if (keyboardState.IsKeyDown(Keys.S))
-                player1.getRootNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
+            if (keyboardState.IsKeyDown(Keys.A) && previousState.IsKeyUp(Keys.A))
+                player1.changeSelectedNode(Direction.West);
+            if (keyboardState.IsKeyDown(Keys.D) && previousState.IsKeyUp(Keys.D))
+                player1.changeSelectedNode(Direction.East);
+            if (keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W))
+                player1.changeSelectedNode(Direction.North);
+            if (keyboardState.IsKeyDown(Keys.S) && previousState.IsKeyUp(Keys.S))
+                player1.changeSelectedNode(Direction.South);
+
+            if (keyboardState.IsKeyDown(Keys.Left))
+                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
+            if (keyboardState.IsKeyDown(Keys.Right))
+                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
+            if (keyboardState.IsKeyDown(Keys.Up))
+                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
+            if (keyboardState.IsKeyDown(Keys.Down))
+                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
+
             if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
                 sounds.playSound("sound", Vector2.Zero);
             if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
@@ -238,11 +248,7 @@ namespace PhysicsGame
 
             if (keyboardState.IsKeyDown(Keys.Space))
             {
-                if (player1.isNodeAt(0, 1))
-                {
-                    CubeNode node = player1.getNodeAt(0, 1);
-                    node.hp = 0;
-                }
+                player1.makeCurrentSelectionPermanent();
 
             }
 
@@ -321,7 +327,8 @@ namespace PhysicsGame
             //spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
 
             spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
-
+            spriteBatch.DrawString(spriteFont, "" + player1.selectedCube.Value.X + ":" + player1.selectedCube.Value.Y, new Vector2(10, 30), Color.White);
+            
             //cannon.draw(spriteBatch);
             floors[0].draw(spriteBatch);
             floors[1].draw(spriteBatch);
@@ -343,6 +350,11 @@ namespace PhysicsGame
             
 
             basicEffect.Begin();
+
+            foreach (PhysicsGameJoint phy in physicsController.physicsJoints)
+            {
+                phy.draw(basicEffect, GraphicsDevice);
+            }
 
             //cannon.draw(basicEffect, GraphicsDevice);
             //floor.draw(basicEffect, GraphicsDevice);

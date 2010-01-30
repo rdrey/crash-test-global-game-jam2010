@@ -18,6 +18,8 @@ namespace PhysicsGame.GameObjects
     {
         
         CubeSet parentsd;
+
+        public bool isTempNode = false;
         public Vector2 positionIndex;
 
         //Dictionary<Direction, CubeNode> neighbours; // TODO implement if needed
@@ -38,11 +40,27 @@ namespace PhysicsGame.GameObjects
             maxHp = 100;
             hp = maxHp;
         }
-        
+
+        public void select()
+        {
+            physicalObject.addTextureSet("Selected");
+
+        }
+        public void deselect()
+        {
+            physicalObject.removeTextureSet("Selected");
+            physicalObject.getTextureSet("Selected").currentTextureListIndex = 0;
+        }
+
         public void Update() {
 
             if (hp == 0)
                 markForDelete = true;
+
+            if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
+                physicalObject.colorValue = new Color(Color.White, 0.25f);
+            else
+                physicalObject.colorValue = new Color(Color.White, 1.0f);
 
 
             // cycle through images
