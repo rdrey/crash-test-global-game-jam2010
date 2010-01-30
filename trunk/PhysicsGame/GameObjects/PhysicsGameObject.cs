@@ -138,6 +138,7 @@ namespace PhysicsGame.GameObjects
             //boxBody.AngularVelocity = 0;
 
             boxGeom = GeomFactory.Instance.CreateRectangleGeom(physicsSimulator, boxBody, width, height);
+            //boxGeom.
         }
 
 
