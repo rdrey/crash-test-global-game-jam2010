@@ -60,6 +60,12 @@ namespace PhysicsGame.GameObjects
 
         }
 
+        public void startActivationCountdowns()
+        {
+            foreach (KeyValuePair<Vector2, CubeNode> node in cubeLookUp)
+                node.Value.startedCountDown = true;
+        }
+
         public CubeNode getSelectedNode()
         {
             return cubeLookUp[selectedCube.Value];

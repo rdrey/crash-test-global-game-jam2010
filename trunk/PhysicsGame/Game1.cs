@@ -248,26 +248,15 @@ namespace PhysicsGame
 
             if (keyboardState.IsKeyDown(Keys.Enter))
             {
+                player1.startActivationCountdowns();
                 currentGameState = GameState.SimPhase;
             }
 
+
             float speedAdjust = 1.0f;
-            if (keyboardState.IsKeyDown(Keys.E))
+            if (keyboardState.IsKeyDown(Keys.R))
                 speedAdjust = 0.2f;
 
-
-            /*if (keyboardState.IsKeyDown(Keys.A))
-                cannon.rotation += 0.1f;
-
-            if (keyboardState.IsKeyDown(Keys.D))
-                cannon.rotation -= 0.1f;
-
-
-            cannon.rotation = MathHelper.Clamp(cannon.rotation, -MathHelper.PiOver2, 0);*/
-
-            // TODO: Add your update logic here
-
-            //cannon.Update();
 
             player1.Update(gameTime, speedAdjust);
 
@@ -279,6 +268,14 @@ namespace PhysicsGame
         private void runSimPhase(GameTime gameTime)
         {
 
+            KeyboardState keyboardState = Keyboard.GetState();
+            float speedAdjust = 1.0f;
+            if (keyboardState.IsKeyDown(Keys.R))
+                speedAdjust = 0.2f;
+
+            player1.Update(gameTime, speedAdjust);
+
+            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
         }
 
         //Collision Events
@@ -335,7 +332,7 @@ namespace PhysicsGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
             //spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
