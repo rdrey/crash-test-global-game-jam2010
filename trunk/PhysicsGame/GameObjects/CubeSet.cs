@@ -88,18 +88,24 @@ namespace PhysicsGame.GameObjects
 
         public void deselectAll()
         {
+            if (cubeLookUp[selectedCube.Value].isTempNode)
+            {
+                cubeLookUp[selectedCube.Value].markForDelete = true;
+            }
             cubeLookUp[selectedCube.Value].deselect();
         }
 
         private bool changeSelecetedNode(Vector2 newIndexPosition)
         {
-            if (cubeLookUp.ContainsKey(newIndexPosition))
+            bool justChangingType = (selectedCube == newIndexPosition);
+
+            if (!justChangingType && cubeLookUp.ContainsKey(newIndexPosition))
             {
                 Nullable<Vector2> oldIndex = selectedCube;
                 changeSelection(selectedCube, newIndexPosition);
                 if (oldIndex.HasValue)
                 {
-                    if (getNodeAt(oldIndex.Value).isTempNode)// current selection is temporary
+                    if (getNodeAt(oldIndex.Value).isTempNode) // current selection is temporary
                     {
                         //delete oldIndex
                         getNodeAt(oldIndex.Value).markForDelete = true;
@@ -112,13 +118,36 @@ namespace PhysicsGame.GameObjects
             }
             else // there is no cube at the new position
             {
-                if (!getSelectedNode().isTempNode) // current selection is not temporary
+                if (justChangingType /*then it def is temporary*/ || !getSelectedNode().isTempNode) // current selection is not temporary
                 {
                     // then add a temporary block at new position
-                    addCubeNodeFromTo(selectedCube.Value, newIndexPosition, new CubeDescription(CubeType.UnknownCube));
-                    getNodeAt(newIndexPosition).isTempNode = true;
 
-                    changeSelection(selectedCube, newIndexPosition);
+                    CubeType type = CubeType.UnknownCube;
+                    if (justChangingType)
+                    {
+                        if (getSelectedNode() is UnknownCube)
+                            type = CubeType.RocketCube;
+                        else if (getSelectedNode() is RocketCube)
+                            type = CubeType.PlainCube;
+                        else if (getSelectedNode() is PlainCube)
+                            type = CubeType.ShieldCube;
+                        else if (getSelectedNode() is ShieldCube)
+                            type = CubeType.HeavyCube;
+                        else if (getSelectedNode() is HeavyCube)
+                            type = CubeType.UnknownCube;
+
+
+                        cleanUpNodeAt(selectedCube.Value);
+                        //replaceCubeNodeAndCleanOld(selectedCube.Value, new CubeDescription(type));
+                    }
+                    //else
+                    {
+
+                        addCubeNodeFromTo(selectedCube.Value, newIndexPosition, new CubeDescription(type));
+                        getNodeAt(newIndexPosition).isTempNode = true;
+
+                        changeSelection(selectedCube, newIndexPosition);
+                    }
 
                     return true;
                 }
@@ -130,6 +159,25 @@ namespace PhysicsGame.GameObjects
             }
         }
 
+        public void replaceCubeNodeAndCleanOld(Vector2 replacePosition, CubeDescription cubeDescription)
+        {
+            cleanUpNodeAt(replacePosition);
+            CubeNode toReplace = createNode(cubeDescription);
+
+            cubeLookUp[replacePosition] = toReplace;
+            if (selectedCube.Value == replacePosition)
+            {
+                getSelectedNode().deselect();
+                toReplace.select();
+            }
+        }
+
+
+        public void changeSelectedNode(Direction dir)
+        {
+            changeSelecetedNode(adjacentIndex(selectedCube.Value, dir));
+        }
+
 
         public void makeCurrentSelectionPermanent()
         {
@@ -139,9 +187,9 @@ namespace PhysicsGame.GameObjects
             }
         }
 
-        public void changeSelectedNode(Direction dir)
+        public void cycleSelectedNode()
         {
-            changeSelecetedNode(adjacentIndex(selectedCube.Value, dir));
+            changeSelecetedNode(selectedCube.Value);
         }
 
         public override void Update(GameTime gameTime, float speedAdjust)
@@ -158,27 +206,30 @@ namespace PhysicsGame.GameObjects
                 cubeLookUp[key].Update(gameTime, speedAdjust);
                 if (cubeLookUp[key].markForDelete)
                 {
-                    //delete all joints
-
-                    foreach (PhysicsGameJoint joint in cubeLookUp[key].physicalObject.joints)
-                    {
-                        physicsController.deregisterPhysicsGameJoint(joint);
-                        joint.joint.Dispose();
-                    }
-
-                    physicsController.deregisterPhysicsGameObject(cubeLookUp[key].physicalObject);
-
-
-                    cubeLookUp[key].physicalObject.boxBody.Dispose();
-
-                    cubeLookUp.Remove(key);
-
-
-                    //physicsController.physicsSimulator.Remove(node.Value.physicalObject.boxGeom);
+                    cleanUpNodeAt(key);
 
                 }
             }
         }
+
+        public void cleanUpNodeAt(Vector2 key) {
+
+            //delete all joints
+            foreach (PhysicsGameJoint joint in cubeLookUp[key].physicalObject.joints)
+            {
+                physicsController.deregisterPhysicsGameJoint(joint);
+                joint.joint.Dispose();
+            }
+
+            physicsController.deregisterPhysicsGameObject(cubeLookUp[key].physicalObject);
+            cubeLookUp[key].physicalObject.boxBody.Dispose();
+            cubeLookUp.Remove(key);
+
+
+            //physicsController.physicsSimulator.Remove(node.Value.physicalObject.boxGeom);
+
+        }
+
 
         public bool isNodeAt(int x, int y)
         {
@@ -214,10 +265,21 @@ namespace PhysicsGame.GameObjects
             return temp;
         }
 
+        public CubeNode createNode(CubeDescription cubeDescription, PhysicsGameObject pgo)
+        {
+            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
+            temp.physicalObject.ID = ID;
+            return temp;
+        }
+
         public bool addCubeNodeAtPossible(Vector2 targetPosition)
         {
             if (cubeLookUp.ContainsKey(targetPosition))
+            {
+                //if (cubeLookUp[targetPosition].markForDelete)
+                //    return true; // it's gonna be deleted so it's fine to adda a node
                 return false; // already has a block in target position
+            }
             else
                 return true;
         }
@@ -242,14 +304,14 @@ namespace PhysicsGame.GameObjects
                 
 
                 // joining up blocks (from fromPosition to targetPosition)
-                physicsController.registerPhysicsGameJoint(new PhysicsGameJoint(physicsController.physicsSimulator, this.cubeLookUp[fromPosition].physicalObject, nodeToAdd.physicalObject));
+                //physicsController.registerPhysicsGameJoint(new PhysicsGameJoint(physicsController.physicsSimulator, this.cubeLookUp[fromPosition].physicalObject, nodeToAdd.physicalObject));
 
-                /*foreach (Direction dir in Enum.GetValues(typeof(Direction)))
+                foreach (Direction dir in Enum.GetValues(typeof(Direction)))
                 {
                     Vector2 neighbourIndex = adjacentIndex(targetPosition, dir);
                     if (cubeLookUp.ContainsKey(neighbourIndex)) // TODO check for duplicate joints
                         physicsController.registerPhysicsGameJoint(new PhysicsGameJoint(physicsController.physicsSimulator, cubeLookUp[neighbourIndex].physicalObject, nodeToAdd.physicalObject));
-                }*/
+                }
 
                 return true;
             }
