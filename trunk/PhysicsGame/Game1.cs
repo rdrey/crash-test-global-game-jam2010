@@ -20,18 +20,10 @@ using PhysicsGame.GameObjects;
 
 namespace PhysicsGame
 {
-
-
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
-    /// 
     public class TextureStore
     {
         public List<Texture2D> rocketTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
-
-
     }
 
     public class Game1 : Microsoft.Xna.Framework.Game
@@ -72,12 +64,6 @@ namespace PhysicsGame
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             base.Initialize();
@@ -124,17 +110,12 @@ namespace PhysicsGame
             return result;
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             textureStore = new TextureStore();
 
             textureStore.rocketTextures.Add(Content.Load<Texture2D>("Sprites/building1"));
-            //textureStore.selectTextures.Add(Content.Load<Texture2D>("Sprites/building2"));
+
             for (int i = 0; i < 100; i++)
             {
                 textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.01f * i)));
@@ -162,13 +143,9 @@ namespace PhysicsGame
             sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            //Apply content directly to face
         }
 
         private void runInitState()
@@ -182,17 +159,19 @@ namespace PhysicsGame
             player1.addCubeNodeAt(CubeSet.adjacentIndex(new Vector2(0, 3), Direction.West ), player1.createNode(textureStore));
 
 
-            /*cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
+            /*
+            cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
             cannon.addTexture(buildingTexture[0]);
             cannon.addTexture(buildingTexture[1]);
             cannon.addTexture(buildingTexture[2]);
             cannon.addTexture(buildingTexture[3]);
-            //cannon.setScale(2f);
+            cannon.setScale(2f);
             cannon.setScaleToFit();
 
             cannon.boxGeom.FrictionCoefficient = 0.05f;
             cannon.boxBody.Position = new Vector2(300, 300);
-            cannon.boxBody.Rotation = -0.9f;*/
+            cannon.boxBody.Rotation = -0.9f;
+            */
 
             int cubewidth = 600;
             int cubeheight = 600;
@@ -265,14 +244,8 @@ namespace PhysicsGame
 
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
@@ -299,10 +272,6 @@ namespace PhysicsGame
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -341,16 +310,7 @@ namespace PhysicsGame
 
             //GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, pointList, 0, points);
 
-           
-
-            // TODO: Add your drawing code here
-
             base.Draw(gameTime);
         }
-
-
-
     }
-
-
 }
