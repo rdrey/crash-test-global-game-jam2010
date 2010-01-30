@@ -17,6 +17,7 @@ namespace PhysicsGame
 
         public Dictionary<Geom, PhysicsGameObject> geomLookup;
         public Dictionary<Geom, int> geomSndLookup;
+        public Dictionary<Geom, PhysicsGameObject.PhysicsMapID> IDLookup;
 
         public PhysicsController()
         {
@@ -25,6 +26,7 @@ namespace PhysicsGame
             physicsJoints = new LinkedList<PhysicsGameJoint>();
             geomLookup = new Dictionary<Geom, PhysicsGameObject>();
             geomSndLookup = new Dictionary<Geom, int>();
+            IDLookup = new Dictionary<Geom, PhysicsGameObject.PhysicsMapID>();
         }
 
         public void registerPhysicsGameObject(PhysicsGameObject pgo)
@@ -32,6 +34,7 @@ namespace PhysicsGame
             physicsObjects.AddLast(pgo);
             geomLookup[pgo.boxGeom] = pgo;
             geomSndLookup[pgo.boxGeom] = 0;
+            IDLookup[pgo.boxGeom] = pgo.ID;
         }
 
         public void deregisterPhysicsGameObject(PhysicsGameObject pgo)

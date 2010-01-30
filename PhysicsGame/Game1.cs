@@ -75,7 +75,7 @@ namespace PhysicsGame
         GameTime lastGameTime;
         KeyboardState previousState;
 
-        CubeSet player1;
+        CubeSet player1, player2;
         ModSound sounds;
 
         float lol;// = 0;
@@ -177,12 +177,23 @@ namespace PhysicsGame
         private void runInitState()
         {
 
-            player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300));
+            player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300), 1);
 
-            player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
-            player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.ShieldCube));
-            player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.HeavyCube));
-            player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.UnknownCube));
+            player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
+            player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
+            player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
+            player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
+            player1.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
+            player1.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
+
+            player2 = new CubeSet(physicsController, textureStore, new Vector2(900, 300), 2);
+
+            player2.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
+            player2.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube));
+            player2.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.RocketCube));
+            player2.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
+            player2.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
+            player2.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube));
 
 
             int cubewidth = 1000;
@@ -251,9 +262,10 @@ namespace PhysicsGame
             {
                 player1.deselectAll();
                 player1.startActivationCountdowns();
+                player2.deselectAll();
+                player2.startActivationCountdowns();
                 currentGameState = GameState.SimPhase;
             }
-
 
             float speedAdjust = 1.0f;
             if (keyboardState.IsKeyDown(Keys.R))
@@ -261,6 +273,7 @@ namespace PhysicsGame
 
 
             player1.Update(gameTime, speedAdjust);
+            player2.Update(gameTime, speedAdjust);
 
             physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f*speedAdjust);
 
@@ -276,6 +289,7 @@ namespace PhysicsGame
                 speedAdjust = 0.2f;
 
             player1.Update(gameTime, speedAdjust);
+            player2.Update(gameTime, speedAdjust);
 
             physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
         }
@@ -293,22 +307,16 @@ namespace PhysicsGame
          //Detects a collision between a specified geom and any other geom. Contains a list of contact points
         private bool OnCollision(Geom geom2, Geom geom1, ContactList list)
         {
-            Vector2 position = list[0].Normal; //get the normal of the impact
+            Vector2 position = list[0].Normal;
 
-            float angle = (float)Math.Atan2(position.Y, position.X); //calculate the angle of the normal
+            float angle = (float)Math.Atan2(position.Y, position.X);
 
-            Vector2 force = Vector2.Zero; //stores the force of the impact
-            if (angle < 0) //detect the angle
+            Vector2 force = Vector2.Zero;
+            if (angle < 0)
                 force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X),(float)Math.Sin(MathHelper.TwoPi + angle) * geom1.Body.LinearVelocity.Y);
             else
                 force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X),(float)Math.Sin(MathHelper.TwoPi - angle) * geom1.Body.LinearVelocity.Y);
-            //apply the angle to the velocity to work out the impact vel
-            //now to get the force of the collison just do force.Length()
-            //you now have the impact force on collison
             
-            lol = force.Length();
-            //Console.WriteLine("{0}", force);
-
             if (force.LengthSquared() > 0.5f)
             {
 
@@ -365,11 +373,11 @@ namespace PhysicsGame
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
-            //spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
 
             spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
             spriteBatch.DrawString(spriteFont, "" + player1.selectedCube.Value.X + ":" + player1.selectedCube.Value.Y, new Vector2(10, 30), Color.White);
-            spriteBatch.DrawString(spriteFont, "" + lol, new Vector2(10, 50), Color.White);
+            //spriteBatch.DrawString(spriteFont, "" + lol, new Vector2(10, 50), Color.White);
             
             //cannon.draw(spriteBatch);
             floors[0].draw(spriteBatch);

@@ -19,7 +19,6 @@ namespace PhysicsGame.GameObjects.Cubes
 
             CubeNode ret;
 
-
             //public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube };
 
             if (cubeDescription.type == CubeType.UnknownCube)
@@ -94,6 +93,8 @@ namespace PhysicsGame.GameObjects.Cubes
             physicsController.registerPhysicsGameObject(pgo);
 
             ret.physicalObject = pgo;
+            ret.physicsController = physicsController;
+            ret.hackz0r();
             return ret;
 
 

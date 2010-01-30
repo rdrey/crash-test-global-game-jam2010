@@ -42,8 +42,9 @@ namespace PhysicsGame.GameObjects
         //Dictionary<CubeSet, IntVector2> poseLookUp;
 
         TextureStore textureStore;
+        PhysicsGameObject.PhysicsMapID ID = PhysicsGameObject.PhysicsMapID.anything;
 
-        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position)
+        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position, int playnum)
         {
             this.textureStore = textureStore;
             this.physicsController = physicsController;
@@ -58,6 +59,8 @@ namespace PhysicsGame.GameObjects
 
             rootNode.physicalObject.boxBody.Position = position;
 
+            if (playnum == 1) ID = PhysicsGameObject.PhysicsMapID.player1;
+            else ID = PhysicsGameObject.PhysicsMapID.player2;
         }
 
         public void startActivationCountdowns()
@@ -203,9 +206,9 @@ namespace PhysicsGame.GameObjects
 
         public CubeNode createNode(CubeDescription cubeDescription)
         {
-            return CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
-
-            
+            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
+            temp.physicalObject.ID = ID;
+            return temp;
         }
 
         public bool addCubeNodeAtPossible(Vector2 targetPosition)

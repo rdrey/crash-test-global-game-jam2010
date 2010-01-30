@@ -23,6 +23,15 @@ namespace PhysicsGame.GameObjects
     class PhysicsGameObject : GameObject, Drawable
     {
         // TODO abstract Texture stuff into a contained textureController class
+
+        public enum PhysicsMapID
+        {
+            anything = 0,
+            player1 = 1,
+            player2 = 2,
+            wall = 3
+        }
+
         public class TextureSet
         {
             public float currentTextureListIndex;
@@ -120,6 +129,7 @@ namespace PhysicsGame.GameObjects
         public Geom boxGeom;
         private float width, height;
         public Color colorValue = Color.White;
+        public PhysicsMapID ID = PhysicsMapID.anything;
 
         //private int changeImageCounter, changeImageFrequency;
 
