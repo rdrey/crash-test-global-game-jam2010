@@ -113,6 +113,14 @@ namespace PhysicsGame
 
         }
 
+        Texture2D makeTexture(Color col)
+        {
+            Color[] dataz = new Color[1];
+            dataz[0] = col;
+            Texture2D result = new Texture2D(graphics, 1, 1, 1, TextureUsage.None, SurfaceFormat.Color);
+            result.SetData(dataz);
+            return result;
+        }
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
