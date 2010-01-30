@@ -43,11 +43,13 @@ namespace PhysicsGame.GameObjects
 
         TextureStore textureStore;
         PhysicsGameObject.PhysicsMapID ID = PhysicsGameObject.PhysicsMapID.anything;
+        public ModSound sound;
 
-        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position, int playnum)
+        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position, int playnum, ModSound s)
         {
             this.textureStore = textureStore;
             this.physicsController = physicsController;
+            sound = s;
             CubeNode rootNode = createNode(new CubeDescription(CubeType.PlainCube));
             rootNode.physicalObject.boxBody.Position = position;
 
@@ -208,6 +210,7 @@ namespace PhysicsGame.GameObjects
         {
             CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
             temp.physicalObject.ID = ID;
+            temp.parent = this;
             return temp;
         }
 

@@ -20,7 +20,7 @@ namespace PhysicsGame.GameObjects.Cubes
     class CubeNode : GameObject
     {
         
-        //CubeSet parent;
+        public CubeSet parent;
         public PhysicsController physicsController;
 
         public bool isTempNode = false;
@@ -50,17 +50,35 @@ namespace PhysicsGame.GameObjects.Cubes
 
         protected bool lulz (Geom g1, Geom g2, ContactList p) 
         {
+            ModSound sounds = parent.sound;
+
+            Vector2 position = p[0].Normal;
+
+            float angle = (float)Math.Atan2(position.Y, position.X);
+
+            Vector2 force = Vector2.Zero;
+            if (angle < 0)
+                force = new Vector2((float)(Math.Cos(angle) * g2.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi + angle) * g2.Body.LinearVelocity.Y);
+            else
+                force = new Vector2((float)(Math.Cos(angle) * g2.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi - angle) * g2.Body.LinearVelocity.Y);
+
             if (physicalObject.ID == PhysicsGameObject.PhysicsMapID.player1)
             {
                 if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
                     physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
-                    hp -= 10;//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
+                {
+                    hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
+                    sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
+                }
             }
             else
             {
                 if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
                     physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1)
-                    hp -= 10;//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
+                {
+                    hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
+                    sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
+                }
             }
             
             return true;
