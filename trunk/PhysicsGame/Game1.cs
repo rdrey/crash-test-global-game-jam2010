@@ -67,7 +67,13 @@ namespace PhysicsGame
 
         PhysicsGameObject [] floors = new PhysicsGameObject [4];
 
+        PhysicsGameObject[] menuObjects = new PhysicsGameObject[4];
+        int menuCount=0;
+
+        PhysicsGameObject[] pauseObjects = new PhysicsGameObject[2];
+
         Texture2D backgroundTexture;
+        Texture2D selector;
         Texture2D [] buildingTexture = new Texture2D[4];
 
         PhysicsController physicsController;
@@ -86,6 +92,7 @@ namespace PhysicsGame
         enum GameState {Init, MainMenu, InitGame, BuildPhase, SimPhase, Pause };
 
         GameState currentGameState = GameState.InitGame; // TODO make Init
+        GameState previousGameState;
 
         TextureStore textureStore;
 
@@ -164,6 +171,8 @@ namespace PhysicsGame
             spriteFont = Content.Load<SpriteFont>("DefaultFont");
             
             backgroundTexture = Content.Load<Texture2D>("Sprites/bg");
+            //Change
+            selector = Content.Load<Texture2D>("Sprites/SpikeB/spike_01");
 
             sounds = new ModSound();
 
@@ -235,12 +244,44 @@ namespace PhysicsGame
             floors[3].getTextureSet("Default").addTexture(backgroundTexture);
             floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2 + cubeborder);
 
+            //Menu Objects
+            menuObjects[0] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false); 
+            menuObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
+            menuObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth/2-(menuObjects[0].getWidth()/2),200);
+            physicsController.physicsSimulator.Remove(menuObjects[0].boxGeom);
+
+            menuObjects[1] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
+            menuObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
+            menuObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[1].getWidth() / 2), 400);
+            physicsController.physicsSimulator.Remove(menuObjects[1].boxGeom);
+
+            menuObjects[2] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
+            menuObjects[2].getTextureSet("Default").addTexture(backgroundTexture);
+            menuObjects[2].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[2].getWidth() / 2), 600);
+            physicsController.physicsSimulator.Remove(menuObjects[2].boxGeom);
+
+            menuObjects[3] = new PhysicsGameObject(physicsController.physicsSimulator, 20, 20, false);
+            menuObjects[3].getTextureSet("Default").addTexture(selector);
+            menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2)-30, 200);
+            physicsController.physicsSimulator.Remove(menuObjects[3].boxGeom);
+            //
+            pauseObjects[0] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
+            pauseObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
+            pauseObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[0].getWidth() / 2), 200);
+            physicsController.physicsSimulator.Remove(pauseObjects[0].boxGeom);
+
+            pauseObjects[1] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
+            pauseObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
+            pauseObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[1].getWidth() / 2), 500);
+            physicsController.physicsSimulator.Remove(pauseObjects[1].boxGeom);
+
             physicsController.registerPhysicsGameObject(floors[0]);
             physicsController.registerPhysicsGameObject(floors[1]);
             physicsController.registerPhysicsGameObject(floors[2]);
             physicsController.registerPhysicsGameObject(floors[3]);
+            
 
-            currentGameState = GameState.BuildPhase;
+            currentGameState = GameState.MainMenu;
         }
 
         private void runBuildPhase(GameTime gameTime)
@@ -317,6 +358,87 @@ namespace PhysicsGame
             physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
         }
 
+        //Main Menu state. Original game state and only reachable through pause menu.
+        private void runMenuState()
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            bool menuChange = false;
+            if ((keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up) && previousState.IsKeyUp(Keys.Up)))
+            {
+                menuCount = ((menuCount - 1) + 3)%3;
+                menuChange = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.S) && previousState.IsKeyUp(Keys.S) || (keyboardState.IsKeyDown(Keys.Down) && previousState.IsKeyUp(Keys.Down)))
+            {
+                menuCount = ((menuCount + 1) + 3) % 3;
+                menuChange = true;
+            }
+
+            if (menuChange == true)
+            {
+                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount*200+200);
+            }
+
+            //Menu Select
+            if (keyboardState.IsKeyDown(Keys.Enter) && previousState.IsKeyUp(Keys.Enter))
+            {
+                switch (menuCount)
+                {
+                        //Menu case 1
+                    case 0:
+                        currentGameState=GameState.BuildPhase;
+                        break;
+                        //Menu case 2
+                    case 1:
+                        break;
+                        //Menu case 3
+                    case 2:
+                        break;
+
+
+                }
+            }
+        }
+
+        private void runPauseState()
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            bool pauseChange = false;
+            if ((keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up) && previousState.IsKeyUp(Keys.Up)))
+            {
+                menuCount = ((menuCount - 1) + 2) % 2;
+                pauseChange = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.S) && previousState.IsKeyUp(Keys.S) || (keyboardState.IsKeyDown(Keys.Down) && previousState.IsKeyUp(Keys.Down)))
+            {
+                menuCount = ((menuCount + 1) + 2) % 2;
+                pauseChange = true;
+            }
+
+            if (pauseChange == true)
+            {
+                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 300 + 200);
+            }
+
+            //Menu Select
+            if (keyboardState.IsKeyDown(Keys.Enter) && previousState.IsKeyUp(Keys.Enter))
+            {
+                switch (menuCount)
+                {
+                    //Menu case 1: Return to game
+                    case 0:
+                        currentGameState = previousGameState;
+                        break;
+                    //Menu case 2: Return to Main Menu (call cleanup)
+                    case 1:
+                        currentGameState = GameState.MainMenu;
+                        menuCount = 0;
+                        menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 200 + 200);
+                        break;
+                }
+            }
+        }
+
         //Collision Events
 
         //BroadPhaseCollision
@@ -358,11 +480,24 @@ namespace PhysicsGame
 
         protected override void Update(GameTime gameTime)
         {
+            KeyboardState keyboardState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            if ((keyboardState.IsKeyDown(Keys.Escape) && previousState.IsKeyUp(Keys.Escape))&&currentGameState!=GameState.MainMenu)
+            {
+                menuCount = 0;
+                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 300 + 200);
+                if (currentGameState == GameState.Pause)
+                    currentGameState = previousGameState;
+                else if(currentGameState!=GameState.MainMenu)
+                {
+                    previousGameState = currentGameState;
+                    currentGameState = GameState.Pause;
+                }
+            }
 
-            KeyboardState keyboardState = Keyboard.GetState();
+
             if (previousState == null) previousState = keyboardState;
 
             switch (currentGameState)
@@ -376,6 +511,13 @@ namespace PhysicsGame
                 case GameState.SimPhase:
                     runSimPhase(gameTime);
                     break;
+                case GameState.MainMenu:
+                    runMenuState();
+                    break;
+                case GameState.Pause:
+                    runPauseState();
+                    break;
+
             }
             //Registers collision events
             //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
@@ -410,6 +552,21 @@ namespace PhysicsGame
 
             foreach(PhysicsGameObject phy in physicsController.physicsObjects) {
                 phy.draw(spriteBatch);
+            }
+
+            //If the main menu is active, draw the menuObjects
+            if (currentGameState == GameState.MainMenu)
+            {
+                menuObjects[0].draw(spriteBatch);
+                menuObjects[1].draw(spriteBatch);
+                menuObjects[2].draw(spriteBatch);
+                menuObjects[3].draw(spriteBatch);
+            }
+            else if (currentGameState == GameState.Pause)
+            {
+                pauseObjects[0].draw(spriteBatch);
+                pauseObjects[1].draw(spriteBatch);
+                menuObjects[3].draw(spriteBatch);
             }
 
             //spriteBatch.Draw(backgroundTexture, new Vector2(0,0), null, Color.White, 0, new Vector2(0,0), 1.0f, SpriteEffects.None, -0.5f);
