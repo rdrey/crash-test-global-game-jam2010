@@ -187,7 +187,7 @@ namespace PhysicsGame.GameObjects
             {
                 spriteBatch.Draw(textures[name].textureList[textures[name].currentTextureListIndex], boxGeom.Position, textures[name].sourceRectAdjustedForScale, Color.White, boxGeom.Rotation, new Vector2(width / 2 / textures[name].scale.X, height / 2 / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 1.0f);
             }
-          }
+        }
 
 
         public void draw(BasicEffect basicEffect, GraphicsDevice graphicsDevice)
