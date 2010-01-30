@@ -251,6 +251,7 @@ namespace PhysicsGame
 
             if (keyboardState.IsKeyDown(Keys.Enter))
             {
+                player1.deselectAll();
                 player1.startActivationCountdowns();
                 currentGameState = GameState.SimPhase;
             }

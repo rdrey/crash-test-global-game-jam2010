@@ -81,6 +81,11 @@ namespace PhysicsGame.GameObjects
 
         }
 
+        public void deselectAll()
+        {
+            cubeLookUp[selectedCube.Value].deselect();
+        }
+
         private bool changeSelecetedNode(Vector2 newIndexPosition)
         {
             if (cubeLookUp.ContainsKey(newIndexPosition))

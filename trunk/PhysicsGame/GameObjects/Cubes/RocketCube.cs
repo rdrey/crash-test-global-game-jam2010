@@ -9,6 +9,7 @@ namespace PhysicsGame.GameObjects.Cubes
     class RocketCube : CubeNode
     {
         bool rocketsFireing = false;
+        public float activationCountdown = 0;
 
         public RocketCube()
         {
@@ -17,7 +18,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         }
 
-        public override void activate()
+        public void activate()
         {
             rocketsFireing = true;
 
@@ -26,8 +27,20 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            if (startedCountDown)
+            {
+                if (activationCountdown <= 0)
+                    activate();
+                else
+                    activationCountdown -= 1 * speedAdjust;
+            }
+
             if (rocketsFireing)
-                physicalObject.boxBody.ApplyForce(new Vector2(-100,0)); // fire ze missiles! (but I am le tired)
+            {
+                float forceToApply = 10.0f / speedAdjust;
+                physicalObject.boxBody.ApplyForce(Vector2.Transform(new Vector2(100,0), Matrix.CreateRotationZ(physicalObject.boxBody.Rotation))); // fire ze missiles! (but I am le tired)
+
+            }
 
 
             base.Update(gameTime, speedAdjust);
