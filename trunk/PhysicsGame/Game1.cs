@@ -27,6 +27,7 @@ namespace PhysicsGame
         public List<Texture2D> rocketTimer = new List<Texture2D>();
         public List<Texture2D> rocketTextures = new List<Texture2D>();
         public List<Texture2D> rocketFlame = new List<Texture2D>();
+        public List<Texture2D> spike = new List<Texture2D>();
         public List<Texture2D> shieldTextures = new List<Texture2D>();
         public List<Texture2D> heavyTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
@@ -37,8 +38,9 @@ namespace PhysicsGame
         public TextureStore(ContentManager Content)
         {
             loadTextures(Content, rocketTimer, 16, "Sprites/RocketTimerB/RocketTiming");
-            loadTextures(Content, rocketTextures, 9, "Sprites/RocketB/Rocket");
+            loadTextures(Content, rocketTextures, 1, "Sprites/RocketB/Rocket");
             loadTextures(Content, rocketFlame, 17, "Sprites/FlameB/Flame");
+            loadTextures(Content, spike, 12, "Sprites/SpikeB/Spike");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
 
