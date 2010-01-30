@@ -14,9 +14,11 @@ namespace PhysicsGame.GameObjects.Cubes
         bool rocketsFireing = false;
         public float activationCountdown = 0;
 
+        public Direction dir;
 
-        public RocketCube()
+        public RocketCube(Direction dir)
         {
+            this.dir = dir;
             maxHp = 100;
             defaultAnimationSpeed = .0f;
         }

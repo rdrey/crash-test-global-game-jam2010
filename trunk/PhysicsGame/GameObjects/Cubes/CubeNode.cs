@@ -23,6 +23,7 @@ namespace PhysicsGame.GameObjects.Cubes
         public CubeSet parent;
         public PhysicsController physicsController;
 
+        public CubeDescription cubeDescription;
 
         public bool isTempNode = false;
         public Vector2 positionIndex;

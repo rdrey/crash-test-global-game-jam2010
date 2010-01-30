@@ -20,6 +20,8 @@ namespace PhysicsGame.GameObjects.Cubes
         }*/
         public static CubeNode createCubeNode(TextureStore textureStore, PhysicsController physicsController, CubeDescription cubeDescription, Vector2 cubeSize)
         {
+
+
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
 
             //physicsController.deregisterPhysicsGameObject(pgo);
@@ -50,7 +52,7 @@ namespace PhysicsGame.GameObjects.Cubes
             }
             else if (cubeDescription.type == CubeType.RocketCube)
             {
-                ret = new RocketCube();
+                ret = new RocketCube(cubeDescription.dir);
                 defaultTextureList = textureStore.rocketTextures;
                 ((RocketCube)ret).activationCountdown = 500;
 
@@ -106,6 +108,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
             pgo.addTextureSet("Countdown");
 
+            ret.cubeDescription = cubeDescription;
 
             physicsController.registerPhysicsGameObject(pgo);
 
