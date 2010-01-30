@@ -40,7 +40,7 @@ namespace PhysicsGame
         public TextureStore(ContentManager Content)
         {
             loadTextures(Content, rocketTextures, 2, "Sprites/RocketB/Rocket");
-            loadTextures(Content, rocketTextures, 17, "Sprites/Flame/Flame");
+            loadTextures(Content, rocketFlame, 17, "Sprites/Flame/Flame");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
 
