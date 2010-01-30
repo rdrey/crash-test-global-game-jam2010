@@ -25,7 +25,7 @@ namespace PhysicsGame.GameObjects
         // TODO abstract Texture stuff into a contained textureController class
         public class TextureSet
         {
-            public int currentTextureListIndex;
+            public float currentTextureListIndex;
             public List<Texture2D> textureList;
 
             public Vector2 scale;
@@ -71,8 +71,8 @@ namespace PhysicsGame.GameObjects
 
             public void setScaleToFit()
             {
-                setScale( pgo.width / textureList[currentTextureListIndex].Width,
-                          pgo.height / textureList[currentTextureListIndex].Height);
+                setScale( pgo.width / textureList[(int)currentTextureListIndex].Width,
+                          pgo.height / textureList[(int)currentTextureListIndex].Height);
             }
 
             public void setScaleByNumberOfPixels(int numberOfPixelsX, int numberOfPixelsY)
@@ -102,7 +102,7 @@ namespace PhysicsGame.GameObjects
                 calculateSourceRectAdjustedForScale();
             }
 
-            public void incrementIndex(int i)
+            public void incrementIndex(float i)
             {
                 currentTextureListIndex += i;
                 while (currentTextureListIndex >= textureList.Count())
@@ -141,7 +141,7 @@ namespace PhysicsGame.GameObjects
         }
 
 
-        public void Update()
+        public override void Update(GameTime gameTime, float speedAdjust)
         {
         }
 
@@ -185,7 +185,7 @@ namespace PhysicsGame.GameObjects
         {
             foreach (string name in textureNames)
             {
-                spriteBatch.Draw(textures[name].textureList[textures[name].currentTextureListIndex], boxGeom.Position, textures[name].sourceRectAdjustedForScale, colorValue, boxGeom.Rotation, new Vector2(width / 2 / textures[name].scale.X, height / 2 / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(textures[name].textureList[(int)(textures[name].currentTextureListIndex)], boxGeom.Position, textures[name].sourceRectAdjustedForScale, colorValue, boxGeom.Rotation, new Vector2(width / 2 / textures[name].scale.X, height / 2 / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 0.0f);
             }
         }
 

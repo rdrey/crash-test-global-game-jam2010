@@ -16,6 +16,7 @@ using FarseerGames.FarseerPhysics.Dynamics;
 using FarseerGames.FarseerPhysics.Collisions;
 using FarseerGames.FarseerPhysics.Factories;
 using PhysicsGame.GameObjects;
+using PhysicsGame.GameObjects.Cubes;
 
 
 namespace PhysicsGame
@@ -27,6 +28,9 @@ namespace PhysicsGame
         public List<Texture2D> heavyTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
 
+        public List<Texture2D> plainTextures = new List<Texture2D>();
+        public List<Texture2D> unknownTextures = new List<Texture2D>();
+
         public TextureStore()
         {
         }
@@ -37,6 +41,8 @@ namespace PhysicsGame
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
 
+            plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
+            unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
         }
 
         //loads textures into desired texture list from given directory
@@ -139,11 +145,11 @@ namespace PhysicsGame
 
             for (int i = 0; i < 100; i++)
             {
-                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 1.0f - (0.01f * i))));
+                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.75f - (0.005f * i))));
             }
             for (int i = 0; i < 100; i++)
             {
-                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.01f * i)));
+                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.25f+0.005f * i)));
             }
             
 
@@ -152,7 +158,7 @@ namespace PhysicsGame
 
             spriteFont = Content.Load<SpriteFont>("DefaultFont");
             
-            backgroundTexture = Content.Load<Texture2D>("Sprites/background");
+            backgroundTexture = Content.Load<Texture2D>("Sprites/bg");
 
             buildingTexture[0] = Content.Load<Texture2D>("Sprites/building1");
             buildingTexture[1] = Content.Load<Texture2D>("Sprites/building2");
@@ -174,28 +180,14 @@ namespace PhysicsGame
 
             player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300));
 
-            player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North);
-            player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North);
-            player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North);
-            player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West);
+            player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
+            player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.ShieldCube));
+            player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.HeavyCube));
+            player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.UnknownCube));
 
 
-            /*
-            cannon = new PhysicsGameObject(physicsSimulator, 66, 100, false);
-            cannon.addTexture(buildingTexture[0]);
-            cannon.addTexture(buildingTexture[1]);
-            cannon.addTexture(buildingTexture[2]);
-            cannon.addTexture(buildingTexture[3]);
-            cannon.setScale(2f);
-            cannon.setScaleToFit();
-
-            cannon.boxGeom.FrictionCoefficient = 0.05f;
-            cannon.boxBody.Position = new Vector2(300, 300);
-            cannon.boxBody.Rotation = -0.9f;
-            */
-
-            int cubewidth = 600;
-            int cubeheight = 600;
+            int cubewidth = 1000;
+            int cubeheight = 700;
             int cubeborder = 10;
 
             floors[0] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
@@ -249,8 +241,17 @@ namespace PhysicsGame
             if (keyboardState.IsKeyDown(Keys.Space))
             {
                 player1.makeCurrentSelectionPermanent();
-
             }
+
+            if (keyboardState.IsKeyDown(Keys.Enter))
+            {
+                currentGameState = GameState.SimPhase;
+            }
+
+            float speedAdjust = 1.0f;
+            if (keyboardState.IsKeyDown(Keys.E))
+                speedAdjust = 0.2f;
+
 
             /*if (keyboardState.IsKeyDown(Keys.A))
                 cannon.rotation += 0.1f;
@@ -265,11 +266,18 @@ namespace PhysicsGame
 
             //cannon.Update();
 
-            player1.Update();
+            player1.Update(gameTime, speedAdjust);
 
-            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f);
+            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f*speedAdjust);
 
         }
+
+
+        private void runSimPhase(GameTime gameTime)
+        {
+
+        }
+
         //Collision Events
 
         //BroadPhaseCollision
@@ -307,6 +315,9 @@ namespace PhysicsGame
                 case GameState.BuildPhase:
                     runBuildPhase(gameTime);
                     break;
+                case GameState.SimPhase:
+                    runSimPhase(gameTime);
+                    break;
             }
             //Registers collision events
             //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
@@ -337,8 +348,9 @@ namespace PhysicsGame
 
             foreach(PhysicsGameObject phy in physicsController.physicsObjects) {
                 phy.draw(spriteBatch);
-
             }
+
+            //spriteBatch.Draw(backgroundTexture, new Vector2(0,0), null, Color.White, 0, new Vector2(0,0), 1.0f, SpriteEffects.None, -0.5f);
 
             /*foreach (Vector2 vertex in cannon.boxGeom.WorldVertices)
             {
