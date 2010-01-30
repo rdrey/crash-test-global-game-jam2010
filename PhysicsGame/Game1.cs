@@ -80,6 +80,8 @@ namespace PhysicsGame
         CubeSet player1;
         ModSound sounds;
 
+        float lol;// = 0;
+        int lolcount = 0;
 
         enum GameState {Init, MainMenu, InitGame, BuildPhase, SimPhase, Pause };
 
@@ -166,6 +168,7 @@ namespace PhysicsGame
             sounds = new ModSound();
 
             sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
+            sounds.addSound("bang", Content.Load<SoundEffect>("Sounds/bang"));
         }
 
         protected override void UnloadContent()
@@ -203,7 +206,12 @@ namespace PhysicsGame
             floors[3] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
             floors[3].getTextureSet("Default").addTexture(backgroundTexture);
             floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2 + cubeborder);
-            
+
+            physicsController.registerPhysicsGameObject(floors[0]);
+            physicsController.registerPhysicsGameObject(floors[1]);
+            physicsController.registerPhysicsGameObject(floors[2]);
+            physicsController.registerPhysicsGameObject(floors[3]);
+
             currentGameState = GameState.BuildPhase;
         }
 
@@ -231,10 +239,10 @@ namespace PhysicsGame
             if (keyboardState.IsKeyDown(Keys.Down))
                 player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));
 
-            if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
-                sounds.playSound("sound", Vector2.Zero);
-            if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
-                sounds.stopAll();
+            //if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
+            //    sounds.playSound("sound", Vector2.Zero);
+            //if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
+            //    sounds.stopAll();
 
             if (keyboardState.IsKeyDown(Keys.Space))
             {
@@ -277,21 +285,46 @@ namespace PhysicsGame
 
         //BroadPhaseCollision
         //Detects any collision between two geoms but doesn't have a list of contact points
-        /*
+        
         private bool OnBroadPhaseCollision(Geom geom1, Geom geom2)
         {
-            geom1.OnCollision += OnCollision;//Call this for a list of contact points, really slow
-            
             return true;
         }
 
          //Detects a collision between a specified geom and any other geom. Contains a list of contact points
-        private bool OnCollision(Geom geom1, Geom geom2, ContactList list)
+        private bool OnCollision(Geom geom2, Geom geom1, ContactList list)
         {
-            //list[0].Position; //Format accepted by the position update function of a geom
+            Vector2 position = list[0].Normal; //get the normal of the impact
+
+            float angle = (float)Math.Atan2(position.Y, position.X); //calculate the angle of the normal
+
+            Vector2 force = Vector2.Zero; //stores the force of the impact
+            if (angle < 0) //detect the angle
+                force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X),(float)Math.Sin(MathHelper.TwoPi + angle) * geom1.Body.LinearVelocity.Y);
+            else
+                force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X),(float)Math.Sin(MathHelper.TwoPi - angle) * geom1.Body.LinearVelocity.Y);
+            //apply the angle to the velocity to work out the impact vel
+            //now to get the force of the collison just do force.Length()
+            //you now have the impact force on collison
+            
+            lol = force.Length();
+            //Console.WriteLine("{0}", force);
+
+            if (force.LengthSquared() > 0.5f)
+            {
+
+                if (physicsController.geomSndLookup[geom1] == 0)
+                {
+                    sounds.playSound("bang", geom1, Vector2.One, force.LengthSquared()/10000f);
+                }
+                physicsController.geomSndLookup[geom1]++;
+                if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
+            }
             return true;
+            
         }
-        */
+        
+
 
         protected override void Update(GameTime gameTime)
         {
@@ -316,7 +349,10 @@ namespace PhysicsGame
             }
             //Registers collision events
             //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
-            
+            floors[0].boxGeom.OnCollision += OnCollision;
+            floors[1].boxGeom.OnCollision += OnCollision;
+            floors[2].boxGeom.OnCollision += OnCollision;
+            floors[3].boxGeom.OnCollision += OnCollision;
 
             lastGameTime = gameTime;
 
@@ -334,6 +370,7 @@ namespace PhysicsGame
 
             spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
             spriteBatch.DrawString(spriteFont, "" + player1.selectedCube.Value.X + ":" + player1.selectedCube.Value.Y, new Vector2(10, 30), Color.White);
+            spriteBatch.DrawString(spriteFont, "" + lol, new Vector2(10, 50), Color.White);
             
             //cannon.draw(spriteBatch);
             floors[0].draw(spriteBatch);

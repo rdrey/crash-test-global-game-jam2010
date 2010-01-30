@@ -9,35 +9,31 @@ namespace PhysicsGame
 {
     public class ModSound
     {
-        const int channels = 8;
+        const int channels = 1;
+        
         Dictionary<String, SoundEffect> sounds;
+        Dictionary<Object, SoundEffectInstance> soundInstances;
+
         SoundEffectInstance[] sound = new SoundEffectInstance[channels];
         AudioEmitter emitter = new AudioEmitter();
         AudioListener listener = new AudioListener();
         Vector3 position = Vector3.Zero;
-        int current = 0;
 
         public ModSound()
         {
             sounds = new Dictionary<string, SoundEffect>();
+            soundInstances = new Dictionary<object, SoundEffectInstance>();
         }
 
         public void addSound(String name, SoundEffect snd)
         {
-            sounds.Add(name, snd);
+            sounds[name] = snd;
         }
 
-        public void playSound (String snd, Vector2 src) 
+        public void playSound (String snd, Object obj, Vector2 src, float vol) 
         {
-            Vector3 a = new Vector3(src.X, src.Y, 0);
-            emitter.Position = a;
-            Vector3 temp = a - position;
-            temp *= 1;
-            listener.Position = a + temp;
-            if (sound[current] != null && sound[current].State.Equals(SoundState.Playing)) sound[current].Stop();
-            sound[current] = sounds[snd].Play3D(listener, emitter, 1f, 0, false);
-            current++;
-            if (current >= channels) current = 0;
+            if (!soundInstances.ContainsKey(obj) || soundInstances[obj].State.Equals(SoundState.Stopped))
+                soundInstances[obj] = sounds[snd].Play3D(listener, emitter, vol, 0, false);
         }
 
         public void stopAll()
