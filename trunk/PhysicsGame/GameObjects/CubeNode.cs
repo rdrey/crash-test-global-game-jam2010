@@ -43,6 +43,12 @@ namespace PhysicsGame.GameObjects
 
             if (hp == 0)
                 markForDelete = true;
+
+
+            // cycle through images
+            foreach (string name in physicalObject.textureNames) {
+                physicalObject.getTextureSet(name).incrementIndex(1);
+            }
         }
         
 
