@@ -11,7 +11,7 @@ namespace PhysicsGame.GameObjects.Cubes
     //TODO put in separate class
     public enum Direction { North, South, West, East };
 
-    public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube };
+    public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube, ChainCube };
 
     //==============================================================
     //==============================================================
