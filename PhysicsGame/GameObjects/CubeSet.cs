@@ -50,6 +50,8 @@ namespace PhysicsGame.GameObjects
             this.textureStore = textureStore;
             this.physicsController = physicsController;
             sound = s;
+            if (playnum == 1) ID = PhysicsGameObject.PhysicsMapID.player1;
+            else ID = PhysicsGameObject.PhysicsMapID.player2;
             CubeNode rootNode = createNode(new CubeDescription(CubeType.PlainCube));
             rootNode.physicalObject.boxBody.Position = position;
 
@@ -61,8 +63,6 @@ namespace PhysicsGame.GameObjects
 
             rootNode.physicalObject.boxBody.Position = position;
 
-            if (playnum == 1) ID = PhysicsGameObject.PhysicsMapID.player1;
-            else ID = PhysicsGameObject.PhysicsMapID.player2;
         }
 
         public void startActivationCountdowns()
@@ -130,6 +130,8 @@ namespace PhysicsGame.GameObjects
                         else if (getSelectedNode() is RocketCube)
                             type = CubeType.PlainCube;
                         else if (getSelectedNode() is PlainCube)
+                            type = CubeType.ChainCube;
+                        else if (getSelectedNode() is ChainCube)
                             type = CubeType.ShieldCube;
                         else if (getSelectedNode() is ShieldCube)
                             type = CubeType.HeavyCube;
