@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PhysicsGame.GameObjects.Cubes
 {
@@ -12,11 +14,11 @@ namespace PhysicsGame.GameObjects.Cubes
         bool rocketsFireing = false;
         public float activationCountdown = 0;
 
+
         public RocketCube()
         {
             maxHp = 100;
             defaultAnimationSpeed = .0f;
-
         }
 
         public void activate()
@@ -59,7 +61,9 @@ namespace PhysicsGame.GameObjects.Cubes
             else if (!rocketsFireing)
                 physicalObject.getTextureSet("Countdown").currentTextureListIndex = 0;
             else
+            {
                 physicalObject.getTextureSet("Countdown").currentTextureListIndex = 1;
+            }
 
             base.Update(gameTime, speedAdjust);
             
