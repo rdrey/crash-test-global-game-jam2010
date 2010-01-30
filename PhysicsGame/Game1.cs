@@ -25,6 +25,13 @@ namespace PhysicsGame
     /// <summary>
     /// This is the main type for your game
     /// </summary>
+    /// 
+    public class TextureStore
+    {
+        List<Texture2D> rocketTextures;
+
+
+    }
 
     public class Game1 : Microsoft.Xna.Framework.Game
     {
