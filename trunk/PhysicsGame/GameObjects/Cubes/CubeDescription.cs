@@ -16,5 +16,11 @@ namespace PhysicsGame.GameObjects.Cubes
             this.type = type;
             dir = Direction.West;
         }
+
+        public CubeDescription(CubeType type, Direction dir)
+        {
+            this.type = type;
+            this.dir = dir;
+        }
     }
 }
