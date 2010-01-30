@@ -24,6 +24,7 @@ namespace PhysicsGame
     public class TextureStore
     {
         public List<Texture2D> rocketTextures = new List<Texture2D>();
+        public List<Texture2D> rocketFlame = new List<Texture2D>();
         public List<Texture2D> shieldTextures = new List<Texture2D>();
         public List<Texture2D> heavyTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
@@ -38,6 +39,7 @@ namespace PhysicsGame
         public TextureStore(ContentManager Content)
         {
             loadTextures(Content, rocketTextures, 2, "Sprites/RocketB/Rocket");
+            loadTextures(Content, rocketTextures, 17, "Sprites/Flame/Flame");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
 
