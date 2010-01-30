@@ -135,7 +135,14 @@ namespace PhysicsGame
 
             textureStore.rocketTextures.Add(Content.Load<Texture2D>("Sprites/building1"));
             //textureStore.selectTextures.Add(Content.Load<Texture2D>("Sprites/building2"));
-            textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.5f)));
+            for (int i = 0; i < 100; i++)
+            {
+                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 0.01f * i)));
+            }
+            for (int i = 0; i < 100; i++)
+            {
+                textureStore.selectTextures.Add(makeTexture(new Color(1.0f, 0.0f, 0.0f, 1.0f-(0.01f * i))));
+            }
             
 
             spriteBatch = new SpriteBatch(GraphicsDevice);

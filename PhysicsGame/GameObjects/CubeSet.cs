@@ -103,15 +103,18 @@ namespace PhysicsGame.GameObjects
         public CubeNode createNode(TextureStore textureStore)
         {
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
-            pgo.getTextureSet("Default").addTexture(textureStore.selectTextures[0]);
             pgo.getTextureSet("Default").addTexture(textureStore.rocketTextures[0]);
             pgo.getTextureSet("Default").setScaleToFit();
 
-            pgo.getTextureSet("Selected").addTexture(textureStore.rocketTextures[0]);
-            pgo.getTextureSet("Selected").addTexture(textureStore.selectTextures[0]);
-            pgo.getTextureSet("Selected").setScaleToFit();
+            foreach (Texture2D tex in textureStore.selectTextures)
+            {
+                pgo.getTextureSet("Selected").addTexture(tex);
+                pgo.getTextureSet("Selected").setScaleToFit();
+            }
 
             //pgo.removeTextureSet("Default");
+            //pgo.addTextureSet("Selected");
+            //pgo.addTextureSet("Default");
 
             physicsController.registerPhysicsGameObject(pgo);
 

@@ -100,10 +100,17 @@ namespace PhysicsGame.GameObjects
                 calculateSourceRectAdjustedForScale();
             }
 
+            public void incrementIndex(int i)
+            {
+                currentTextureListIndex += i;
+                while (currentTextureListIndex >= textureList.Count())
+                    currentTextureListIndex -= textureList.Count();
+            }
+
         };
 
-        private List<string> textureNames;
-        private Dictionary<string, TextureSet > textures;
+        public List<string> textureNames;
+        public Dictionary<string, TextureSet> textures;
         
         public Body boxBody;
         public Geom boxGeom;
