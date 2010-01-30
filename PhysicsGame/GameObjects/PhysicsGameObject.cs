@@ -157,6 +157,16 @@ namespace PhysicsGame.GameObjects
         {
         }
 
+        public float getWidth()
+        {
+            return width;
+        }
+
+        public float getHeight()
+        {
+            return height;
+        }
+
         public bool addTextureSet(string textureListName)
         {
             if (textureListName == "")
