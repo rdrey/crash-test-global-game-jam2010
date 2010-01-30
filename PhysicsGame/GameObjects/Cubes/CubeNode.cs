@@ -43,7 +43,7 @@ namespace PhysicsGame.GameObjects.Cubes
         }
 
 
-
+        public bool startedCountDown = false;
         public bool markForDelete = false;
 
         /* insert other properties here */
@@ -71,11 +71,13 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
-
-            if (activationCountdown == 0)
-                activate();
-            else
-                activationCountdown--;
+            if (startedCountDown)
+            {
+                if (activationCountdown == 0)
+                    activate();
+                else
+                    activationCountdown--;
+            }
 
             if (hp == 0)
                 markForDelete = true;
