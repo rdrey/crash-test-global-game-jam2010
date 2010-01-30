@@ -84,10 +84,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameObjects\Cubes\CubeFactory.cs" />
+    <Compile Include="GameObjects\Cubes\CubeDescription.cs" />
+    <Compile Include="GameObjects\Cubes\HeavyCube.cs" />
+    <Compile Include="GameObjects\Cubes\PlainCube.cs" />
+    <Compile Include="GameObjects\Cubes\RocketCube.cs" />
+    <Compile Include="GameObjects\Cubes\ShieldCube.cs" />
+    <Compile Include="GameObjects\Cubes\UnknownCube.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="GameObjects\Drawable.cs" />
     <Compile Include="GameObjects\CubeSet.cs" />
-    <Compile Include="GameObjects\CubeNode.cs" />
+    <Compile Include="GameObjects\Cubes\CubeNode.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\PhysicsGameJoint.cs" />
     <Compile Include="GameObjects\PhysicsGameObject.cs" />

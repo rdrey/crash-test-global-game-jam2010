@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerGames.FarseerPhysics.Dynamics.Joints;
+using PhysicsGame.GameObjects.Cubes;
 
 namespace PhysicsGame.GameObjects
 {
@@ -46,7 +47,7 @@ namespace PhysicsGame.GameObjects
         {
             this.textureStore = textureStore;
             this.physicsController = physicsController;
-            CubeNode rootNode = createNode();
+            CubeNode rootNode = createNode(new CubeDescription(CubeType.PlainCube));
             rootNode.physicalObject.boxBody.Position = position;
 
             cubeLookUp = new Dictionary<Vector2, CubeNode>();
@@ -98,7 +99,7 @@ namespace PhysicsGame.GameObjects
                 if (!getSelectedNode().isTempNode) // current selection is not temporary
                 {
                     // then add a temporary block at new position
-                    addCubeNodeFromTo(selectedCube.Value, newIndexPosition);
+                    addCubeNodeFromTo(selectedCube.Value, newIndexPosition, new CubeDescription(CubeType.UnknownCube));
                     getNodeAt(newIndexPosition).isTempNode = true;
 
                     changeSelection(selectedCube, newIndexPosition);
@@ -127,7 +128,8 @@ namespace PhysicsGame.GameObjects
             changeSelecetedNode(adjacentIndex(selectedCube.Value, dir));
         }
 
-        public void Update() {
+        public override void Update(GameTime gameTime, float speedAdjust)
+        {
 
             /*foreach (KeyValuePair<Vector2, CubeNode> node in cubeLookUp)
             {
@@ -137,7 +139,7 @@ namespace PhysicsGame.GameObjects
 
             foreach (Vector2 key in keys)
             {
-                cubeLookUp[key].Update();
+                cubeLookUp[key].Update(gameTime, speedAdjust);
                 if (cubeLookUp[key].markForDelete)
                 {
                     //delete all joints
@@ -188,28 +190,11 @@ namespace PhysicsGame.GameObjects
             return cubeLookUp[new Vector2()];
         }
 
-        public CubeNode createNode()
+        public CubeNode createNode(CubeDescription cubeDescription)
         {
-            PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
+            return CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
 
-            foreach (Texture2D tex in textureStore.shieldTextures)
-            {
-                for (int i = 0; i < 6; i++ )
-                    pgo.getTextureSet("Default").addTexture(tex);
-            }
-
-            foreach (Texture2D tex in textureStore.selectTextures)
-            {
-                pgo.getTextureSet("Selected").addTexture(tex);
-            }
-
-            //pgo.removeTextureSet("Default");
-            //pgo.addTextureSet("Selected");
-            //pgo.addTextureSet("Default");
-
-            physicsController.registerPhysicsGameObject(pgo);
-
-            return new CubeNode(pgo);
+            
         }
 
         public bool addCubeNodeAtPossible(Vector2 targetPosition)
@@ -225,9 +210,9 @@ namespace PhysicsGame.GameObjects
             return addCubeNodeAtPossible(adjacentIndex(fromNode.positionIndex, dir));
         }
 
-        public bool addCubeNodeFromTo(Vector2 fromPosition, Vector2 targetPosition)
+        public bool addCubeNodeFromTo(Vector2 fromPosition, Vector2 targetPosition, CubeDescription cubeDescription)
         {
-            CubeNode nodeToAdd = createNode();
+            CubeNode nodeToAdd = createNode(cubeDescription);
             if (!addCubeNodeAtPossible(targetPosition))
                 return false; // already has a block in target position
             else
@@ -253,9 +238,9 @@ namespace PhysicsGame.GameObjects
             }
         }
 
-        public bool addCubeNodeFrom(Vector2 fromPosition, Direction dir)
+        public bool addCubeNodeFrom(Vector2 fromPosition, Direction dir, CubeDescription cubeDescription)
         {
-            return addCubeNodeFromTo(fromPosition, adjacentIndex(cubeLookUp[fromPosition].positionIndex, dir));
+            return addCubeNodeFromTo(fromPosition, adjacentIndex(cubeLookUp[fromPosition].positionIndex, dir), cubeDescription);
         }
 
 
