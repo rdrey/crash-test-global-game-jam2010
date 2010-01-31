@@ -55,6 +55,11 @@ namespace PhysicsGame.GameObjects.Cubes
                 defaultTextureList = textureStore.plainTextures;
                 pgo.boxBody.Mass = 1f;
             }
+            else if (cubeDescription.type == CubeType.DamageCube)
+            {
+                ret = new DamageCube();
+                defaultTextureList = textureStore.spike;
+            }
             else if (cubeDescription.type == CubeType.RocketCube)
             {
                 ret = new RocketCube(cubeDescription.dir);
@@ -116,7 +121,7 @@ namespace PhysicsGame.GameObjects.Cubes
                 }
                 pgo.boxBody.Rotation = rotation;
 
-                
+
 
             }
             /*else if (cubeDescription.type == CubeType.ShieldCube)

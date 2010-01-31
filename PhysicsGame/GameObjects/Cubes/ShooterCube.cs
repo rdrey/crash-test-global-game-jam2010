@@ -39,7 +39,9 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
             physicsController.registerPhysicsGameObject(pgo);
-            pgo.boxBody.Position = Vector2.Add(this.physicalObject.boxBody.Position, Vector2.Transform(new Vector2(this.physicalObject.getWidth(), 0), Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation - MathHelper.Pi)));
+            pgo.boxBody.Position = Vector2.Add(this.physicalObject.boxBody.Position, 
+                                    Vector2.Transform(new Vector2(this.physicalObject.getWidth()+15, 0), 
+                                    Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation - MathHelper.Pi)));
             pgo.ID = this.physicalObject.ID;
             
             bullet.physicalObject=pgo;
