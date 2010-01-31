@@ -37,8 +37,11 @@ namespace PhysicsGame
         public List<Texture2D> plainTextures = new List<Texture2D>();
         public List<Texture2D> unknownTextures = new List<Texture2D>();
         public List<Texture2D> buzzTextures = new List<Texture2D>();
+        public List<Texture2D> boomTextures = new List<Texture2D>();
 
         public List<Texture2D> bulletTexture = new List<Texture2D>();
+
+        public Texture2D coinTexture;
 
 
         public TextureStore(ContentManager Content)
@@ -52,11 +55,14 @@ namespace PhysicsGame
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
             loadTextures(Content, menuTextures, 6, "Sprites/Menu/Menu");
             loadTextures(Content, buzzTextures, 10, "Sprites/buzz/Buzz");
+            loadTextures(Content, boomTextures, 6, "Sprites/boomB/boom");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
 
             bulletTexture.Add(Content.Load<Texture2D>("Sprites/Bullet"));
+
+            coinTexture = Content.Load<Texture2D>("Sprites/coin");
         }
 
         //loads textures into desired texture list from given directory
@@ -113,9 +119,9 @@ namespace PhysicsGame
                 p2.keyMap[Keys.Right] = Instruction.Right;
 
 
-                p2.keyMap[Keys.RightShift] = Instruction.CycleType;
-                p2.keyMap[Keys.RightControl] = Instruction.CycleOption1;
-                p2.keyMap[Keys.RightAlt] = Instruction.CycleOption2;
+                p2.keyMap[Keys.NumPad1] = Instruction.CycleType;
+                p2.keyMap[Keys.NumPad2] = Instruction.CycleOption1;
+                p2.keyMap[Keys.NumPad3] = Instruction.CycleOption2;
                 p2.keyMap[Keys.Enter] = Instruction.MainAction;
                 p2.keyMap[Keys.Insert] = Instruction.EndBuild;
 
@@ -165,8 +171,10 @@ namespace PhysicsGame
                 _parent = parent;
                 physicsController = new PhysicsController();
 
+                //p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(250, 750/2), 1, parent.sounds);
                 p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, this);
 
+                //p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(1024 - 250, 750 / 2), 2, parent.sounds);
                 p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, this);
 
 
@@ -509,8 +517,8 @@ namespace PhysicsGame
 
         public void runStartRound(GameTime gameTime)
         {
-            currentGame.p1.money = 20 + currentGame.completedRounds * 10;
-            currentGame.p2.money = 20 + currentGame.completedRounds * 10;
+            currentGame.p1.money = 10 + currentGame.completedRounds * 10;
+            currentGame.p2.money = 10 + currentGame.completedRounds * 10;
 
 
             Console.Write("runStartRound " + currentGame.p1.money + ":" + currentGame.p2.money + "\n");
@@ -555,15 +563,21 @@ namespace PhysicsGame
                 RoundSpecific.RoundPlayerInfo rplayer;
                 GameSpecific.PlayerInfo player;
 
+                int leftLimit, rightLimit, upLimit = +8, downLimit = -8;
+
                 if (i == 0)
                 {
                     rplayer = currentRound.p1;
                     player = currentGame.p1;
+                    leftLimit = -5;
+                    rightLimit = +4;
                 }
                 else
                 {
                     rplayer = currentRound.p2;
                     player = currentGame.p2;
+                    leftLimit = -4;
+                    rightLimit = +5;
                 }
 
                 if (rplayer.cubeSet.finishedEditing)
@@ -598,16 +612,30 @@ namespace PhysicsGame
                 }
                 bool failedInstruction = false ;
 
+                //Console.Write(rplayer.cubeSet.selectedCube.Value+"\n");
+
                 if (inst == Instruction.None)
                     failedInstruction = true;
                 else if (inst == Instruction.Right)
-                    rplayer.cubeSet.changeSelectedNode(Direction.East);
+                {
+                    if (rplayer.cubeSet.selectedCube.Value.X < rightLimit)
+                        rplayer.cubeSet.changeSelectedNode(Direction.East);
+                }
                 else if (inst == Instruction.Left)
-                    rplayer.cubeSet.changeSelectedNode(Direction.West);
+                {
+                    if (rplayer.cubeSet.selectedCube.Value.X > leftLimit)
+                        rplayer.cubeSet.changeSelectedNode(Direction.West);
+                }
                 else if (inst == Instruction.Up)
-                    rplayer.cubeSet.changeSelectedNode(Direction.North);
+                {
+                    if (rplayer.cubeSet.selectedCube.Value.Y > downLimit)
+                        rplayer.cubeSet.changeSelectedNode(Direction.North);
+                }
                 else if (inst == Instruction.Down)
-                    rplayer.cubeSet.changeSelectedNode(Direction.South);
+                {
+                    if (rplayer.cubeSet.selectedCube.Value.Y < upLimit)
+                        rplayer.cubeSet.changeSelectedNode(Direction.South);
+                }
                 else if (inst == Instruction.CycleType)
                     rplayer.cubeSet.cycleSelectedNode();
                 else if (inst == Instruction.CycleOption1)
@@ -822,6 +850,14 @@ namespace PhysicsGame
             {
                 spriteBatch.DrawString(spriteFont, "" + vertex.X + ":" + vertex.Y, vertex, Color.White);
             }*/
+
+            if (currentGame != null)
+            {
+                for (int i = 0; i < currentGame.p1.money; i++)
+                    spriteBatch.Draw(textureStore.coinTexture, new Vector2(10, 10 + ((currentGame.p1.money - i) * 10)), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
+                for (int i = 0; i < currentGame.p2.money; i++)
+                    spriteBatch.Draw(textureStore.coinTexture, new Vector2(1024-10-(textureStore.coinTexture.Width*0.1f), 10 + ((currentGame.p2.money - i) * 10)), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
+            }
 
             spriteBatch.End();
 
