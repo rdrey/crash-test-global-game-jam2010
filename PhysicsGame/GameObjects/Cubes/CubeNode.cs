@@ -28,6 +28,8 @@ namespace PhysicsGame.GameObjects.Cubes
         public bool isTempNode = false;
         public Vector2 positionIndex;
 
+        public bool visualOnly = false;
+
         //Dictionary<Direction, CubeNode> neighbours; // TODO implement if needed
 
         public float defaultAnimationSpeed = 1.0f;
@@ -55,6 +57,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         protected bool lulz (Geom g1, Geom g2, ContactList p) 
         {
+
             ModSound sounds = parent.sound;
 
             Vector2 position = p[0].Normal;
@@ -114,12 +117,17 @@ namespace PhysicsGame.GameObjects.Cubes
             physicalObject.getTextureSet("Selected").currentTextureListIndex = 0;
         }
 
+        public void startSparking()
+        {
+        }
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
 
             if (hp < 0)
                 markForDelete = true;
+            if (hp < 50)
+                startSparking();
 
             /*if (isTempNode) // TODO make use that awesome get set thing of c#'s so don't have to set this each step
                 physicalObject.colorValue = new Color(Color.White, 0.25f);

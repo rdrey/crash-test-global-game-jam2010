@@ -11,7 +11,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public ChainCube()
         {
-            maxHp = 1000;
+            maxHp = 600;
             defaultAnimationSpeed = 0f;
         }
 

@@ -11,7 +11,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public HeavyCube()
         {
-            maxHp = 100;
+            maxHp = 200;
             defaultAnimationSpeed = 0.3f;
             
         }
