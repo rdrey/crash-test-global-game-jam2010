@@ -44,8 +44,10 @@ namespace PhysicsGame.GameObjects.Cubes
                                     Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation - MathHelper.Pi)));
             pgo.ID = this.physicalObject.ID;
             
+            
             bullet.physicalObject=pgo;
             bullet.physicalObject.boxGeom = GeomFactory.Instance.CreateCircleGeom(pgo.boxBody, 12, 3);
+            physicsController.nodeLookup[pgo] = bullet;
             bullet.physicsController = this.physicsController;
 
             bullet.physicalObject.boxBody.ApplyForce(Vector2.Transform(new Vector2(10000, 0), Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation- MathHelper.Pi)));

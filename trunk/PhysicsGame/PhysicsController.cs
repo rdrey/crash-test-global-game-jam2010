@@ -6,6 +6,7 @@ using PhysicsGame.GameObjects;
 using FarseerGames.FarseerPhysics;
 using Microsoft.Xna.Framework;
 using FarseerGames.FarseerPhysics.Collisions;
+using PhysicsGame.GameObjects.Cubes;
 
 namespace PhysicsGame
 {
@@ -17,6 +18,7 @@ namespace PhysicsGame
         public LinkedList<PhysicsGameJoint> physicsJoints;
 
         public Dictionary<Geom, PhysicsGameObject> geomLookup;
+        public Dictionary<PhysicsGameObject, CubeNode> nodeLookup;
         public Dictionary<Geom, int> geomSndLookup;
         public Dictionary<Geom, PhysicsGameObject.PhysicsMapID> IDLookup;
 
@@ -27,6 +29,7 @@ namespace PhysicsGame
             visuals = new List<PhysicsGameObject>();
             physicsJoints = new LinkedList<PhysicsGameJoint>();
             geomLookup = new Dictionary<Geom, PhysicsGameObject>();
+            nodeLookup = new Dictionary<PhysicsGameObject, CubeNode>();
             geomSndLookup = new Dictionary<Geom, int>();
             IDLookup = new Dictionary<Geom, PhysicsGameObject.PhysicsMapID>();
         }

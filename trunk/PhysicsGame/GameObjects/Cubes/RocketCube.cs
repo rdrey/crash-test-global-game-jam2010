@@ -24,7 +24,7 @@ namespace PhysicsGame.GameObjects.Cubes
             this.dir = dir;
             maxHp = 100;
             defaultAnimationSpeed = .0f;
-
+            damageMultiplier *= 2f;
             cost = 2;
         }
 
