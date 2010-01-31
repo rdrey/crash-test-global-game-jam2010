@@ -20,7 +20,7 @@ using FarseerGames.FarseerPhysics.Dynamics.Joints;
 
 namespace PhysicsGame.GameObjects
 {
-    class PhysicsGameObject : GameObject, Drawable
+    public class PhysicsGameObject : GameObject, Drawable
     {
         // TODO abstract Texture stuff into a contained textureController class
 

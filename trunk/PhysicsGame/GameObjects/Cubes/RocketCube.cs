@@ -21,6 +21,7 @@ namespace PhysicsGame.GameObjects.Cubes
             this.dir = dir;
             maxHp = 100;
             defaultAnimationSpeed = .0f;
+            
         }
 
         public void activate()
@@ -45,7 +46,6 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 float forceToApply = 10.0f / speedAdjust;
                 physicalObject.boxBody.ApplyForce(Vector2.Transform(new Vector2(100,0), Matrix.CreateRotationZ(physicalObject.boxBody.Rotation))); // fire ze missiles! (but I am le tired)
-
             }
 
 

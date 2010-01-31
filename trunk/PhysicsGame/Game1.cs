@@ -60,40 +60,181 @@ namespace PhysicsGame
 
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        public class GameSpecific
+        {
+            public List<Instruction> player1Instructions = new List<Instruction>();
+            public List<Instruction> player2Instructions = new List<Instruction>();
+            public Dictionary<Keys, Instruction> player1KeyMap = new Dictionary<Keys, Instruction>();
+            public Dictionary<Keys, Instruction> player2KeyMap = new Dictionary<Keys, Instruction>();
+
+            public int completedRounds = 0;
+
+            public GameSpecific()
+            {
+                setUpKeyboardMap();
+            }
+
+            public void setUpKeyboardMap()
+            {
+                player1KeyMap[Keys.W] = Instruction.Up;
+                player1KeyMap[Keys.S] = Instruction.Down;
+                player1KeyMap[Keys.A] = Instruction.Left;
+                player1KeyMap[Keys.D] = Instruction.Right;
+
+
+                player1KeyMap[Keys.Q] = Instruction.CycleType;
+                player1KeyMap[Keys.E] = Instruction.CycleOption1;
+                player1KeyMap[Keys.Space] = Instruction.MainAction;
+                player1KeyMap[Keys.Tab] = Instruction.EndBuild;
+
+
+                player2KeyMap[Keys.Up] = Instruction.Up;
+                player2KeyMap[Keys.Down] = Instruction.Down;
+                player2KeyMap[Keys.Left] = Instruction.Left;
+                player2KeyMap[Keys.Right] = Instruction.Right;
+
+
+                player2KeyMap[Keys.LeftShift] = Instruction.CycleType;
+                player2KeyMap[Keys.LeftControl] = Instruction.CycleOption1;
+                player2KeyMap[Keys.Enter] = Instruction.MainAction;
+                player2KeyMap[Keys.Insert] = Instruction.EndBuild;
+
+            }
+        }
+
+        public class RoundSpecific
+        {
+            public int player1InstructionsPos = 0;
+            public int player2InstructionsPos = 0;
+
+            public float counter = 2000;
+
+            public bool recording = false;
+            public CubeSet player1, player2;
+
+            public PhysicsController physicsController;
+
+            public PhysicsGameObject[] floors = new PhysicsGameObject[4];
+
+            Game1 _parent;
+
+            public RoundSpecific(Game1 parent)
+            {
+                _parent = parent;
+                physicsController = new PhysicsController();
+
+                player1 = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, parent.sounds);
+
+                player2 = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, parent.sounds);
+
+
+                int cubewidth = 1024;
+                int cubeheight = 768;
+                int cubeborder = 100;
+
+                floors[0] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
+                floors[0].getTextureSet("Default").addTexture(parent.backgroundTexture);
+                floors[0].boxBody.Position = new Vector2(floors[0].boxBody.Position.X + cubewidth / 2, -cubeborder / 2);
+
+                floors[1] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
+                floors[1].getTextureSet("Default").addTexture(parent.backgroundTexture);
+                floors[1].boxBody.Position = new Vector2(floors[1].boxBody.Position.X + cubewidth / 2, cubeheight + cubeborder / 2);
+
+                floors[2] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
+                floors[2].getTextureSet("Default").addTexture(parent.backgroundTexture);
+                floors[2].boxBody.Position = new Vector2(-cubeborder / 2, floors[2].boxBody.Position.Y + cubeheight / 2);
+
+                floors[3] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
+                floors[3].getTextureSet("Default").addTexture(parent.backgroundTexture);
+                floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2);
+
+                physicsController.registerPhysicsGameObject(floors[0]);
+                physicsController.registerPhysicsGameObject(floors[1]);
+                physicsController.registerPhysicsGameObject(floors[2]);
+                physicsController.registerPhysicsGameObject(floors[3]);
+
+
+                //Registers collision events
+                //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
+                floors[0].boxGeom.OnCollision += OnCollision;
+                floors[1].boxGeom.OnCollision += OnCollision;
+                floors[2].boxGeom.OnCollision += OnCollision;
+                floors[3].boxGeom.OnCollision += OnCollision;
+
+            }
+
+            public bool OnBroadPhaseCollision(Geom geom1, Geom geom2)
+            {
+                return true;
+            }
+
+            //Detects a collision between a specified geom and any other geom. Contains a list of contact points
+            public bool OnCollision(Geom geom2, Geom geom1, ContactList list)
+            {
+                Vector2 position = list[0].Normal;
+
+                float angle = (float)Math.Atan2(position.Y, position.X);
+
+                Vector2 force = Vector2.Zero;
+                if (angle < 0)
+                    force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi + angle) * geom1.Body.LinearVelocity.Y);
+                else
+                    force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi - angle) * geom1.Body.LinearVelocity.Y);
+
+                if (force.LengthSquared() > 0.5f)
+                {
+
+                    if (physicsController.geomSndLookup[geom1] == 0)
+                    {
+                        _parent.sounds.playSound("dank", geom1, Vector2.One, force.LengthSquared() / 10000f);
+                    }
+                    physicsController.geomSndLookup[geom1]++;
+                    if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
+                }
+                return true;
+
+            }
+        
+
+        }
+
+        RoundSpecific currentRound = null;
+        GameSpecific currentGame = null;
+        public enum Instruction { None, Up, Down, Left, Right, CycleType, CycleOption1, CycleOption2, MainAction, EndBuild };
+
+        // NOTE rest is application specific
         GraphicsDeviceManager graphics;
 
         SpriteBatch spriteBatch;
         SpriteFont spriteFont;
 
-        PhysicsGameObject [] floors = new PhysicsGameObject [4];
-
-        PhysicsGameObject[] menuObjects = new PhysicsGameObject[4];
         int menuCount=0;
-
-        PhysicsGameObject[] pauseObjects = new PhysicsGameObject[2];
 
         Texture2D backgroundTexture;
         Texture2D hurr;
         Texture2D selector;
-        Texture2D [] buildingTexture = new Texture2D[4];
+        //Texture2D [] buildingTexture = new Texture2D[4];
 
-        PhysicsController physicsController;
 
         BasicEffect basicEffect;
 
-        GameTime lastGameTime;
+        KeyboardState keyboardState;
         KeyboardState previousState;
 
-        CubeSet player1, player2;
         ModSound sounds;
 
         float lol;// = 0;
         int lolcount = 0;
 
-        enum GameState {Init, MainMenu, InitGame, BuildPhase, SimPhase, Pause };
+        PhysicsSimulator applicationPhysicsSimHach = new PhysicsSimulator();
 
-        GameState currentGameState = GameState.InitGame; // TODO make Init
-        GameState previousGameState;
+        PhysicsGameObject[] menuObjects = new PhysicsGameObject[4];
+        PhysicsGameObject[] pauseObjects = new PhysicsGameObject[2];
+
+        enum GameState { MainMenu, StartGame, StartRound, EndGame, EndRound, BuildPhase, SimPhase, Pause };
+
+        GameState currentApplicationState = GameState.MainMenu; // TODO make Init
+        GameState previousApplicationState;
 
         TextureStore textureStore;
 
@@ -138,10 +279,47 @@ namespace PhysicsGame
             basicEffect.Projection = projectionMatrix;
 
             GraphicsDevice.RenderState.PointSize = 10;
-            physicsController = new PhysicsController();
 
+            //currentRound.setUpKeyboardMap();
+
+
+
+            
+
+            //Menu Objects
+            menuObjects[0] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
+            menuObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
+            menuObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2), 200);
+            applicationPhysicsSimHach.Remove(menuObjects[0].boxGeom);
+
+            menuObjects[1] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
+            menuObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
+            menuObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[1].getWidth() / 2), 400);
+            applicationPhysicsSimHach.Remove(menuObjects[1].boxGeom);
+
+            menuObjects[2] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
+            menuObjects[2].getTextureSet("Default").addTexture(backgroundTexture);
+            menuObjects[2].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[2].getWidth() / 2), 600);
+            applicationPhysicsSimHach.Remove(menuObjects[2].boxGeom);
+
+            menuObjects[3] = new PhysicsGameObject(applicationPhysicsSimHach, 20, 20, false);
+            menuObjects[3].getTextureSet("Default").addTexture(selector);
+            menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, 200);
+            applicationPhysicsSimHach.Remove(menuObjects[3].boxGeom);
+            //
+            pauseObjects[0] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
+            pauseObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
+            pauseObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[0].getWidth() / 2), 200);
+            applicationPhysicsSimHach.Remove(pauseObjects[0].boxGeom);
+
+            pauseObjects[1] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
+            pauseObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
+            pauseObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[1].getWidth() / 2), 500);
+            applicationPhysicsSimHach.Remove(pauseObjects[1].boxGeom);
 
         }
+
+
 
         private Texture2D makeTexture(Color col)
         {
@@ -188,195 +366,15 @@ namespace PhysicsGame
             //Apply content directly to face
         }
 
-        private void runInitState()
-        {
-
-            player1 = new CubeSet(physicsController, textureStore, new Vector2(300, 300), 1, sounds);
-
-            /*player1.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 1), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 2), Direction.South, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-2, 3), Direction.East, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(-1, 3), Direction.East, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));
-            player1.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube, Direction.East));*/
-
-            player2 = new CubeSet(physicsController, textureStore, new Vector2(900, 300), 2, sounds);
-
-            /*player2.addCubeNodeFrom(new Vector2(0, 0), Direction.North, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, -1), Direction.North, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, -2), Direction.North, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-1, -3), Direction.West, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, -3), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, -2), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, -1), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 0), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 1), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 2), Direction.South, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-2, 3), Direction.East, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(-1, 3), Direction.East, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube));
-            player2.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube));*/
-
-            int cubewidth = 1024;
-            int cubeheight = 768;
-            int cubeborder = 100;
-
-            floors[0] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
-            floors[0].getTextureSet("Default").addTexture(hurr);
-            floors[0].boxBody.Position = new Vector2(floors[0].boxBody.Position.X + cubewidth/2, -cubeborder/2);
-
-            floors[1] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
-            floors[1].getTextureSet("Default").addTexture(hurr);
-            floors[1].boxBody.Position = new Vector2(floors[1].boxBody.Position.X + cubewidth / 2, cubeheight + cubeborder / 2);
-
-            floors[2] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
-            floors[2].getTextureSet("Default").addTexture(hurr);
-            floors[2].boxBody.Position = new Vector2(-cubeborder / 2, floors[2].boxBody.Position.Y + cubeheight / 2);
-
-            floors[3] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
-            floors[3].getTextureSet("Default").addTexture(hurr);
-            floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2);
-
-            //Menu Objects
-            menuObjects[0] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false); 
-            menuObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
-            menuObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth/2-(menuObjects[0].getWidth()/2),200);
-            physicsController.physicsSimulator.Remove(menuObjects[0].boxGeom);
-
-            menuObjects[1] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
-            menuObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
-            menuObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[1].getWidth() / 2), 400);
-            physicsController.physicsSimulator.Remove(menuObjects[1].boxGeom);
-
-            menuObjects[2] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
-            menuObjects[2].getTextureSet("Default").addTexture(backgroundTexture);
-            menuObjects[2].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[2].getWidth() / 2), 600);
-            physicsController.physicsSimulator.Remove(menuObjects[2].boxGeom);
-
-            menuObjects[3] = new PhysicsGameObject(physicsController.physicsSimulator, 20, 20, false);
-            menuObjects[3].getTextureSet("Default").addTexture(selector);
-            menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2)-30, 200);
-            physicsController.physicsSimulator.Remove(menuObjects[3].boxGeom);
-            //
-            pauseObjects[0] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
-            pauseObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
-            pauseObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[0].getWidth() / 2), 200);
-            physicsController.physicsSimulator.Remove(pauseObjects[0].boxGeom);
-
-            pauseObjects[1] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false);
-            pauseObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
-            pauseObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[1].getWidth() / 2), 500);
-            physicsController.physicsSimulator.Remove(pauseObjects[1].boxGeom);
-
-            physicsController.registerPhysicsGameObject(floors[0]);
-            physicsController.registerPhysicsGameObject(floors[1]);
-            physicsController.registerPhysicsGameObject(floors[2]);
-            physicsController.registerPhysicsGameObject(floors[3]);
-            
-
-            currentGameState = GameState.MainMenu;
-        }
-
-        private void runBuildPhase(GameTime gameTime)
-        {
-
-            KeyboardState keyboardState = Keyboard.GetState();
-
-
-            if (keyboardState.IsKeyDown(Keys.A) && previousState.IsKeyUp(Keys.A))
-                player1.changeSelectedNode(Direction.West);
-            if (keyboardState.IsKeyDown(Keys.D) && previousState.IsKeyUp(Keys.D))
-                player1.changeSelectedNode(Direction.East);
-            if (keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W))
-                player1.changeSelectedNode(Direction.North);
-            if (keyboardState.IsKeyDown(Keys.S) && previousState.IsKeyUp(Keys.S))
-                player1.changeSelectedNode(Direction.South);
-
-
-            if (keyboardState.IsKeyDown(Keys.Q) && previousState.IsKeyUp(Keys.Q))
-                player1.cycleSelectedNode();
-            if (keyboardState.IsKeyDown(Keys.E) && previousState.IsKeyUp(Keys.E))
-            {
-                player1.cycleOption1();
-            }
-
-            /*if (keyboardState.IsKeyDown(Keys.Left))
-                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(-100, 0));
-            if (keyboardState.IsKeyDown(Keys.Right))
-                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(100, 0));
-            if (keyboardState.IsKeyDown(Keys.Up))
-                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, -100));
-            if (keyboardState.IsKeyDown(Keys.Down))
-                player1.getSelectedNode().physicalObject.boxBody.ApplyForce(new Vector2(0, 100));*/
-
-            //if (keyboardState.IsKeyUp(Keys.P) && previousState.IsKeyDown(Keys.P))
-            //    sounds.playSound("sound", Vector2.Zero);
-            //if (keyboardState.IsKeyUp(Keys.O) && previousState.IsKeyDown(Keys.O))
-            //    sounds.stopAll();
-
-            if (keyboardState.IsKeyDown(Keys.Space))
-            {
-                player1.makeCurrentSelectionPermanent();
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Enter))
-            {
-                player1.deselectAll();
-                player1.startActivationCountdowns();
-                player2.deselectAll();
-                player2.startActivationCountdowns();
-                currentGameState = GameState.SimPhase;
-            }
-
-            float speedAdjust = 1.0f;
-            if (keyboardState.IsKeyDown(Keys.P))
-                speedAdjust = 0.2f;
-
-
-            player1.Update(gameTime, speedAdjust);
-            player2.Update(gameTime, speedAdjust);
-
-            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
-
-        }
-
-
-        private void runSimPhase(GameTime gameTime)
-        {
-
-            KeyboardState keyboardState = Keyboard.GetState();
-            float speedAdjust = 1.0f;
-            sounds.Pitch = 0f;
-            if (keyboardState.IsKeyDown(Keys.P))
-            {
-                speedAdjust = 0.2f;
-                sounds.Pitch = -0.5f;
-            }
-
-            player1.Update(gameTime, speedAdjust);
-            player2.Update(gameTime, speedAdjust);
-
-            physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
-        }
-
         //Main Menu state. Original game state and only reachable through pause menu.
-        private void runMenuState()
+        public void runMainMenu(GameTime gameTime)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
+            Console.Write("runMainMenu\n");
+
             bool menuChange = false;
             if ((keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up) && previousState.IsKeyUp(Keys.Up)))
             {
-                menuCount = ((menuCount - 1) + 3)%3;
+                menuCount = ((menuCount - 1) + 3) % 3;
                 menuChange = true;
             }
             if (keyboardState.IsKeyDown(Keys.S) && previousState.IsKeyUp(Keys.S) || (keyboardState.IsKeyDown(Keys.Down) && previousState.IsKeyUp(Keys.Down)))
@@ -387,22 +385,23 @@ namespace PhysicsGame
 
             if (menuChange == true)
             {
-                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount*200+200);
+                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 200 + 200);
             }
 
             //Menu Select
-            if (keyboardState.IsKeyDown(Keys.A) && previousState.IsKeyUp(Keys.A))
+            if (keyboardState.IsKeyDown(Keys.Enter) && previousState.IsKeyUp(Keys.Enter))
             {
                 switch (menuCount)
                 {
-                        //Menu case 1
+                    //Menu case 1
                     case 0:
-                        currentGameState=GameState.BuildPhase;
+                        currentApplicationState = GameState.StartGame;
                         break;
-                        //Menu case 2
+                    //Menu case 2
                     case 1:
                         Exit();
                         break;
+                    //Menu case 3
                         //I can quit
                     case 2:
                         Exit();
@@ -413,9 +412,8 @@ namespace PhysicsGame
             }
         }
 
-        private void runPauseState()
+        public void runPauseState(GameTime gameTime)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
             bool pauseChange = false;
             if ((keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up) && previousState.IsKeyUp(Keys.Up)))
             {
@@ -440,11 +438,11 @@ namespace PhysicsGame
                 {
                     //Menu case 1: Return to game
                     case 0:
-                        currentGameState = previousGameState;
+                        currentApplicationState = previousApplicationState;
                         break;
                     //Menu case 2: Return to Main Menu (call cleanup)
                     case 1:
-                        currentGameState = GameState.MainMenu;
+                        currentApplicationState = GameState.MainMenu;
                         menuCount = 0;
                         menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 200 + 200);
                         break;
@@ -452,74 +450,225 @@ namespace PhysicsGame
             }
         }
 
-        //Collision Events
-
-        //BroadPhaseCollision
-        //Detects any collision between two geoms but doesn't have a list of contact points
-        
-        private bool OnBroadPhaseCollision(Geom geom1, Geom geom2)
+        public void runStartGame(GameTime gameTime)
         {
-            return true;
+
+            Console.Write("runStartGame\n");
+            currentGame = new GameSpecific();
+
+            currentApplicationState = GameState.StartRound;
         }
 
-         //Detects a collision between a specified geom and any other geom. Contains a list of contact points
-        private bool OnCollision(Geom geom2, Geom geom1, ContactList list)
+        public void runStartRound(GameTime gameTime)
         {
-            Vector2 position = list[0].Normal;
 
-            float angle = (float)Math.Atan2(position.Y, position.X);
 
-            Vector2 force = Vector2.Zero;
-            if (angle < 0)
-                force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X),(float)Math.Sin(MathHelper.TwoPi + angle) * geom1.Body.LinearVelocity.Y);
-            else
-                force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X),(float)Math.Sin(MathHelper.TwoPi - angle) * geom1.Body.LinearVelocity.Y);
-            
-            if (force.LengthSquared() > 0.5f)
+            Console.Write("runStartRound\n");
+            currentRound = new RoundSpecific(this);
+
+
+            currentApplicationState = GameState.BuildPhase;
+        }
+
+        public void runEndRound(GameTime gameTime)
+        {
+            Console.Write("runEndRound\n");
+            currentRound = null;
+
+            currentGame.completedRounds++;
+
+            if (currentGame.completedRounds == 5)
             {
-                try
-                {
-                    if (physicsController.geomSndLookup[geom1] == 0)
-                    {
-                        sounds.playSound("dank", geom1, Vector2.One, force.LengthSquared() / 10000f);
-                    }
-                    physicsController.geomSndLookup[geom1]++;
-                    if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
-                }
-                catch (KeyNotFoundException k) { }
+                currentApplicationState = GameState.EndGame;
+                return;
             }
-            return true;
-            
+
+            currentApplicationState = GameState.StartRound;
         }
-        
+
+        public void runEndGame(GameTime gameTime)
+        {
+            Console.Write("runEndGame\n");
+            currentGame = null;
+
+            currentApplicationState = GameState.MainMenu;
+        }
+
+        public void runBuildPhase(GameTime gameTime)
+        {
+            //Console.Write("runBuildPhase\n");
+
+            bool player1PlaybackComplete = false;
+            bool player2PlaybackComplete = false;
+            for (int i = 0; i < 2; i++)
+            {
+                CubeSet player;
+                Dictionary<Keys, Instruction> keyMap;
+                List<Instruction> instructionList;
+                int instructionsPos;
+
+                if (i == 0)
+                {
+                    player = currentRound.player1;
+                    keyMap = currentGame.player1KeyMap;
+                    instructionList = currentGame.player1Instructions;
+                    instructionsPos = currentRound.player1InstructionsPos;
+                }
+                else
+                {
+                    player = currentRound.player2;
+                    keyMap = currentGame.player2KeyMap;
+                    instructionList = currentGame.player2Instructions;
+                    instructionsPos = currentRound.player2InstructionsPos; // TODO save these values back afterwards
+                }
+
+                Instruction inst = Instruction.None;
+                if (currentRound.recording)
+                {
+                    foreach (Keys k in keyMap.Keys)
+                    {
+                        if (keyboardState.IsKeyDown(k) && previousState.IsKeyUp(k))
+                        {
+                            inst = keyMap[k];
+                            break;
+                        }
+
+                    }
+                    if (inst != Instruction.None && inst != Instruction.EndBuild)
+                        instructionList.Add(inst);
+                }
+                else // playback
+                {
+                    Console.Write("" + instructionList + " - " + instructionsPos + "\n");
+                    if (instructionsPos < instructionList.Count())
+                    {
+                        inst = instructionList[instructionsPos];
+                        instructionsPos++;
+                        if (i == 0) currentRound.player1InstructionsPos = instructionsPos;
+                        else currentRound.player2InstructionsPos = instructionsPos;
+                    }
+                    else
+                    {
+                        if (i == 0) player1PlaybackComplete = true;
+                        else player2PlaybackComplete = true;
+                    }
+                }
+
+                if (inst == Instruction.Right)
+                    player.changeSelectedNode(Direction.East);
+                else if (inst == Instruction.Left)
+                    player.changeSelectedNode(Direction.West);
+                else if (inst == Instruction.Up)
+                    player.changeSelectedNode(Direction.North);
+                else if (inst == Instruction.Down)
+                    player.changeSelectedNode(Direction.South);
+                else if (inst == Instruction.CycleType)
+                    player.cycleSelectedNode();
+                else if (inst == Instruction.CycleOption1)
+                    player.cycleOption1();
+                else if (inst == Instruction.MainAction)
+                    player.makeCurrentSelectionPermanent();
+                else if (inst == Instruction.EndBuild)
+                {
+                    player.finishedEditing = true;
+                    player.deselectAll();
+                }
+            }
+
+            if (player1PlaybackComplete && player2PlaybackComplete)
+            {
+                currentRound.recording = true;
+            }
+
+            if (currentRound.player1.finishedEditing && currentRound.player2.finishedEditing)
+            {
+                currentRound.player1.startActivationCountdowns();
+                currentRound.player2.startActivationCountdowns();
+                currentApplicationState = GameState.SimPhase;
+            }
+            float speedAdjust = 1.0f;
+            if (keyboardState.IsKeyDown(Keys.P))
+                speedAdjust = 0.2f;
+
+
+            currentRound.player1.Update(gameTime, speedAdjust);
+            currentRound.player2.Update(gameTime, speedAdjust);
+
+            currentRound.physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
+
+        }
+
+        public void runSimPhase(GameTime gameTime)
+        {
+            //Console.Write("runSimPhase\n");
+
+            float speedAdjust = 1.0f;
+            sounds.Pitch = 0f;
+            if (keyboardState.IsKeyDown(Keys.P))
+            {
+                speedAdjust = 0.2f;
+                sounds.Pitch = -0.5f;
+            }
+
+            currentRound.player1.Update(gameTime, speedAdjust);
+            currentRound.player2.Update(gameTime, speedAdjust);
+
+            currentRound.physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
+
+            currentRound.counter -= 1.0f * speedAdjust;
+
+            if (currentRound.counter < 0)
+            {
+                currentRound.recording = false;
+
+                //reset everything
+
+                currentApplicationState = GameState.EndRound;
+            }
+        }
+
+
+        //Detects any collision between two geoms but doesn't have a list of contact points
 
 
         protected override void Update(GameTime gameTime)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
+            keyboardState = Keyboard.GetState();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            if ((keyboardState.IsKeyDown(Keys.Escape) && previousState.IsKeyUp(Keys.Escape))&&currentGameState!=GameState.MainMenu)
+            if ((keyboardState.IsKeyDown(Keys.Escape) && previousState.IsKeyUp(Keys.Escape))&&currentApplicationState!=GameState.MainMenu)
             {
                 menuCount = 0;
                 menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 300 + 200);
-                if (currentGameState == GameState.Pause)
-                    currentGameState = previousGameState;
-                else if(currentGameState!=GameState.MainMenu)
+                if (currentApplicationState == GameState.Pause)
+                    currentApplicationState = previousApplicationState;
+                else if(currentApplicationState!=GameState.MainMenu)
                 {
-                    previousGameState = currentGameState;
-                    currentGameState = GameState.Pause;
+                    previousApplicationState = currentApplicationState;
+                    currentApplicationState = GameState.Pause;
                 }
             }
 
 
-            if (previousState == null) previousState = keyboardState;
 
-            switch (currentGameState)
+            switch (currentApplicationState)
             {
-                case GameState.InitGame:
-                    runInitState();
+                case GameState.MainMenu:
+                    runMainMenu(gameTime);
+                    break;
+                case GameState.StartGame:
+                    runStartGame(gameTime);
+                    break;
+                case GameState.StartRound:
+                    runStartRound(gameTime);
+                    break;
+                case GameState.EndGame:
+                    runEndGame(gameTime);
+                    break;
+                case GameState.EndRound:
+                    runEndRound(gameTime);
                     break;
                 case GameState.BuildPhase:
                     runBuildPhase(gameTime);
@@ -527,11 +676,8 @@ namespace PhysicsGame
                 case GameState.SimPhase:
                     runSimPhase(gameTime);
                     break;
-                case GameState.MainMenu:
-                    runMenuState();
-                    break;
                 case GameState.Pause:
-                    runPauseState();
+                    runPauseState(gameTime);
                     break;
 
             }
@@ -542,7 +688,7 @@ namespace PhysicsGame
             //floors[2].boxGeom.OnCollision += OnCollision;
             //floors[3].boxGeom.OnCollision += OnCollision;
 
-            lastGameTime = gameTime;
+
 
             previousState = keyboardState;
 
@@ -556,20 +702,34 @@ namespace PhysicsGame
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
             spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
 
-            foreach(PhysicsGameObject phy in physicsController.physicsObjects) 
+            //spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
+            //spriteBatch.DrawString(spriteFont, "" + player1.selectedCube.Value.X + ":" + player1.selectedCube.Value.Y, new Vector2(10, 30), Color.White);
+            //spriteBatch.DrawString(spriteFont, "" + lol, new Vector2(10, 50), Color.White);
+            
+            //cannon.draw(spriteBatch);
+            if (currentRound != null)
             {
-                phy.draw(spriteBatch);
+                currentRound.floors[0].draw(spriteBatch);
+                currentRound.floors[1].draw(spriteBatch);
+                currentRound.floors[2].draw(spriteBatch);
+                currentRound.floors[3].draw(spriteBatch);
+
+                foreach (PhysicsGameObject phy in currentRound.physicsController.physicsObjects)
+                {
+                    phy.draw(spriteBatch);
+                }
             }
 
+
             //If the main menu is active, draw the menuObjects
-            if (currentGameState == GameState.MainMenu)
+            if (currentApplicationState == GameState.MainMenu)
             {
                 menuObjects[0].draw(spriteBatch);
                 menuObjects[1].draw(spriteBatch);
                 menuObjects[2].draw(spriteBatch);
                 menuObjects[3].draw(spriteBatch);
             }
-            else if (currentGameState == GameState.Pause)
+            else if (currentApplicationState == GameState.Pause)
             {
                 pauseObjects[0].draw(spriteBatch);
                 pauseObjects[1].draw(spriteBatch);
@@ -589,9 +749,12 @@ namespace PhysicsGame
 
             basicEffect.Begin();
 
-            foreach (PhysicsGameJoint phy in physicsController.physicsJoints)
+            if (currentRound != null)
             {
-                phy.draw(basicEffect, GraphicsDevice);
+                foreach (PhysicsGameJoint phy in currentRound.physicsController.physicsJoints)
+                {
+                    phy.draw(basicEffect, GraphicsDevice);
+                }
             }
 
             //cannon.draw(basicEffect, GraphicsDevice);

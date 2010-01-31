@@ -13,7 +13,7 @@ namespace PhysicsGame.GameObjects
 
 
 
-    class CubeSet : GameObject
+    public class CubeSet : GameObject
     {
 
         public static Vector2 adjacentIndex(Vector2 orig, Direction dir)
@@ -36,6 +36,8 @@ namespace PhysicsGame.GameObjects
         static Vector2 cubeSize = new Vector2(50,50);
 
         public Nullable<Vector2> selectedCube = null;
+
+        public bool finishedEditing = false;
 
         PhysicsController physicsController;
         public Dictionary<Vector2, CubeNode> cubeLookUp;
@@ -219,12 +221,14 @@ namespace PhysicsGame.GameObjects
 
         public void cycleSelectedNode()
         {
-            changeSelecetedNode(selectedCube.Value, Option.Type);
+            if (getSelectedNode().isTempNode)
+                changeSelecetedNode(selectedCube.Value, Option.Type);
         }
 
         public void cycleOption1()
         {
-            changeSelecetedNode(selectedCube.Value, Option.Option1);
+            if (getSelectedNode().isTempNode)
+                changeSelecetedNode(selectedCube.Value, Option.Option1);
         }
 
         public override void Update(GameTime gameTime, float speedAdjust)

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace PhysicsGame.GameObjects
 {
-    class GameObject
+    public class GameObject
     {
         public virtual void Update(GameTime gameTime, float speedAdjust)
         {

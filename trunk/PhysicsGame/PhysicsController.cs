@@ -9,7 +9,7 @@ using FarseerGames.FarseerPhysics.Collisions;
 
 namespace PhysicsGame
 {
-    class PhysicsController
+    public class PhysicsController
     {
         public PhysicsSimulator physicsSimulator;
         public LinkedList<PhysicsGameObject> physicsObjects;
