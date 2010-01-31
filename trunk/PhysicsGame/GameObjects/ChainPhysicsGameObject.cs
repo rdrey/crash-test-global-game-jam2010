@@ -29,7 +29,7 @@ namespace PhysicsGame.GameObjects
         {
             this.physicsSimulator = physicsSimulator;
             path = new Path(30, 30, .2f, false);
-            boxBody.Mass = 0.25f;
+            this.boxBody.Mass = .25f;
         }
 
         public void makeLink()

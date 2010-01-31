@@ -13,6 +13,7 @@ namespace PhysicsGame
     {
         public PhysicsSimulator physicsSimulator;
         public LinkedList<PhysicsGameObject> physicsObjects;
+        public List<PhysicsGameObject> visuals;
         public LinkedList<PhysicsGameJoint> physicsJoints;
 
         public Dictionary<Geom, PhysicsGameObject> geomLookup;
@@ -23,6 +24,7 @@ namespace PhysicsGame
         {
             physicsSimulator = new PhysicsSimulator(new Vector2(0, 0));
             physicsObjects = new LinkedList<PhysicsGameObject>();
+            visuals = new List<PhysicsGameObject>();
             physicsJoints = new LinkedList<PhysicsGameJoint>();
             geomLookup = new Dictionary<Geom, PhysicsGameObject>();
             geomSndLookup = new Dictionary<Geom, int>();

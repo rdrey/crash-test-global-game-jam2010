@@ -38,18 +38,21 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new UnknownCube();
                 defaultTextureList = textureStore.unknownTextures;
+                pgo.boxBody.Mass = 0.05f;
             }
             else if (cubeDescription.type == CubeType.ChainCube)
             {
                 ret = new ChainCube();
                 //todo TEXTURE
                 defaultTextureList = textureStore.plainTextures;
+                ret.visualOnly = true;
                 pgo = new ChainPhysicsGameObject(physicsController.physicsSimulator);
             }
             else if (cubeDescription.type == CubeType.PlainCube)
             {
                 ret = new PlainCube();
                 defaultTextureList = textureStore.plainTextures;
+                pgo.boxBody.Mass = 1f;
             }
             else if (cubeDescription.type == CubeType.RocketCube)
             {
@@ -116,11 +119,13 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new ShieldCube();
                 defaultTextureList = textureStore.shieldTextures;
+                pgo.boxBody.Mass = 1f;
             }
             else// ; if (cubeDescription.type == CubeType.HeavyCube)
             {
                 ret = new HeavyCube();
                 defaultTextureList = textureStore.heavyTextures;
+                pgo.boxBody.Mass = 2f;
             }
 
             foreach (Texture2D tex in defaultTextureList)
