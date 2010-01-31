@@ -148,6 +148,8 @@ namespace PhysicsGame.GameObjects
                             else if (getSelectedNode() is ShieldCube)
                                 currentCubeDescription.type = CubeType.HeavyCube;
                             else if (getSelectedNode() is HeavyCube)
+                                currentCubeDescription.type = CubeType.ShooterCube;
+                            else if (getSelectedNode() is ShooterCube)
                                 currentCubeDescription.type = CubeType.UnknownCube;
 
 
@@ -164,6 +166,21 @@ namespace PhysicsGame.GameObjects
                                 else if (((RocketCube)getSelectedNode()).dir == Direction.South)
                                     currentCubeDescription.dir = Direction.West;
                                 else if (((RocketCube)getSelectedNode()).dir == Direction.West)
+                                    currentCubeDescription.dir = Direction.North;
+                            }
+                        }
+
+                        if (optionToCycle == Option.Option1)
+                        {
+                            if (getSelectedNode() is ShooterCube)
+                            {
+                                if (((ShooterCube)getSelectedNode()).dir == Direction.North)
+                                    currentCubeDescription.dir = Direction.East;
+                                else if (((ShooterCube)getSelectedNode()).dir == Direction.East)
+                                    currentCubeDescription.dir = Direction.South;
+                                else if (((ShooterCube)getSelectedNode()).dir == Direction.South)
+                                    currentCubeDescription.dir = Direction.West;
+                                else if (((ShooterCube)getSelectedNode()).dir == Direction.West)
                                     currentCubeDescription.dir = Direction.North;
                             }
                         }

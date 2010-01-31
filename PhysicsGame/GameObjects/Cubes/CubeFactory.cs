@@ -23,6 +23,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
+            
 
             //physicsController.deregisterPhysicsGameObject(pgo);
             //pgo.textures.Clear();
@@ -65,6 +66,32 @@ namespace PhysicsGame.GameObjects.Cubes
                     pgo.getTextureSet("InternalFlame").addTexture(tex);
 
                 pgo.addTextureSet("InternalFlame");*/
+
+                float rotation = 0.0f;
+                switch (cubeDescription.dir)
+                {
+                    case Direction.East:
+                        rotation = 0;
+                        break;
+                    case Direction.South:
+                        rotation = MathHelper.Pi / 2;
+                        break;
+                    case Direction.West:
+                        rotation = MathHelper.Pi;
+                        break;
+                    case Direction.North:
+                        rotation = MathHelper.Pi * 3 / 2;
+                        break;
+                }
+                pgo.boxBody.Rotation = rotation;
+
+            }
+            else if (cubeDescription.type == CubeType.ShooterCube)
+            {
+                ret = new ShooterCube(cubeDescription.dir);
+                defaultTextureList = textureStore.shooterTextures;
+                ((ShooterCube)ret).bulletTexture = textureStore.bulletTexture;
+                ((ShooterCube)ret).activationCountdown = 550;
 
                 float rotation = 0.0f;
                 switch (cubeDescription.dir)
