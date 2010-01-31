@@ -515,13 +515,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\bg.jpg">
-      <Name>bg</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sprites\ShooterB\Bang_block_01.png">
       <Name>Bang_block_01</Name>
       <Importer>TextureImporter</Importer>
@@ -630,6 +623,13 @@
     </Compile>
     <Compile Include="Sprites\buzz\Buzz_10.png">
       <Name>Buzz_10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\bg.png">
+      <Name>bg</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

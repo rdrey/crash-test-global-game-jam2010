@@ -18,7 +18,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
             return createCubeNode(textureStore, physicsController, cubeDescription, cubeSize, pgo);
         }*/
-        public static CubeNode createCubeNode(TextureStore textureStore, PhysicsController physicsController, CubeDescription cubeDescription, Vector2 cubeSize)
+        public static CubeNode createCubeNode(TextureStore textureStore, PhysicsController physicsController, CubeDescription cubeDescription, Vector2 cubeSize, CubeSet parent)
         {
 
 
@@ -162,6 +162,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
             ret.physicalObject = pgo;
             ret.physicsController = physicsController;
+            ret.parent = parent;
             ret.hackz0r();
             return ret;
 

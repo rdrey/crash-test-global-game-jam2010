@@ -125,11 +125,29 @@ namespace PhysicsGame
         public class RoundSpecific
         {
             public class RoundPlayerInfo {
+
                 public int instructionsPos = 0;
                 public CubeSet cubeSet = null;
             }
             public RoundPlayerInfo p1 = new RoundPlayerInfo();
             public RoundPlayerInfo p2 = new RoundPlayerInfo();
+
+            public class SoundInfo
+            {
+                public String name;
+                public float volume;
+                public Geom geom;
+
+                public SoundInfo(String n, float v, Geom g)
+                {
+                    name = n;
+                    volume = v;
+                    geom = g;
+                }
+            }
+
+            public int player1InstructionsPos = 0;
+            public int player2InstructionsPos = 0;
 
             public float counter = 2000;
 
@@ -140,15 +158,16 @@ namespace PhysicsGame
             public PhysicsGameObject[] floors = new PhysicsGameObject[4];
 
             Game1 _parent;
+            public Dictionary<Geom, SoundInfo> soundsToPlay = new Dictionary<Geom, SoundInfo>();
 
             public RoundSpecific(Game1 parent)
             {
                 _parent = parent;
                 physicsController = new PhysicsController();
 
-                p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, parent.sounds);
+                p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, this);
 
-                p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, parent.sounds);
+                p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, this);
 
 
                 int cubewidth = 1024;
@@ -176,9 +195,11 @@ namespace PhysicsGame
                 physicsController.registerPhysicsGameObject(floors[2]);
                 physicsController.registerPhysicsGameObject(floors[3]);
 
+                physicsController.geomLookup[floors[0].boxGeom] = floors[0];
+                physicsController.geomLookup[floors[1].boxGeom] = floors[1];
+                physicsController.geomLookup[floors[2].boxGeom] = floors[2];
+                physicsController.geomLookup[floors[3].boxGeom] = floors[3];
 
-                //Registers collision events
-                //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
                 floors[0].boxGeom.OnCollision += OnCollision;
                 floors[1].boxGeom.OnCollision += OnCollision;
                 floors[2].boxGeom.OnCollision += OnCollision;
@@ -186,12 +207,6 @@ namespace PhysicsGame
 
             }
 
-            public bool OnBroadPhaseCollision(Geom geom1, Geom geom2)
-            {
-                return true;
-            }
-
-            //Detects a collision between a specified geom and any other geom. Contains a list of contact points
             public bool OnCollision(Geom geom2, Geom geom1, ContactList list)
             {
                 Vector2 position = list[0].Normal;
@@ -204,21 +219,38 @@ namespace PhysicsGame
                 else
                     force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi - angle) * geom1.Body.LinearVelocity.Y);
 
-                if (force.LengthSquared() > 0.5f)
-                {
+                soundsToPlay[geom2] = new SoundInfo("dank", force.LengthSquared(), geom2);
 
-                    if (physicsController.geomSndLookup[geom1] == 0)
-                    {
-                        _parent.sounds.playSound("dank", geom1, Vector2.One, force.LengthSquared() / 10000f);
-                    }
-                    physicsController.geomSndLookup[geom1]++;
-                    if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
-                }
                 return true;
-
             }
-        
+            
+            public bool OnCollision2(Geom geom1, Geom geom2, ContactList list)
+            {
+                Vector2 position = list[0].Normal;
 
+                float angle = (float)Math.Atan2(position.Y, position.X);
+
+                Vector2 force = Vector2.Zero;
+                if (angle < 0)
+                    force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi + angle) * geom1.Body.LinearVelocity.Y);
+                else
+                    force = new Vector2((float)(Math.Cos(angle) * geom1.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi - angle) * geom1.Body.LinearVelocity.Y);
+                
+                if (physicsController.geomLookup[geom1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
+                    physicsController.geomLookup[geom2].ID == PhysicsGameObject.PhysicsMapID.player2)
+                {
+                    soundsToPlay[geom1] = new SoundInfo("bang", force.Length() * 100f, geom2);
+                    //Console.WriteLine("banana");
+                }
+                else if (physicsController.geomLookup[geom1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
+                         physicsController.geomLookup[geom2].ID == PhysicsGameObject.PhysicsMapID.player1)
+                {
+                    soundsToPlay[geom2] = new SoundInfo("bang", force.Length() * 100f, geom1);
+                    //Console.WriteLine("banana");
+                }
+
+                return true;
+            }
         }
 
         RoundSpecific currentRound = null;
@@ -245,9 +277,6 @@ namespace PhysicsGame
         KeyboardState previousState;
 
         ModSound sounds;
-
-        float lol;// = 0;
-        int lolcount = 0;
 
         PhysicsSimulator applicationPhysicsSimHach = new PhysicsSimulator();
 
@@ -666,6 +695,23 @@ namespace PhysicsGame
 
                 currentApplicationState = GameState.EndRound;
             }
+
+            foreach (RoundSpecific.SoundInfo snd in currentRound.soundsToPlay.Values) 
+            {
+                if (currentRound.physicsController.geomSndLookup[snd.geom] == 0)
+                {
+                    sounds.playSound(snd.name, snd.geom, Vector2.One, snd.volume / 1000f);
+                    currentRound.physicsController.geomSndLookup[snd.geom]++;
+                }
+
+                if (currentRound.physicsController.geomSndLookup[snd.geom] > 0)
+                {
+                    currentRound.physicsController.geomSndLookup[snd.geom]++;
+                    if (currentRound.physicsController.geomSndLookup[snd.geom] > 10)
+                        currentRound.physicsController.geomSndLookup[snd.geom] = 0;
+                }
+            }
+            currentRound.soundsToPlay.Clear();
         }
 
 
@@ -723,10 +769,6 @@ namespace PhysicsGame
             }
             //Registers collision events
             //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
-            //floors[0].boxGeom.OnCollision += OnCollision;
-            //floors[1].boxGeom.OnCollision += OnCollision;
-            //floors[2].boxGeom.OnCollision += OnCollision;
-            //floors[3].boxGeom.OnCollision += OnCollision;
 
 
 
@@ -745,8 +787,7 @@ namespace PhysicsGame
             //spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
             //spriteBatch.DrawString(spriteFont, "" + player1.selectedCube.Value.X + ":" + player1.selectedCube.Value.Y, new Vector2(10, 30), Color.White);
             //spriteBatch.DrawString(spriteFont, "" + lol, new Vector2(10, 50), Color.White);
-            
-            //cannon.draw(spriteBatch);
+
             if (currentRound != null)
             {
                 currentRound.floors[0].draw(spriteBatch);

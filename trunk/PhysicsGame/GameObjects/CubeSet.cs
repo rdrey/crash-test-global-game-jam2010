@@ -46,17 +46,21 @@ namespace PhysicsGame.GameObjects
 
         TextureStore textureStore;
         PhysicsGameObject.PhysicsMapID ID = PhysicsGameObject.PhysicsMapID.anything;
-        public ModSound sound;
+        //public ModSound sound;
 
         CubeDescription currentCubeDescription = new CubeDescription();
 
-        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position, int playnum, ModSound s)
+        public PhysicsGame.Game1.RoundSpecific currentRound;
+
+        public CubeSet(PhysicsController physicsController, TextureStore textureStore, Vector2 position, int playnum, PhysicsGame.Game1.RoundSpecific cr)
         {
+            currentRound = cr;
             this.textureStore = textureStore;
             this.physicsController = physicsController;
-            sound = s;
+            //sound = s;
             if (playnum == 1) ID = PhysicsGameObject.PhysicsMapID.player1;
             else ID = PhysicsGameObject.PhysicsMapID.player2;
+
             CubeNode rootNode = createNode(new CubeDescription(CubeType.PlainCube));
             rootNode.physicalObject.boxBody.Position = position;
 
@@ -335,15 +339,15 @@ namespace PhysicsGame.GameObjects
 
         public CubeNode createNode(CubeDescription cubeDescription)
         {
-            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
+            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize, this);
             temp.physicalObject.ID = ID;
-            temp.parent = this;
+            //temp.parent = this;
             return temp;
         }
 
         public CubeNode createNode(CubeDescription cubeDescription, PhysicsGameObject pgo)
         {
-            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize);
+            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize, this);
             temp.physicalObject.ID = ID;
             return temp;
         }

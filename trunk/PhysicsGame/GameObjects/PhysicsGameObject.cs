@@ -28,8 +28,7 @@ namespace PhysicsGame.GameObjects
         {
             anything = 0,
             player1 = 1,
-            player2 = 2,
-            wall = 3
+            player2 = 2
         }
 
         public class TextureSet
