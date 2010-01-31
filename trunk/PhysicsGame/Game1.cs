@@ -328,6 +328,7 @@ namespace PhysicsGame
 
         PhysicsGameObject[] menuObjects = new PhysicsGameObject[4];
         PhysicsGameObject tutorial;
+        PhysicsGameObject tutorialOverlay;
 
         enum GameState { MainMenu, StartGame, StartRound, EndGame, EndRound, BuildPhase, SimPhase, Pause };
 
@@ -394,12 +395,14 @@ namespace PhysicsGame
                 applicationPhysicsSimHach.Remove(menuObjects[i / 2].boxGeom);
             }
             tutorial = new PhysicsGameObject(applicationPhysicsSimHach, 800, 400, false);
+            tutorialOverlay = new PhysicsGameObject(applicationPhysicsSimHach, 800, 400, false);
             foreach(Texture2D tex in textureStore.keyTextures)
             {
                 tutorial.boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2),  200 + 200);
                 tutorial.getTextureSet("Default").addTexture(tex);
             }
-            
+            tutorialOverlay.boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2), 200 + 200);
+            tutorialOverlay.getTextureSet("Default").addTexture(Content.Load<Texture2D>("Sprites/keyboard/keyboard_lock"));
 
         }
 
@@ -933,6 +936,7 @@ namespace PhysicsGame
                     if(tutCount==0)
                         tutorial.getTextureSet("Default").currentTextureListIndex = (tutorial.getTextureSet("Default").currentTextureListIndex+1)%7;
                     tutorial.draw(spriteBatch);
+                    tutorialOverlay.draw(spriteBatch);
                 }
                 else
                 {
@@ -951,6 +955,7 @@ namespace PhysicsGame
                     if (tutCount == 0)
                         tutorial.getTextureSet("Default").currentTextureListIndex = (tutorial.getTextureSet("Default").currentTextureListIndex + 1) % 7;
                     tutorial.draw(spriteBatch);
+                    tutorialOverlay.draw(spriteBatch);
                 }
                 else
                 {
