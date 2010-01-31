@@ -439,7 +439,16 @@ namespace PhysicsGame
 
             if (pauseChange == true)
             {
-                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 300 + 200);
+                if (menuCount == 0)
+                {
+                    menuObjects[0].getTextureSet("Default").currentTextureListIndex = 1;
+                    menuObjects[2].getTextureSet("Default").currentTextureListIndex = 0;
+                }
+                else
+                {
+                    menuObjects[0].getTextureSet("Default").currentTextureListIndex = 0;
+                    menuObjects[2].getTextureSet("Default").currentTextureListIndex = 1;
+                }
             }
 
             //Menu Select
@@ -455,7 +464,6 @@ namespace PhysicsGame
                     case 1:
                         currentApplicationState = GameState.MainMenu;
                         menuCount = 0;
-                        menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 200 + 200);
                         break;
                 }
             }
@@ -755,9 +763,8 @@ namespace PhysicsGame
             }
             else if (currentApplicationState == GameState.Pause)
             {
-                pauseObjects[0].draw(spriteBatch);
-                pauseObjects[1].draw(spriteBatch);
-                menuObjects[3].draw(spriteBatch);
+                menuObjects[0].draw(spriteBatch);
+                menuObjects[2].draw(spriteBatch);
             }
 
             //spriteBatch.Draw(backgroundTexture, new Vector2(0,0), null, Color.White, 0, new Vector2(0,0), 1.0f, SpriteEffects.None, -0.5f);
