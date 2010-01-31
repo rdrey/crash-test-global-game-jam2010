@@ -25,11 +25,12 @@ namespace PhysicsGame.GameObjects
         PhysicsSimulator physicsSimulator;
 
         public ChainPhysicsGameObject(PhysicsSimulator physicsSimulator) :
-            base(physicsSimulator, 1, 1, false)            
+            base(physicsSimulator, 1,1, false)            
         {
             this.physicsSimulator = physicsSimulator;
             path = new Path(30, 30, .2f, false);
             this.boxBody.Mass = .25f;
+
         }
 
         public void makeLink()

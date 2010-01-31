@@ -13,7 +13,7 @@ namespace PhysicsGame.GameObjects.Cubes
     //TODO put in separate class
     public enum Direction { North, South, West, East };
 
-    public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube, ChainCube, DamageCube, ShooterCube };
+    public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube, ChainCube, DamageCube, ShooterCube, BulletCube };
 
     //==============================================================
     //==============================================================
@@ -61,7 +61,11 @@ namespace PhysicsGame.GameObjects.Cubes
         {
             //ModSound sounds = parent.sound;
             if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
-                        physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
+                        physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2
+                ||
+                physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1 &&
+                        physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2
+                )
             {
                 this.hp -= 20;
                 if (physicsController.geomLookup[g1].ID == this.physicalObject.ID)
@@ -69,12 +73,25 @@ namespace PhysicsGame.GameObjects.Cubes
                     CubeNode other = physicsController.nodeLookup[
                         physicsController.geomLookup[g2]];
                     other.hp -= 20 * damageMultiplier;
+
+                    if (PhysicsGameObject.PhysicsMapID.player1 == other.physicalObject.ID)
+                    {
+                        physicsController.damageTotalPlayer1 += 20 * damageMultiplier;
+                        physicsController.damageTotalPlayer2 += 20;
+
+                    }
                 }
                 else
                 {
                     CubeNode other = physicsController.nodeLookup[
                         physicsController.geomLookup[g1]];
                     other.hp -= 20 * damageMultiplier;
+
+                    if (PhysicsGameObject.PhysicsMapID.player2 == other.physicalObject.ID)
+                    {
+                        physicsController.damageTotalPlayer2 += 20 * damageMultiplier;
+                        physicsController.damageTotalPlayer1 += 20;
+                    }
                 }
             }
 
@@ -154,6 +171,17 @@ namespace PhysicsGame.GameObjects.Cubes
             //        ((PinJoint)joint.joint).TargetDistance = 60;
             }
 
+            if (isTempNode)
+            {
+                for (int i = 1 ; i <= cost ; i++)
+                    physicalObject.addTextureSet("coin" + i);
+            }
+            else
+            {
+                for (int i = 1; i <= cost; i++)
+                    physicalObject.removeTextureSet("coin" + i);
+            }
+
             if (hp < 0)
                 markForDelete = true;
             if (hp < 50)
@@ -166,7 +194,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
             physicalObject.colorValue = new Color(Color.White, (float)hp / (float)maxHp);
             if (isTempNode)
-                physicalObject.colorValue.A /= 4;
+                physicalObject.colorValue.A /= 2;
 
             physicalObject.getTextureSet("Default").incrementIndex(defaultAnimationSpeed * speedAdjust);
 

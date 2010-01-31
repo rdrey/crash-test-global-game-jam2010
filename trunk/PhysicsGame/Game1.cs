@@ -41,6 +41,10 @@ namespace PhysicsGame
 
         public List<Texture2D> bulletTexture = new List<Texture2D>();
 
+
+        public List<Texture2D> blankTexture = new List<Texture2D>();
+
+
         public Texture2D coinTexture;
 
 
@@ -57,6 +61,8 @@ namespace PhysicsGame
             loadTextures(Content, buzzTextures, 10, "Sprites/buzz/Buzz");
             loadTextures(Content, boomTextures, 6, "Sprites/boomB/boom");
             loadTextures(Content, keyTextures, 7, "Sprites/keyboard/keys");
+
+            blankTexture.Add(Content.Load<Texture2D>("Sprites/RocketTimerB/RocketTiming_01"));
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
@@ -124,7 +130,7 @@ namespace PhysicsGame
                 p2.keyMap[Keys.NumPad2] = Instruction.CycleOption1;
                 p2.keyMap[Keys.NumPad3] = Instruction.CycleOption2;
                 p2.keyMap[Keys.Enter] = Instruction.MainAction;
-                p2.keyMap[Keys.Insert] = Instruction.EndBuild;
+                p2.keyMap[Keys.Back] = Instruction.EndBuild;
 
             }
         }
@@ -576,8 +582,14 @@ namespace PhysicsGame
 
         public void runStartRound(GameTime gameTime)
         {
-            currentGame.p1.money = 10 + currentGame.completedRounds * 10;
-            currentGame.p2.money = 10 + currentGame.completedRounds * 10;
+            currentGame.p1.money = 18 + currentGame.completedRounds * 10;
+            currentGame.p2.money = 18 + currentGame.completedRounds * 10;
+
+            if (currentGame.completedRounds == 4)
+            {
+                currentGame.p1.money += 10;
+                currentGame.p2.money += 10;
+            }
 
 
             Console.Write("runStartRound " + currentGame.p1.money + ":" + currentGame.p2.money + "\n");
@@ -924,6 +936,11 @@ namespace PhysicsGame
                 {
                     phy.draw(spriteBatch);
                 }
+
+                for (int i = 0; i < currentRound.physicsController.damageTotalPlayer1 / 50; i++)
+                    spriteBatch.Draw(textureStore.coinTexture, new Vector2(1024 / 2 - 100 - (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
+                for (int i = 0; i < currentRound.physicsController.damageTotalPlayer2 / 50; i++)
+                    spriteBatch.Draw(textureStore.coinTexture, new Vector2(1024 / 2 + 100 + (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
             }
 
 
@@ -977,6 +994,8 @@ namespace PhysicsGame
                     spriteBatch.Draw(textureStore.coinTexture, new Vector2(10, 10 + ((currentGame.p1.money - i) * 10)), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
                 for (int i = 0; i < currentGame.p2.money; i++)
                     spriteBatch.Draw(textureStore.coinTexture, new Vector2(1024-10-(textureStore.coinTexture.Width*0.1f), 10 + ((currentGame.p2.money - i) * 10)), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
+            
+            
             }
 
             spriteBatch.End();

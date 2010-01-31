@@ -44,8 +44,8 @@ namespace PhysicsGame.GameObjects
         public Dictionary<Vector2, CubeNode> cubeLookUp;
         //Dictionary<CubeSet, IntVector2> poseLookUp;
 
-        TextureStore textureStore;
-        PhysicsGameObject.PhysicsMapID ID = PhysicsGameObject.PhysicsMapID.anything;
+        public TextureStore textureStore;
+        public PhysicsGameObject.PhysicsMapID ID = PhysicsGameObject.PhysicsMapID.anything;
         //public ModSound sound;
 
         CubeDescription currentCubeDescription = new CubeDescription();
@@ -345,15 +345,7 @@ namespace PhysicsGame.GameObjects
         public CubeNode createNode(CubeDescription cubeDescription)
         {
             CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize, this);
-            temp.physicalObject.ID = ID;
-            //temp.parent = this;
-            return temp;
-        }
 
-        public CubeNode createNode(CubeDescription cubeDescription, PhysicsGameObject pgo)
-        {
-            CubeNode temp = CubeFactory.createCubeNode(textureStore, physicsController, cubeDescription, cubeSize, this);
-            temp.physicalObject.ID = ID;
             return temp;
         }
 

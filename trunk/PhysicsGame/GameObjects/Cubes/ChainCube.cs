@@ -14,7 +14,7 @@ namespace PhysicsGame.GameObjects.Cubes
             maxHp = 600;
             defaultAnimationSpeed = 0f;
             damageMultiplier = 0f;
-            cost = 2;
+            cost = 1;
         }
 
         public override void Update(GameTime gameTime, float speedAdjust)
