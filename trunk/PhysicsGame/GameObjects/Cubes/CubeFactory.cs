@@ -71,6 +71,10 @@ namespace PhysicsGame.GameObjects.Cubes
 
                 pgo.getTextureSet("MainFlame").offset = new Vector2(cubeSize.X - 1, 0);
 
+
+                foreach (Texture2D tex in textureStore.boomTextures)
+                    pgo.getTextureSet("Boom").addTexture(tex);
+
                 /*foreach (Texture2D tex in textureStore.rocketFlame)
                     pgo.getTextureSet("InternalFlame").addTexture(tex);
 
@@ -101,7 +105,8 @@ namespace PhysicsGame.GameObjects.Cubes
                 ret = new ShooterCube(cubeDescription.dir);
                 defaultTextureList = textureStore.shooterTextures;
                 ((ShooterCube)ret).bulletTexture = textureStore.bulletTexture;
-                ((ShooterCube)ret).activationCountdown = 550;
+                ((ShooterCube)ret).activationCountdownTotal = cubeDescription.value;
+                ((ShooterCube)ret).activationCountdown = cubeDescription.value;
 
                 float rotation = 0.0f;
                 switch (cubeDescription.dir)

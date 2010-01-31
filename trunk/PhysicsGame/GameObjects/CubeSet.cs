@@ -33,7 +33,7 @@ namespace PhysicsGame.GameObjects
             return new Vector2(orig.X * cubeSize.X, orig.Y * cubeSize.Y);
         }
 
-        static Vector2 cubeSize = new Vector2(50,50);
+        static Vector2 cubeSize = new Vector2(40,40);
 
 
         public Nullable<Vector2> selectedCube = null;
@@ -173,10 +173,7 @@ namespace PhysicsGame.GameObjects
                                 else if (((RocketCube)getSelectedNode()).dir == Direction.West)
                                     currentCubeDescription.dir = Direction.North;
                             }
-                        } 
 
-                        if (optionToCycle == Option.Option1)
-                        {
                             if (getSelectedNode() is ShooterCube)
                             {
                                 if (((ShooterCube)getSelectedNode()).dir == Direction.North)
@@ -199,8 +196,16 @@ namespace PhysicsGame.GameObjects
                                 if (currentCubeDescription.value >= 14 * RocketCube.rocketTimeStep)
                                     currentCubeDescription.value = 0;
                             }
+
+                            if (getSelectedNode() is ShooterCube)
+                            {
+                                //((RocketCube)getSelectedNode()).activationCountdown += RocketCube.rocketTimeStep;
+
+                                currentCubeDescription.value += RocketCube.rocketTimeStep;
+                                if (currentCubeDescription.value >= 14 * RocketCube.rocketTimeStep)
+                                    currentCubeDescription.value = 0;
+                            }
                         }
-                        //TODO for gun one as well!
 
 
                         cleanUpNodeAt(selectedCube.Value);
