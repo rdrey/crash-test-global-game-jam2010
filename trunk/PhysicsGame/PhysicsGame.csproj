@@ -89,11 +89,13 @@
     <Compile Include="GameObjects\ChainPhysicsGameObject.cs" />
     <Compile Include="GameObjects\Cubes\BulletCube.cs" />
     <Compile Include="GameObjects\Cubes\ChainCube.cs" />
+    <Compile Include="GameObjects\Cubes\DamageCube.cs" />
     <Compile Include="GameObjects\Cubes\CubeFactory.cs" />
     <Compile Include="GameObjects\Cubes\CubeDescription.cs" />
     <Compile Include="GameObjects\Cubes\HeavyCube.cs" />
     <Compile Include="GameObjects\Cubes\PlainCube.cs" />
     <Compile Include="GameObjects\Cubes\RocketCube.cs" />
+    <Compile Include="GameObjects\Cubes\ShieldCube.cs" />
     <Compile Include="GameObjects\Cubes\ShooterCube.cs" />
     <Compile Include="GameObjects\Cubes\UnknownCube.cs" />
     <Compile Include="Sound.cs" />

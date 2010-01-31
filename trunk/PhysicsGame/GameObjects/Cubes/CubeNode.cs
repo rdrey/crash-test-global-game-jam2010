@@ -13,7 +13,7 @@ namespace PhysicsGame.GameObjects.Cubes
     //TODO put in separate class
     public enum Direction { North, South, West, East };
 
-    public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube, ChainCube, ShooterCube };
+    public enum CubeType { UnknownCube, PlainCube, RocketCube, ShieldCube, HeavyCube, ChainCube, DamageCube, ShooterCube };
 
     //==============================================================
     //==============================================================
@@ -78,7 +78,7 @@ namespace PhysicsGame.GameObjects.Cubes
                     if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
                         physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
                     {
-                        hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
+                        hp -= (int)(damageMultiplier * .0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
                         //sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
                     }
                 }
@@ -87,7 +87,7 @@ namespace PhysicsGame.GameObjects.Cubes
                     if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
                         physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1)
                     {
-                        hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
+                        hp -= (int)(damageMultiplier * .0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
                         //sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
                     }
                 }
@@ -101,6 +101,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         protected CubeNode()
         {
+            damageMultiplier = 1f;
         }
 
         public void hackz0r () 
