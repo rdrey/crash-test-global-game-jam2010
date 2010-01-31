@@ -36,10 +36,10 @@ namespace PhysicsGame
 
         public List<Texture2D> plainTextures = new List<Texture2D>();
         public List<Texture2D> unknownTextures = new List<Texture2D>();
+        public List<Texture2D> buzzTextures = new List<Texture2D>();
 
         public List<Texture2D> bulletTexture = new List<Texture2D>();
 
-        public List<Texture2D> rechargeTexture = new List<Texture2D>();
 
         public TextureStore(ContentManager Content)
         {
@@ -51,12 +51,12 @@ namespace PhysicsGame
             loadTextures(Content, shooterTextures, 4, "Sprites/ShooterB/Bang_block");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
             loadTextures(Content, menuTextures, 6, "Sprites/Menu/Menu");
+            loadTextures(Content, buzzTextures, 10, "Sprites/buzz/Buzz");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
 
             bulletTexture.Add(Content.Load<Texture2D>("Sprites/Bullet"));
-            rechargeTexture.Add(Content.Load<Texture2D>("Sprites/Purple_block"));
         }
 
         //loads textures into desired texture list from given directory
@@ -480,19 +480,11 @@ namespace PhysicsGame
 
         public void runStartRound(GameTime gameTime)
         {
-            if (currentGame.completedRounds == 0)
-            {
-                currentGame.p1.money = 20;
-                currentGame.p1.money = 20;
-            }
-            else
-            {
-                currentGame.p1.money += 20;
-                currentGame.p1.money += 20;
-            }
+            currentGame.p1.money = 20 + currentGame.completedRounds * 10;
+            currentGame.p2.money = 20 + currentGame.completedRounds * 10;
 
 
-            Console.Write("runStartRound " + currentGame.p1.money + ":" + currentGame.p1.money + "\n");
+            Console.Write("runStartRound " + currentGame.p1.money + ":" + currentGame.p2.money + "\n");
             currentRound = new RoundSpecific(this);
 
 
@@ -546,7 +538,7 @@ namespace PhysicsGame
                 }
 
                 if (rplayer.cubeSet.finishedEditing)
-                    break;
+                    continue;
 
                 Instruction inst = Instruction.None;
                 if (currentRound.recording)
@@ -560,8 +552,6 @@ namespace PhysicsGame
                         }
 
                     }
-                    if (inst != Instruction.None && inst != Instruction.EndBuild)
-                        player.instructionList.Add(inst);
                 }
                 else // playback
                 {
@@ -577,8 +567,11 @@ namespace PhysicsGame
                         else player2PlaybackComplete = true;
                     }
                 }
+                bool failedInstruction = false ;
 
-                if (inst == Instruction.Right)
+                if (inst == Instruction.None)
+                    failedInstruction = true;
+                else if (inst == Instruction.Right)
                     rplayer.cubeSet.changeSelectedNode(Direction.East);
                 else if (inst == Instruction.Left)
                     rplayer.cubeSet.changeSelectedNode(Direction.West);
@@ -596,15 +589,30 @@ namespace PhysicsGame
                 {
                     if (player.money >= rplayer.cubeSet.getSelectedNode().cost)
                     {
-                        if(rplayer.cubeSet.makeCurrentSelectionPermanent())
+                        if (rplayer.cubeSet.makeCurrentSelectionPermanent())
                             player.money -= rplayer.cubeSet.getSelectedNode().cost;
+                        else
+                            failedInstruction = true;
                     }
+                    else
+                        failedInstruction = true;
+
+
                     Console.Write(player.money + "\n");
                 }
                 else if (inst == Instruction.EndBuild)
                 {
                     rplayer.cubeSet.finishedEditing = true;
                     rplayer.cubeSet.deselectAll();
+                    failedInstruction = true;
+                }
+
+
+                if (currentRound.recording)
+                {
+                    if (!failedInstruction) {
+                        player.instructionList.Add(inst);
+                    }
                 }
             }
 

@@ -131,7 +131,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
                 pgo.boxBody.Mass = 1f;
 
-                foreach (Texture2D tex in textureStore.rechargeTexture)
+                foreach (Texture2D tex in textureStore.buzzTextures)
                     pgo.getTextureSet("Energize").addTexture(tex);
             }
             else// ; if (cubeDescription.type == CubeType.HeavyCube)
