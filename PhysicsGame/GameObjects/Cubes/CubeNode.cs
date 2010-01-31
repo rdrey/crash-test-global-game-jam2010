@@ -39,7 +39,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public PhysicsGameObject physicalObject;
 
-        public float damageMultiplier;
+        public float damageMultiplier = 1f;
         public int cost;
 
         public float hp;
@@ -60,6 +60,25 @@ namespace PhysicsGame.GameObjects.Cubes
         protected bool lulz (Geom g1, Geom g2, ContactList p) 
         {
             //ModSound sounds = parent.sound;
+            if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
+                        physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
+            {
+                this.hp -= 20;
+                if (physicsController.geomLookup[g1].ID == this.physicalObject.ID)
+                {
+                    CubeNode other = physicsController.nodeLookup[
+                        physicsController.geomLookup[g2]];
+                    other.hp -= 20 * damageMultiplier;
+                }
+                else
+                {
+                    CubeNode other = physicsController.nodeLookup[
+                        physicsController.geomLookup[g1]];
+                    other.hp -= 20 * damageMultiplier;
+                }
+            }
+
+            /*ModSound sounds = parent.sound;
 
             Vector2 position = p[0].Normal;
 
@@ -77,7 +96,9 @@ namespace PhysicsGame.GameObjects.Cubes
                     if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
                         physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
                     {
-                        hp -= (int)(damageMultiplier * .0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
+                        hp -= (int)(damageMultiplier / 500f * force.LengthSquared());
+                        Console.WriteLine("A " + hp);
+                        //Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
                     }
                 }
                 else
@@ -85,20 +106,21 @@ namespace PhysicsGame.GameObjects.Cubes
                     if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
                         physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1)
                     {
-                        hp -= (int)(damageMultiplier * .0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
+                        hp -= (int)(damageMultiplier / 500f * force.LengthSquared());
+                        Console.WriteLine("B " + hp);//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
                     }
                 }
             //}
             //catch (KeyNotFoundException k)
             //{
 
-            //}
+            }*/
             return true;
         }
 
         protected CubeNode()
         {
-            damageMultiplier = 1f;
+            
         }
 
         public void hackz0r () 

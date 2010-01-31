@@ -164,6 +164,7 @@ namespace PhysicsGame.GameObjects.Cubes
             ret.physicsController = physicsController;
             ret.parent = parent;
             ret.hackz0r();
+            physicsController.nodeLookup[pgo] = ret;
             return ret;
 
 

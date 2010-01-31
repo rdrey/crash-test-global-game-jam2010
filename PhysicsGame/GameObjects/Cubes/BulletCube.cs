@@ -11,8 +11,9 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public BulletCube()
         {
-            maxHp = 100;
+            maxHp = 1;
             defaultAnimationSpeed = 0f;
+            damageMultiplier *= 1f;
         }
 
 
