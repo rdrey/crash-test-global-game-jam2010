@@ -9,9 +9,9 @@ namespace PhysicsGame.GameObjects.Cubes
     {
         public DamageCube()
         {
-            maxHp = 250;
+            maxHp = 500;
             defaultAnimationSpeed = 0.3f;
-            damageMultiplier *= 2;
+            damageMultiplier *= 2.5f;
             cost = 4;
         }
     }

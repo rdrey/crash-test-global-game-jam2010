@@ -68,11 +68,17 @@ namespace PhysicsGame.GameObjects.Cubes
                 )
             {
                 this.hp -= 20;
+                if (this is BulletCube)
+                    this.markForDelete = true;
+
                 if (physicsController.geomLookup[g1].ID == this.physicalObject.ID)
                 {
                     CubeNode other = physicsController.nodeLookup[
                         physicsController.geomLookup[g2]];
                     other.hp -= 20 * damageMultiplier;
+
+                    if (other is BulletCube)
+                        other.markForDelete = true;
 
                     if (PhysicsGameObject.PhysicsMapID.player1 == other.physicalObject.ID)
                     {
@@ -86,6 +92,9 @@ namespace PhysicsGame.GameObjects.Cubes
                     CubeNode other = physicsController.nodeLookup[
                         physicsController.geomLookup[g1]];
                     other.hp -= 20 * damageMultiplier;
+
+                    if (other is BulletCube)
+                        other.markForDelete = true;
 
                     if (PhysicsGameObject.PhysicsMapID.player2 == other.physicalObject.ID)
                     {

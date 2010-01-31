@@ -22,7 +22,7 @@ namespace PhysicsGame.GameObjects.Cubes
         public RocketCube(Direction dir)
         {
             this.dir = dir;
-            maxHp = 100;
+            maxHp = 200;
             defaultAnimationSpeed = .0f;
             damageMultiplier *= 2f;
             cost = 2;

@@ -595,13 +595,13 @@ namespace PhysicsGame
 
         public void runStartRound(GameTime gameTime)
         {
-            currentGame.p1.money = 18 + currentGame.completedRounds * 10;
-            currentGame.p2.money = 18 + currentGame.completedRounds * 10;
+            currentGame.p1.money = 20 + currentGame.completedRounds * 10;
+            currentGame.p2.money = 20 + currentGame.completedRounds * 10;
 
             if (currentGame.completedRounds == 4)
             {
-                currentGame.p1.money += 10;
-                currentGame.p2.money += 10;
+                currentGame.p1.money += 15;
+                currentGame.p2.money += 15;
             }
 
 
@@ -957,9 +957,9 @@ namespace PhysicsGame
                     phy.draw(spriteBatch);
                 }
 
-                for (int i = 0; i < currentRound.physicsController.damageTotalPlayer1 / 50; i++)
+                for (int i = 0; i < currentRound.physicsController.damageTotalPlayer1 / 100; i++)
                     spriteBatch.Draw(textureStore.damageTexture, new Vector2(1024 / 2 - 100 - (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
-                for (int i = 0; i < currentRound.physicsController.damageTotalPlayer2 / 50; i++)
+                for (int i = 0; i < currentRound.physicsController.damageTotalPlayer2 / 100; i++)
                     spriteBatch.Draw(textureStore.damageTexture, new Vector2(1024 / 2 + 100 + (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
             }
 

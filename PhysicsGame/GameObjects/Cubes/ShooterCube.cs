@@ -20,11 +20,13 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public Direction dir;
 
+        public List<CubeNode> bulletsList = new List<CubeNode>();
+
         public ShooterCube(Direction dir)
         {
             this.dir = dir;
             bullets = 3;
-            maxHp = 100;
+            maxHp = 200;
             defaultAnimationSpeed = 0.1f;
 
             cost = 8;
@@ -34,6 +36,7 @@ namespace PhysicsGame.GameObjects.Cubes
         {
 
             CubeNode node = CubeFactory.createCubeNode(parent.textureStore, physicsController, new CubeDescription(CubeType.BulletCube), new Vector2(20, 20), parent);
+            bulletsList.Add(node);
             //BulletCube bullet = new BulletCube();
             
             //PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, this.physicalObject.getWidth()/.6f, this.physicalObject.getHeight()/.6f, false);
@@ -56,6 +59,27 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            foreach (CubeNode n in bulletsList)
+            {
+                if (n != null)
+                    n.Update(gameTime, speedAdjust);
+
+                if (n.markForDelete)
+                {
+                    //delete all joints
+                    foreach (PhysicsGameJoint joint in n.physicalObject.joints)
+                    {
+                        physicsController.deregisterPhysicsGameJoint(joint);
+                        joint.joint.Dispose();
+                    }
+
+                    physicsController.deregisterPhysicsGameObject(n.physicalObject);
+                    n.physicalObject.boxBody.Dispose();
+
+                }
+
+            }
+
             if (startedCountDown)
             {
                 if (activationCountdown > 0)

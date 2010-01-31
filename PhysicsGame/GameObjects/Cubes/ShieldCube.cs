@@ -9,12 +9,12 @@ namespace PhysicsGame.GameObjects.Cubes
     class ShieldCube : CubeNode
     {
 
-        public float totalShieldBattery = 500;
-        public float shieldBattery = 500;
+        public float totalShieldBattery = 750;
+        public float shieldBattery = 750;
 
         public ShieldCube()
         {
-            maxHp = 100;
+            maxHp = 200;
             defaultAnimationSpeed = .5f;
 
             cost = 6;
