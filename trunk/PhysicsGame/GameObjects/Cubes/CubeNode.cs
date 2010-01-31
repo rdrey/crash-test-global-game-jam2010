@@ -63,26 +63,31 @@ namespace PhysicsGame.GameObjects.Cubes
                 force = new Vector2((float)(Math.Cos(angle) * g2.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi + angle) * g2.Body.LinearVelocity.Y);
             else
                 force = new Vector2((float)(Math.Cos(angle) * g2.Body.LinearVelocity.X), (float)Math.Sin(MathHelper.TwoPi - angle) * g2.Body.LinearVelocity.Y);
+            try
+            {
+                if (physicalObject.ID == PhysicsGameObject.PhysicsMapID.player1)
+                {
+                    if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
+                        physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
+                    {
+                        hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
+                        //sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
+                    }
+                }
+                else
+                {
+                    if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
+                        physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1)
+                    {
+                        hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
+                        //sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
+                    }
+                }
+            }
+            catch (KeyNotFoundException k)
+            {
 
-            if (physicalObject.ID == PhysicsGameObject.PhysicsMapID.player1)
-            {
-                if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
-                    physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player2)
-                {
-                    hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
-                    sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
-                }
             }
-            else
-            {
-                if (physicsController.geomLookup[g1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
-                    physicsController.geomLookup[g2].ID == PhysicsGameObject.PhysicsMapID.player1)
-                {
-                    hp -= (int)(.0025f * force.LengthSquared());//Console.WriteLine("some lulz have occurred p2 {0}", physicsController.geomLookup[g1].ID);
-                    sounds.playSound("bang", g2, Vector2.One, force.LengthSquared() / 10000f);
-                }
-            }
-            
             return true;
         }
 

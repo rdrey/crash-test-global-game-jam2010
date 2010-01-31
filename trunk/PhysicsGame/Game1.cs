@@ -73,6 +73,7 @@ namespace PhysicsGame
         PhysicsGameObject[] pauseObjects = new PhysicsGameObject[2];
 
         Texture2D backgroundTexture;
+        Texture2D hurr;
         Texture2D selector;
         Texture2D [] buildingTexture = new Texture2D[4];
 
@@ -171,6 +172,7 @@ namespace PhysicsGame
             spriteFont = Content.Load<SpriteFont>("DefaultFont");
             
             backgroundTexture = Content.Load<Texture2D>("Sprites/bg");
+            hurr = Content.Load<Texture2D>("Sprites/Purple_block");
             //Change
             selector = Content.Load<Texture2D>("Sprites/SpikeB/spike_01");
 
@@ -225,25 +227,25 @@ namespace PhysicsGame
             player2.addCubeNodeFrom(new Vector2(0, 3), Direction.North, new CubeDescription(CubeType.RocketCube));
             player2.addCubeNodeFrom(new Vector2(0, 2), Direction.North, new CubeDescription(CubeType.RocketCube));*/
 
-            int cubewidth = 1000;
-            int cubeheight = 700;
-            int cubeborder = 10;
+            int cubewidth = 1024;
+            int cubeheight = 768;
+            int cubeborder = 100;
 
             floors[0] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
-            floors[0].getTextureSet("Default").addTexture(backgroundTexture);
-            floors[0].boxBody.Position = new Vector2(floors[0].boxBody.Position.X + cubewidth / 2 + cubeborder, cubeborder/2);
+            floors[0].getTextureSet("Default").addTexture(hurr);
+            floors[0].boxBody.Position = new Vector2(floors[0].boxBody.Position.X + cubewidth/2, -cubeborder/2);
 
             floors[1] = new PhysicsGameObject(physicsController.physicsSimulator, cubewidth, cubeborder, true);
-            floors[1].getTextureSet("Default").addTexture(backgroundTexture);
-            floors[1].boxBody.Position = new Vector2(floors[1].boxBody.Position.X + cubewidth / 2, cubeheight + cubeborder/2);
+            floors[1].getTextureSet("Default").addTexture(hurr);
+            floors[1].boxBody.Position = new Vector2(floors[1].boxBody.Position.X + cubewidth / 2, cubeheight + cubeborder / 2);
 
             floors[2] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
-            floors[2].getTextureSet("Default").addTexture(backgroundTexture);
-            floors[2].boxBody.Position = new Vector2(cubeborder/2, floors[2].boxBody.Position.Y + cubeheight / 2);
+            floors[2].getTextureSet("Default").addTexture(hurr);
+            floors[2].boxBody.Position = new Vector2(-cubeborder / 2, floors[2].boxBody.Position.Y + cubeheight / 2);
 
             floors[3] = new PhysicsGameObject(physicsController.physicsSimulator, cubeborder, cubeheight, true);
-            floors[3].getTextureSet("Default").addTexture(backgroundTexture);
-            floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2 + cubeborder);
+            floors[3].getTextureSet("Default").addTexture(hurr);
+            floors[3].boxBody.Position = new Vector2(cubewidth + cubeborder / 2, floors[3].boxBody.Position.Y + cubeheight / 2);
 
             //Menu Objects
             menuObjects[0] = new PhysicsGameObject(physicsController.physicsSimulator, 100, 50, false); 
@@ -399,9 +401,11 @@ namespace PhysicsGame
                         break;
                         //Menu case 2
                     case 1:
+                        Exit();
                         break;
-                        //Menu case 3
+                        //I can quit
                     case 2:
+                        Exit();
                         break;
 
 
@@ -473,13 +477,16 @@ namespace PhysicsGame
             
             if (force.LengthSquared() > 0.5f)
             {
-
-                if (physicsController.geomSndLookup[geom1] == 0)
+                try
                 {
-                    sounds.playSound("dank", geom1, Vector2.One, force.LengthSquared()/10000f);
+                    if (physicsController.geomSndLookup[geom1] == 0)
+                    {
+                        sounds.playSound("dank", geom1, Vector2.One, force.LengthSquared() / 10000f);
+                    }
+                    physicsController.geomSndLookup[geom1]++;
+                    if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
                 }
-                physicsController.geomSndLookup[geom1]++;
-                if (physicsController.geomSndLookup[geom1] > 1000) physicsController.geomSndLookup[geom1] = 0;
+                catch (KeyNotFoundException k) { }
             }
             return true;
             
@@ -530,10 +537,10 @@ namespace PhysicsGame
             }
             //Registers collision events
             //physicsController.physicsSimulator.BroadPhaseCollider.OnBroadPhaseCollision += OnBroadPhaseCollision;
-            floors[0].boxGeom.OnCollision += OnCollision;
-            floors[1].boxGeom.OnCollision += OnCollision;
-            floors[2].boxGeom.OnCollision += OnCollision;
-            floors[3].boxGeom.OnCollision += OnCollision;
+            //floors[0].boxGeom.OnCollision += OnCollision;
+            //floors[1].boxGeom.OnCollision += OnCollision;
+            //floors[2].boxGeom.OnCollision += OnCollision;
+            //floors[3].boxGeom.OnCollision += OnCollision;
 
             lastGameTime = gameTime;
 
@@ -545,21 +552,12 @@ namespace PhysicsGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
+            
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
             spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
 
-            spriteBatch.DrawString(spriteFont, "" + lastGameTime.TotalGameTime.Seconds + ":" + (lastGameTime.TotalGameTime - lastGameTime.ElapsedGameTime).Seconds, new Vector2(10, 10), Color.White);
-            spriteBatch.DrawString(spriteFont, "" + player1.selectedCube.Value.X + ":" + player1.selectedCube.Value.Y, new Vector2(10, 30), Color.White);
-            //spriteBatch.DrawString(spriteFont, "" + lol, new Vector2(10, 50), Color.White);
-            
-            //cannon.draw(spriteBatch);
-            floors[0].draw(spriteBatch);
-            floors[1].draw(spriteBatch);
-            floors[2].draw(spriteBatch);
-            floors[3].draw(spriteBatch);
-
-            foreach(PhysicsGameObject phy in physicsController.physicsObjects) {
+            foreach(PhysicsGameObject phy in physicsController.physicsObjects) 
+            {
                 phy.draw(spriteBatch);
             }
 

@@ -13,11 +13,13 @@ namespace PhysicsGame.GameObjects.Cubes
         {
             maxHp = 100;
             defaultAnimationSpeed = 0.3f;
+            
         }
 
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            physicalObject.boxBody.Mass = 5;
             base.Update(gameTime, speedAdjust);
         }
     }
