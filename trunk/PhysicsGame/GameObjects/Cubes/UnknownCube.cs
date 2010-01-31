@@ -11,7 +11,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public UnknownCube()
         {
-            maxHp = 100;
+            maxHp = 200;
             defaultAnimationSpeed = .0f;
 
             cost = 0;
