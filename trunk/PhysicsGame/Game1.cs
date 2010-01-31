@@ -55,7 +55,7 @@ namespace PhysicsGame
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
             loadTextures(Content, menuTextures, 6, "Sprites/Menu/Menu");
             loadTextures(Content, buzzTextures, 10, "Sprites/buzz/Buzz");
-            loadTextures(Content, boomTextures, 6, "Sprites/boomB/boom");
+            loadTextures(Content, boomTextures, 6, "Sprites/boom/boom");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
