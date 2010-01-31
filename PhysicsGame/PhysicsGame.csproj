@@ -98,6 +98,7 @@
     <Compile Include="GameObjects\Cubes\ShieldCube.cs" />
     <Compile Include="GameObjects\Cubes\ShooterCube.cs" />
     <Compile Include="GameObjects\Cubes\UnknownCube.cs" />
+    <Compile Include="Muzak.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="GameObjects\Drawable.cs" />
     <Compile Include="GameObjects\CubeSet.cs" />
