@@ -90,6 +90,7 @@ namespace PhysicsGame
 
                 player1KeyMap[Keys.Q] = Instruction.CycleType;
                 player1KeyMap[Keys.E] = Instruction.CycleOption1;
+                player1KeyMap[Keys.R] = Instruction.CycleOption2;
                 player1KeyMap[Keys.Space] = Instruction.MainAction;
                 player1KeyMap[Keys.Tab] = Instruction.EndBuild;
 
@@ -574,6 +575,8 @@ namespace PhysicsGame
                     player.cycleSelectedNode();
                 else if (inst == Instruction.CycleOption1)
                     player.cycleOption1();
+                else if (inst == Instruction.CycleOption2)
+                    player.cycleOption2();
                 else if (inst == Instruction.MainAction)
                     player.makeCurrentSelectionPermanent();
                 else if (inst == Instruction.EndBuild)

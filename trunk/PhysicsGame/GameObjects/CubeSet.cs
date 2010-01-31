@@ -168,7 +168,7 @@ namespace PhysicsGame.GameObjects
                                 else if (((RocketCube)getSelectedNode()).dir == Direction.West)
                                     currentCubeDescription.dir = Direction.North;
                             }
-                        }
+                        } 
 
                         if (optionToCycle == Option.Option1)
                         {
@@ -184,6 +184,18 @@ namespace PhysicsGame.GameObjects
                                     currentCubeDescription.dir = Direction.North;
                             }
                         }
+                        if (optionToCycle == Option.Option2)
+                        {
+                            if (getSelectedNode() is RocketCube)
+                            {
+                                //((RocketCube)getSelectedNode()).activationCountdown += RocketCube.rocketTimeStep;
+
+                                currentCubeDescription.value += RocketCube.rocketTimeStep;
+                                if (currentCubeDescription.value >= 14 * RocketCube.rocketTimeStep)
+                                    currentCubeDescription.value = 0;
+                            }
+                        }
+                        //TODO for gun one as well!
 
 
                         cleanUpNodeAt(selectedCube.Value);
@@ -246,6 +258,11 @@ namespace PhysicsGame.GameObjects
         {
             if (getSelectedNode().isTempNode)
                 changeSelecetedNode(selectedCube.Value, Option.Option1);
+        }
+        public void cycleOption2()
+        {
+            if (getSelectedNode().isTempNode)
+                changeSelecetedNode(selectedCube.Value, Option.Option2);
         }
 
         public override void Update(GameTime gameTime, float speedAdjust)
