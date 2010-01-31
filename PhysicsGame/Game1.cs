@@ -55,7 +55,7 @@ namespace PhysicsGame
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
             loadTextures(Content, menuTextures, 6, "Sprites/Menu/Menu");
             loadTextures(Content, buzzTextures, 10, "Sprites/buzz/Buzz");
-            loadTextures(Content, boomTextures, 6, "Sprites/boom/boomB");
+            loadTextures(Content, boomTextures, 6, "Sprites/boomB/boom");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
@@ -172,10 +172,10 @@ namespace PhysicsGame
                 physicsController = new PhysicsController();
 
                 //p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(250, 750/2), 1, parent.sounds);
-                p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, this);
+                p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(250, 750 / 2), 1, this);
 
                 //p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(1024 - 250, 750 / 2), 2, parent.sounds);
-                p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, this);
+                p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(1024 - 250, 750 / 2), 2, this);
 
 
                 int cubewidth = 1024;
