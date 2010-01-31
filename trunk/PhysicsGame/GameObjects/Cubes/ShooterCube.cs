@@ -72,12 +72,9 @@ namespace PhysicsGame.GameObjects.Cubes
 
             if(this.activationCountdown/40>1)
                 physicalObject.getTextureSet("Countdown").currentTextureListIndex=this.activationCountdown/40+1;
-            else if (true)
-                physicalObject.getTextureSet("Countdown").currentTextureListIndex = 0;
             else
-            {
-                physicalObject.getTextureSet("Countdown").currentTextureListIndex = 1;
-            }
+                physicalObject.getTextureSet("Countdown").currentTextureListIndex = 0;
+            
 
             base.Update(gameTime, speedAdjust);
 
