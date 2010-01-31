@@ -772,8 +772,11 @@ namespace PhysicsGame
             {
                 menuCount = 0;
                 if (currentApplicationState == GameState.Pause)
+                {
                     currentApplicationState = previousApplicationState;
-                else if(currentApplicationState!=GameState.MainMenu)
+                    tutActive = false;
+                }
+                else if (currentApplicationState != GameState.MainMenu)
                 {
                     previousApplicationState = currentApplicationState;
                     currentApplicationState = GameState.Pause;
@@ -782,7 +785,10 @@ namespace PhysicsGame
             if (keyboardState.IsKeyDown(Keys.F1) && previousState.IsKeyUp(Keys.F1))
             {
                 if (currentApplicationState == GameState.Pause)
+                {
                     currentApplicationState = previousApplicationState;
+                    tutActive = false;
+                }
                 else if (currentApplicationState != GameState.MainMenu)
                 {
                     previousApplicationState = currentApplicationState;
@@ -861,7 +867,7 @@ namespace PhysicsGame
             {
                 if (tutActive)
                 {
-                    tutCount=(tutCount+1)%10;
+                    tutCount=(tutCount+1)%7;
                     if(tutCount==0)
                         tutorial.getTextureSet("Default").currentTextureListIndex = (tutorial.getTextureSet("Default").currentTextureListIndex+1)%7;
                     tutorial.draw(spriteBatch);
@@ -879,7 +885,7 @@ namespace PhysicsGame
             {
                 if (tutActive)
                 {
-                    tutCount = (tutCount + 1) % 10;
+                    tutCount = (tutCount + 1) % 7;
                     if (tutCount == 0)
                         tutorial.getTextureSet("Default").currentTextureListIndex = (tutorial.getTextureSet("Default").currentTextureListIndex + 1) % 7;
                     tutorial.draw(spriteBatch);
