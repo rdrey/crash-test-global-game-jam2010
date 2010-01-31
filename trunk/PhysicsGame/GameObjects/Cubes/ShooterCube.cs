@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
+using FarseerGames.FarseerPhysics.Factories;
 
 namespace PhysicsGame.GameObjects.Cubes
 {
@@ -30,7 +31,7 @@ namespace PhysicsGame.GameObjects.Cubes
         {
             BulletCube bullet = new BulletCube();
             
-            PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, this.physicalObject.getWidth(), this.physicalObject.getHeight(), false);
+            PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, this.physicalObject.getWidth()/.6f, this.physicalObject.getHeight()/.6f, false);
             foreach (Texture2D tex in bulletTexture)
                 pgo.getTextureSet("Default").addTexture(tex);
 
@@ -40,7 +41,7 @@ namespace PhysicsGame.GameObjects.Cubes
             pgo.ID = this.physicalObject.ID;
             
             bullet.physicalObject=pgo;
-
+            bullet.physicalObject.boxGeom = GeomFactory.Instance.CreateCircleGeom(pgo.boxBody, 12, 3);
             bullet.physicsController = this.physicsController;
 
             bullet.physicalObject.boxBody.ApplyForce(Vector2.Transform(new Vector2(10000, 0), Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation- MathHelper.Pi)));
