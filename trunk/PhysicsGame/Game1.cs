@@ -30,10 +30,13 @@ namespace PhysicsGame
         public List<Texture2D> spike = new List<Texture2D>();
         public List<Texture2D> shieldTextures = new List<Texture2D>();
         public List<Texture2D> heavyTextures = new List<Texture2D>();
+        public List<Texture2D> shooterTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
 
         public List<Texture2D> plainTextures = new List<Texture2D>();
         public List<Texture2D> unknownTextures = new List<Texture2D>();
+
+        public List<Texture2D> bulletTexture = new List<Texture2D>();
 
         public TextureStore(ContentManager Content)
         {
@@ -42,10 +45,13 @@ namespace PhysicsGame
             loadTextures(Content, rocketFlame, 17, "Sprites/FlameB/Flame");
             loadTextures(Content, spike, 12, "Sprites/SpikeB/Spike");
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
+            loadTextures(Content, shooterTextures, 4, "Sprites/ShooterB/Bang_block");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
+
+            bulletTexture.Add(Content.Load<Texture2D>("Sprites/Bullet"));
         }
 
         //loads textures into desired texture list from given directory
