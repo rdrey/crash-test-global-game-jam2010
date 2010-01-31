@@ -19,7 +19,6 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
-            physicalObject.boxBody.Mass = 5;
             base.Update(gameTime, speedAdjust);
         }
     }
