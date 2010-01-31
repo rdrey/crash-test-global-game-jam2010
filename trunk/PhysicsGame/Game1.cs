@@ -33,7 +33,7 @@ namespace PhysicsGame
         public List<Texture2D> shooterTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
         public List<Texture2D> menuTextures = new List<Texture2D>();
-
+        public List<Texture2D> keyTextures = new List<Texture2D>();
         public List<Texture2D> plainTextures = new List<Texture2D>();
         public List<Texture2D> unknownTextures = new List<Texture2D>();
         public List<Texture2D> buzzTextures = new List<Texture2D>();
@@ -56,6 +56,7 @@ namespace PhysicsGame
             loadTextures(Content, menuTextures, 6, "Sprites/Menu/Menu");
             loadTextures(Content, buzzTextures, 10, "Sprites/buzz/Buzz");
             loadTextures(Content, boomTextures, 6, "Sprites/boomB/boom");
+            loadTextures(Content, keyTextures, 7, "Sprites/keyboard/keys");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
@@ -158,6 +159,7 @@ namespace PhysicsGame
             public float counter = 2000;
 
             public bool recording = false;
+
 
             public PhysicsController physicsController;
 
@@ -277,6 +279,8 @@ namespace PhysicsGame
         Texture2D hurr;
         Texture2D selector;
         //Texture2D [] buildingTexture = new Texture2D[4];
+        bool tutActive=false;
+        int tutCount;
 
 
         BasicEffect basicEffect;
@@ -289,7 +293,7 @@ namespace PhysicsGame
         PhysicsSimulator applicationPhysicsSimHach = new PhysicsSimulator();
 
         PhysicsGameObject[] menuObjects = new PhysicsGameObject[4];
-        PhysicsGameObject[] pauseObjects = new PhysicsGameObject[2];
+        PhysicsGameObject tutorial;
 
         enum GameState { MainMenu, StartGame, StartRound, EndGame, EndRound, BuildPhase, SimPhase, Pause };
 
@@ -354,6 +358,12 @@ namespace PhysicsGame
                 menuObjects[i / 2].getTextureSet("Default").addTexture(textureStore.menuTextures[i + 1]);
                 menuObjects[i / 2].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2), (i / 2) * 200 + 200);
                 applicationPhysicsSimHach.Remove(menuObjects[i / 2].boxGeom);
+            }
+            tutorial = new PhysicsGameObject(applicationPhysicsSimHach, 800, 400, false);
+            foreach(Texture2D tex in textureStore.keyTextures)
+            {
+                tutorial.boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2),  200 + 200);
+                tutorial.getTextureSet("Default").addTexture(tex);
             }
             
 
@@ -437,6 +447,11 @@ namespace PhysicsGame
             }
 
             //Menu Select
+            if (keyboardState.IsKeyDown(Keys.Escape) && previousState.IsKeyUp(Keys.Escape))
+            {
+                tutActive = false;
+            }
+
             if (keyboardState.IsKeyDown(Keys.Enter) && previousState.IsKeyUp(Keys.Enter))
             {
                 switch (menuCount)
@@ -447,7 +462,7 @@ namespace PhysicsGame
                         break;
                     //Menu case 2
                     case 1:
-                        Exit();
+                        tutActive = true;
                         break;
                     //Menu case 3
                         //I can quit
@@ -764,6 +779,17 @@ namespace PhysicsGame
                     currentApplicationState = GameState.Pause;
                 }
             }
+            if (keyboardState.IsKeyDown(Keys.F1) && previousState.IsKeyUp(Keys.F1))
+            {
+                if (currentApplicationState == GameState.Pause)
+                    currentApplicationState = previousApplicationState;
+                else if (currentApplicationState != GameState.MainMenu)
+                {
+                    previousApplicationState = currentApplicationState;
+                    currentApplicationState = GameState.Pause;
+                    tutActive = true;
+                }
+            }
 
 
 
@@ -833,15 +859,36 @@ namespace PhysicsGame
             //If the main menu is active, draw the menuObjects
             if (currentApplicationState == GameState.MainMenu)
             {
-                menuObjects[0].draw(spriteBatch);
-                menuObjects[1].draw(spriteBatch);
-                menuObjects[2].draw(spriteBatch);
+                if (tutActive)
+                {
+                    tutCount=(tutCount+1)%10;
+                    if(tutCount==0)
+                        tutorial.getTextureSet("Default").currentTextureListIndex = (tutorial.getTextureSet("Default").currentTextureListIndex+1)%7;
+                    tutorial.draw(spriteBatch);
+                }
+                else
+                {
+
+                    menuObjects[0].draw(spriteBatch);
+                    menuObjects[1].draw(spriteBatch);
+                    menuObjects[2].draw(spriteBatch);
+                }
                 //menuObjects[3].draw(spriteBatch);
             }
             else if (currentApplicationState == GameState.Pause)
             {
-                menuObjects[0].draw(spriteBatch);
-                menuObjects[2].draw(spriteBatch);
+                if (tutActive)
+                {
+                    tutCount = (tutCount + 1) % 10;
+                    if (tutCount == 0)
+                        tutorial.getTextureSet("Default").currentTextureListIndex = (tutorial.getTextureSet("Default").currentTextureListIndex + 1) % 7;
+                    tutorial.draw(spriteBatch);
+                }
+                else
+                {
+                    menuObjects[0].draw(spriteBatch);
+                    menuObjects[2].draw(spriteBatch);
+                }
             }
 
             //spriteBatch.Draw(backgroundTexture, new Vector2(0,0), null, Color.White, 0, new Vector2(0,0), 1.0f, SpriteEffects.None, -0.5f);

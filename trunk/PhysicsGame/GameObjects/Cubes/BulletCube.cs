@@ -19,6 +19,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            physicalObject.boxGeom.CollisionResponseEnabled = false;
             base.Update(gameTime, speedAdjust);
         }
 
