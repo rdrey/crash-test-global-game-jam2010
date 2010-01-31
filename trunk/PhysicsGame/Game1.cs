@@ -735,7 +735,7 @@ namespace PhysicsGame
                         if (rplayer.cubeSet.makeCurrentSelectionPermanent())
                         {
                             player.money -= rplayer.cubeSet.getSelectedNode().cost;
-                            currentRound.soundsToPlay[rplayer.cubeSet.getSelectedNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("placeblock", 100f, rplayer.cubeSet.getSelectedNode().physicalObject.boxGeom);
+                            currentRound.soundsToPlay[currentRound.p1.cubeSet.getRootNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("placeblock", 100f, currentRound.p1.cubeSet.getRootNode().physicalObject.boxGeom);
                         }
                         else
                             failedInstruction = true;
@@ -772,7 +772,7 @@ namespace PhysicsGame
 
                 currentRound.p1.cubeSet.startActivationCountdowns();
                 currentRound.p2.cubeSet.startActivationCountdowns();
-                currentRound.soundsToPlay[currentRound.p1.cubeSet.getSelectedNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("badwow", 100f, currentRound.p1.cubeSet.getSelectedNode().physicalObject.boxGeom);
+                currentRound.soundsToPlay[currentRound.p1.cubeSet.getRootNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("badwow", 100f, currentRound.p1.cubeSet.getRootNode().physicalObject.boxGeom);
                 currentApplicationState = GameState.SimPhase;
                 if (currentGame.completedRounds == 0) muzaks.startLevel("p1");
                 if (currentGame.completedRounds == 1) muzaks.startLevel("p2");
