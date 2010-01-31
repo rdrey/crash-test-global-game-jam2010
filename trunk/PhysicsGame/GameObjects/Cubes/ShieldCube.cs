@@ -44,7 +44,10 @@ namespace PhysicsGame.GameObjects.Cubes
                         {
                             CubeNode node = parent.getNodeAt(newPos);
                             if (supplement(node))
+                            {
+                                parent.currentRound.soundsToPlay[physicalObject.boxGeom] = new PhysicsGame.Game1.RoundSpecific.SoundInfo("shield", 100f, physicalObject.boxGeom);
                                 physicalObject.addTextureSet("Energize");
+                            }
                         }
                     }
                 }

@@ -236,8 +236,9 @@ namespace PhysicsGame
             
             public bool OnCollision2(Geom geom1, Geom geom2, ContactList list)
             {
+                Random RandomNumber = new Random();
                 Vector2 position = list[0].Normal;
-
+                int chance = RandomNumber.Next(4);
                 float angle = (float)Math.Atan2(position.Y, position.X);
 
                 Vector2 force = Vector2.Zero;
@@ -249,14 +250,47 @@ namespace PhysicsGame
                 if (physicsController.geomLookup[geom1].ID == PhysicsGameObject.PhysicsMapID.player1 &&
                     physicsController.geomLookup[geom2].ID == PhysicsGameObject.PhysicsMapID.player2)
                 {
-                    soundsToPlay[geom1] = new SoundInfo("bang", force.Length() * 100f, geom2);
-                    //Console.WriteLine("banana");
+                    //soundsToPlay[geom1] = new SoundInfo("bang", force.Length() * 100f, geom2);
+                    //Console.WriteLine("{0}", chance);
+                    switch (chance) {
+                        case 0:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash1", force.Length() * 100f, geom1);
+                            break;
+                        case 1:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash2", force.Length() * 100f, geom1);
+                            break;
+                        case 2:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash3", force.Length() * 100f, geom1);
+                            break;
+                        case 3:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash4", force.Length() * 100f, geom1);
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else if (physicsController.geomLookup[geom1].ID == PhysicsGameObject.PhysicsMapID.player2 &&
                          physicsController.geomLookup[geom2].ID == PhysicsGameObject.PhysicsMapID.player1)
                 {
-                    soundsToPlay[geom2] = new SoundInfo("bang", force.Length() * 100f, geom1);
+                    //soundsToPlay[geom2] = new SoundInfo("bang", force.Length() * 100f, geom1);
                     //Console.WriteLine("banana");
+                    switch (chance)
+                    {
+                        case 0:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash1", force.Length() * 100f, geom1);
+                            break;
+                        case 1:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash2", force.Length() * 100f, geom1);
+                            break;
+                        case 2:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash3", force.Length() * 100f, geom1);
+                            break;
+                        case 3:
+                            soundsToPlay[geom1] = new SoundInfo("flcrash4", force.Length() * 100f, geom1);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 return true;
@@ -411,6 +445,13 @@ namespace PhysicsGame
             sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
             sounds.addSound("dank", Content.Load<SoundEffect>("Sounds/Dank2"));
             sounds.addSound("bang", Content.Load<SoundEffect>("Sounds/bang"));
+            sounds.addSound("flcrash1", Content.Load<SoundEffect>("Sounds/used sounds/Flcrash1"));
+            sounds.addSound("flcrash2", Content.Load<SoundEffect>("Sounds/used sounds/Flcrash2"));
+            sounds.addSound("flcrash3", Content.Load<SoundEffect>("Sounds/used sounds/Flcrash3"));
+            sounds.addSound("flcrash4", Content.Load<SoundEffect>("Sounds/used sounds/Flcrash4"));
+            sounds.addSound("placeblock", Content.Load<SoundEffect>("Sounds/used sounds/placeblock3"));
+            sounds.addSound("shield", Content.Load<SoundEffect>("Sounds/used sounds/shwang"));
+            sounds.addSound("badwow", Content.Load<SoundEffect>("Sounds/used sounds/BADWOW"));
         }
 
         protected override void UnloadContent()
@@ -662,7 +703,10 @@ namespace PhysicsGame
                     if (player.money >= rplayer.cubeSet.getSelectedNode().cost)
                     {
                         if (rplayer.cubeSet.makeCurrentSelectionPermanent())
+                        {
                             player.money -= rplayer.cubeSet.getSelectedNode().cost;
+                            currentRound.soundsToPlay[rplayer.cubeSet.getSelectedNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("placeblock", 100f, rplayer.cubeSet.getSelectedNode().physicalObject.boxGeom);
+                        }
                         else
                             failedInstruction = true;
                     }
@@ -695,8 +739,10 @@ namespace PhysicsGame
 
             if (currentRound.p1.cubeSet.finishedEditing && currentRound.p2.cubeSet.finishedEditing)
             {
+
                 currentRound.p1.cubeSet.startActivationCountdowns();
                 currentRound.p2.cubeSet.startActivationCountdowns();
+                currentRound.soundsToPlay[currentRound.p1.cubeSet.getSelectedNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("badwow", 100f, currentRound.p1.cubeSet.getSelectedNode().physicalObject.boxGeom);
                 currentApplicationState = GameState.SimPhase;
             }
             float speedAdjust = 1.0f;
@@ -709,6 +755,22 @@ namespace PhysicsGame
 
             currentRound.physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
 
+            foreach (RoundSpecific.SoundInfo snd in currentRound.soundsToPlay.Values)
+            {
+                if (currentRound.physicsController.geomSndLookup[snd.geom] == 0)
+                {
+                    sounds.playSound(snd.name, snd.geom, Vector2.One, snd.volume / 1000f);
+                    currentRound.physicsController.geomSndLookup[snd.geom]++;
+                }
+
+                if (currentRound.physicsController.geomSndLookup[snd.geom] > 0)
+                {
+                    currentRound.physicsController.geomSndLookup[snd.geom]++;
+                    if (currentRound.physicsController.geomSndLookup[snd.geom] > 10)
+                        currentRound.physicsController.geomSndLookup[snd.geom] = 0;
+                }
+            }
+            currentRound.soundsToPlay.Clear();
         }
 
         public void runSimPhase(GameTime gameTime)
