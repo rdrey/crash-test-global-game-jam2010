@@ -61,7 +61,7 @@ namespace PhysicsGame
         {
             for (int i = 0; i < numTextures; i++)
             {
-                textureList.Add(Content.Load<Texture2D>(directory + "_" + ((i < 9) ? "0" : "") + (i + 1)));
+                textureList.Add(Content.Load<Texture2D>(directory + ((i < 9) ? "_0" : "_") + (i + 1)));
             }
         }
     }

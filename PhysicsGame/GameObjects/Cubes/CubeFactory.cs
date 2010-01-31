@@ -89,10 +89,6 @@ namespace PhysicsGame.GameObjects.Cubes
                 }
                 pgo.boxBody.Rotation = rotation;
 
-                foreach (Texture2D tex in textureStore.rocketTimer)
-                    pgo.getTextureSet("Countdown").addTexture(tex);
-
-                pgo.addTextureSet("Countdown");
 
             }
             else if (cubeDescription.type == CubeType.ShooterCube)
@@ -120,10 +116,7 @@ namespace PhysicsGame.GameObjects.Cubes
                 }
                 pgo.boxBody.Rotation = rotation;
 
-                foreach (Texture2D tex in textureStore.rocketTimer)
-                    pgo.getTextureSet("Countdown").addTexture(tex);
-
-                pgo.addTextureSet("Countdown");
+                
 
             }
             else if (cubeDescription.type == CubeType.ShieldCube)
@@ -145,6 +138,11 @@ namespace PhysicsGame.GameObjects.Cubes
 
             foreach (Texture2D tex in textureStore.selectTextures)
                 pgo.getTextureSet("Selected").addTexture(tex);
+
+            pgo.addTextureSet("Countdown"); 
+            
+            foreach (Texture2D tex in textureStore.rocketTimer)
+                pgo.getTextureSet("Countdown").addTexture(tex);
 
             
 
