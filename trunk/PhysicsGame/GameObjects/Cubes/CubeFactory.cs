@@ -124,7 +124,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
             }
-            /*else if (cubeDescription.type == CubeType.ShieldCube)
+            else if (cubeDescription.type == CubeType.ShieldCube)
             {
                 ret = new ShieldCube();
                 defaultTextureList = textureStore.shieldTextures;
@@ -134,7 +134,6 @@ namespace PhysicsGame.GameObjects.Cubes
                 foreach (Texture2D tex in textureStore.rechargeTexture)
                     pgo.getTextureSet("Energize").addTexture(tex);
             }
-            }*/
             else// ; if (cubeDescription.type == CubeType.HeavyCube)
             {
                 ret = new HeavyCube();
