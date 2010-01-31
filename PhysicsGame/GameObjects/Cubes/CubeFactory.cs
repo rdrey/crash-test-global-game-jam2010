@@ -119,12 +119,12 @@ namespace PhysicsGame.GameObjects.Cubes
                 
 
             }
-            else if (cubeDescription.type == CubeType.ShieldCube)
+            /*else if (cubeDescription.type == CubeType.ShieldCube)
             {
                 ret = new ShieldCube();
                 defaultTextureList = textureStore.shieldTextures;
                 pgo.boxBody.Mass = 1f;
-            }
+            }*/
             else// ; if (cubeDescription.type == CubeType.HeavyCube)
             {
                 ret = new HeavyCube();

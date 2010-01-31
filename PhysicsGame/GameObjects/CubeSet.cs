@@ -144,8 +144,8 @@ namespace PhysicsGame.GameObjects
                             else if (getSelectedNode() is PlainCube)
                                 currentCubeDescription.type = CubeType.ChainCube;
                             else if (getSelectedNode() is ChainCube)
-                                currentCubeDescription.type = CubeType.ShieldCube;
-                            else if (getSelectedNode() is ShieldCube)
+                                /*currentCubeDescription.type = CubeType.ShieldCube;
+                            else if (getSelectedNode() is ShieldCube)*/
                                 currentCubeDescription.type = CubeType.HeavyCube;
                             else if (getSelectedNode() is HeavyCube)
                                 currentCubeDescription.type = CubeType.ShooterCube;
