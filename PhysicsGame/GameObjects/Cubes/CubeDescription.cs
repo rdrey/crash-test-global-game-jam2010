@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PhysicsGame.GameObjects.Cubes
 {
-    class CubeDescription
+    public class CubeDescription
     {
         public CubeType type;
 

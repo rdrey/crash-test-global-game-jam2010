@@ -17,7 +17,7 @@ namespace PhysicsGame.GameObjects.Cubes
     //==============================================================
     //==============================================================
 
-    class CubeNode : GameObject
+    public class CubeNode : GameObject
     {
         
         public CubeSet parent;
@@ -34,6 +34,9 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
         public PhysicsGameObject physicalObject;
+
+        public float damageMultiplier;
+        public int cost;
 
         public int hp;
         int _maxHp;

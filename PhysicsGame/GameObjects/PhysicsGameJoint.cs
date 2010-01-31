@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace PhysicsGame.GameObjects
 {
-    class PhysicsGameJoint : Drawable
+    public class PhysicsGameJoint : Drawable
     {
         public Joint joint;
 
