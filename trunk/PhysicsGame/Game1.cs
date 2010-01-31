@@ -45,7 +45,7 @@ namespace PhysicsGame
         public List<Texture2D> blankTexture = new List<Texture2D>();
 
 
-        public Texture2D coinTexture;
+        public Texture2D coinTexture, damageTexture;
 
 
         public TextureStore(ContentManager Content)
@@ -70,6 +70,7 @@ namespace PhysicsGame
             bulletTexture.Add(Content.Load<Texture2D>("Sprites/Bullet"));
 
             coinTexture = Content.Load<Texture2D>("Sprites/coin");
+            damageTexture = Content.Load<Texture2D>("Sprites/health_ball");
         }
 
         //loads textures into desired texture list from given directory
@@ -957,9 +958,9 @@ namespace PhysicsGame
                 }
 
                 for (int i = 0; i < currentRound.physicsController.damageTotalPlayer1 / 50; i++)
-                    spriteBatch.Draw(textureStore.coinTexture, new Vector2(1024 / 2 - 100 - (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
+                    spriteBatch.Draw(textureStore.damageTexture, new Vector2(1024 / 2 - 100 - (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
                 for (int i = 0; i < currentRound.physicsController.damageTotalPlayer2 / 50; i++)
-                    spriteBatch.Draw(textureStore.coinTexture, new Vector2(1024 / 2 + 100 + (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
+                    spriteBatch.Draw(textureStore.damageTexture, new Vector2(1024 / 2 + 100 + (i) * 10, 700), null, Color.White, 0, new Vector2(), 0.1f, SpriteEffects.None, 1.0f);
             }
 
 
