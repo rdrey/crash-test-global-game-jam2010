@@ -100,6 +100,8 @@ namespace PhysicsGame.GameObjects.Cubes
                         Console.WriteLine("A " + hp);
                         //Console.WriteLine("some lulz have occurred p1 {0}", physicsController.geomLookup[g1].ID);
                     }
+
+
                 }
                 else
                 {

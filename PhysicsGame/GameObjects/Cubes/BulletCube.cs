@@ -8,7 +8,7 @@ namespace PhysicsGame.GameObjects.Cubes
 {
     class BulletCube : CubeNode
     {
-
+        public int deadTime = 0;
         public BulletCube()
         {
             maxHp = 1;
