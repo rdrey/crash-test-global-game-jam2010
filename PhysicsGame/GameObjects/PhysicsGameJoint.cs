@@ -18,6 +18,7 @@ namespace PhysicsGame.GameObjects
         public PhysicsGameJoint(PhysicsSimulator physicsSimulator, PhysicsGameObject obj1, PhysicsGameObject obj2)
         {
             joint = JointFactory.Instance.CreateRevoluteJoint(physicsSimulator, obj1.boxBody, obj2.boxBody, obj1.boxBody.Position);
+            joint.Softness = 1f;
             obj1.joints.Add(this);
             obj2.joints.Add(this);
         }

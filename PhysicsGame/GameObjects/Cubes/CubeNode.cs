@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerGames.FarseerPhysics.Collisions;
+using FarseerGames.FarseerPhysics.Dynamics;
+using FarseerGames.FarseerPhysics.Dynamics.Joints;
 
 namespace PhysicsGame.GameObjects.Cubes
 {
@@ -123,6 +125,11 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            //TODO remove this!!!
+            //foreach (PhysicsGameJoint joint in this.physicalObject.joints)
+            {
+            //        ((PinJoint)joint.joint).TargetDistance = 60;
+            }
 
             if (hp < 0)
                 markForDelete = true;
