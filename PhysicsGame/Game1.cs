@@ -32,6 +32,7 @@ namespace PhysicsGame
         public List<Texture2D> heavyTextures = new List<Texture2D>();
         public List<Texture2D> shooterTextures = new List<Texture2D>();
         public List<Texture2D> selectTextures = new List<Texture2D>();
+        public List<Texture2D> menuTextures = new List<Texture2D>();
 
         public List<Texture2D> plainTextures = new List<Texture2D>();
         public List<Texture2D> unknownTextures = new List<Texture2D>();
@@ -47,6 +48,7 @@ namespace PhysicsGame
             loadTextures(Content, shieldTextures, 23, "Sprites/ShieldB/Shield");
             loadTextures(Content, shooterTextures, 4, "Sprites/ShooterB/Bang_block");
             loadTextures(Content, heavyTextures, 13, "Sprites/HeavyB/Iron");
+            loadTextures(Content, menuTextures, 6, "Sprites/Menu/Menu");
 
             plainTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
@@ -292,37 +294,17 @@ namespace PhysicsGame
 
 
             
-
+             
             //Menu Objects
-            menuObjects[0] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
-            menuObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
-            menuObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2), 200);
-            applicationPhysicsSimHach.Remove(menuObjects[0].boxGeom);
-
-            menuObjects[1] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
-            menuObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
-            menuObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[1].getWidth() / 2), 400);
-            applicationPhysicsSimHach.Remove(menuObjects[1].boxGeom);
-
-            menuObjects[2] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
-            menuObjects[2].getTextureSet("Default").addTexture(backgroundTexture);
-            menuObjects[2].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[2].getWidth() / 2), 600);
-            applicationPhysicsSimHach.Remove(menuObjects[2].boxGeom);
-
-            menuObjects[3] = new PhysicsGameObject(applicationPhysicsSimHach, 20, 20, false);
-            menuObjects[3].getTextureSet("Default").addTexture(selector);
-            menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, 200);
-            applicationPhysicsSimHach.Remove(menuObjects[3].boxGeom);
-            //
-            pauseObjects[0] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
-            pauseObjects[0].getTextureSet("Default").addTexture(backgroundTexture);
-            pauseObjects[0].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[0].getWidth() / 2), 200);
-            applicationPhysicsSimHach.Remove(pauseObjects[0].boxGeom);
-
-            pauseObjects[1] = new PhysicsGameObject(applicationPhysicsSimHach, 100, 50, false);
-            pauseObjects[1].getTextureSet("Default").addTexture(backgroundTexture);
-            pauseObjects[1].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (pauseObjects[1].getWidth() / 2), 500);
-            applicationPhysicsSimHach.Remove(pauseObjects[1].boxGeom);
+            for (int i = 0; i < 6; i=i+2)
+            {
+                menuObjects[i / 2] = new PhysicsGameObject(applicationPhysicsSimHach, 75, 75, false);
+                menuObjects[i / 2].getTextureSet("Default").addTexture(textureStore.menuTextures[i]);
+                menuObjects[i / 2].getTextureSet("Default").addTexture(textureStore.menuTextures[i + 1]);
+                menuObjects[i / 2].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2), (i / 2) * 200 + 200);
+                applicationPhysicsSimHach.Remove(menuObjects[i / 2].boxGeom);
+            }
+            
 
         }
 
@@ -378,7 +360,6 @@ namespace PhysicsGame
         //Main Menu state. Original game state and only reachable through pause menu.
         public void runMainMenu(GameTime gameTime)
         {
-            Console.Write("runMainMenu\n");
 
             bool menuChange = false;
             if ((keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up) && previousState.IsKeyUp(Keys.Up)))
@@ -392,9 +373,16 @@ namespace PhysicsGame
                 menuChange = true;
             }
 
-            if (menuChange == true)
+            if (menuChange == true || (menuCount == 0 && menuObjects[0].getTextureSet("Default").currentTextureListIndex != 1))
             {
-                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 200 + 200);
+                for (int i = 0; i < 3; i++)
+                {
+                    if(i==menuCount)
+                        menuObjects[i].getTextureSet("Default").currentTextureListIndex = 1;
+                    else
+                        menuObjects[i].getTextureSet("Default").currentTextureListIndex = 0;
+
+                }
             }
 
             //Menu Select
@@ -652,7 +640,6 @@ namespace PhysicsGame
             if ((keyboardState.IsKeyDown(Keys.Escape) && previousState.IsKeyUp(Keys.Escape))&&currentApplicationState!=GameState.MainMenu)
             {
                 menuCount = 0;
-                menuObjects[3].boxBody.Position = new Vector2(graphics.PreferredBackBufferWidth / 2 - (menuObjects[0].getWidth() / 2) - 30, menuCount * 300 + 200);
                 if (currentApplicationState == GameState.Pause)
                     currentApplicationState = previousApplicationState;
                 else if(currentApplicationState!=GameState.MainMenu)
@@ -738,7 +725,7 @@ namespace PhysicsGame
                 menuObjects[0].draw(spriteBatch);
                 menuObjects[1].draw(spriteBatch);
                 menuObjects[2].draw(spriteBatch);
-                menuObjects[3].draw(spriteBatch);
+                //menuObjects[3].draw(spriteBatch);
             }
             else if (currentApplicationState == GameState.Pause)
             {
