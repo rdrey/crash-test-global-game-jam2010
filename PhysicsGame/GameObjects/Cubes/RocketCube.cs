@@ -15,6 +15,8 @@ namespace PhysicsGame.GameObjects.Cubes
         bool rocketsFireing = false;
         public float activationCountdown = 0;
 
+        float timeToDelete = 10.0f;
+
         public Direction dir;
 
         public RocketCube(Direction dir)
@@ -22,7 +24,8 @@ namespace PhysicsGame.GameObjects.Cubes
             this.dir = dir;
             maxHp = 100;
             defaultAnimationSpeed = .0f;
-            
+
+            cost = 2;
         }
 
         public void activate()
@@ -35,6 +38,12 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            if (hp < 0)
+            {
+
+            }
+
+
             if (startedCountDown)
             {
                 if (activationCountdown <= 0)
@@ -69,6 +78,28 @@ namespace PhysicsGame.GameObjects.Cubes
             
 
             base.Update(gameTime, speedAdjust);
+
+
+            if (hp < 0)
+            {
+                markForDelete = false;
+                timeToDelete -= speedAdjust;
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        Vector2 newPos = new Vector2(positionIndex.X + x, positionIndex.Y + y);
+                        if (parent.isNodeAt(newPos))
+                        {
+                            CubeNode node = parent.getNodeAt(newPos);
+                            node.hp -= 5;
+                        }
+                    }
+                }
+            }
+
+            if (timeToDelete < 0)
+                markForDelete = true;
         }
 
     }

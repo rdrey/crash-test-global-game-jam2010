@@ -35,6 +35,7 @@ namespace PhysicsGame.GameObjects
 
         static Vector2 cubeSize = new Vector2(50,50);
 
+
         public Nullable<Vector2> selectedCube = null;
 
         public bool finishedEditing = false;
@@ -137,11 +138,11 @@ namespace PhysicsGame.GameObjects
                     {
                         if (optionToCycle == Option.Type)
                         {
-                            if (getSelectedNode() is UnknownCube)
-                                currentCubeDescription.type = CubeType.RocketCube;
-                            else if (getSelectedNode() is RocketCube)
+                            if (getSelectedNode() is ShooterCube)
                                 currentCubeDescription.type = CubeType.PlainCube;
                             else if (getSelectedNode() is PlainCube)
+                                currentCubeDescription.type = CubeType.RocketCube;
+                            else if (getSelectedNode() is RocketCube)
                                 currentCubeDescription.type = CubeType.ChainCube;
                             else if (getSelectedNode() is ChainCube)
                                 /*currentCubeDescription.type = CubeType.ShieldCube;
@@ -149,8 +150,6 @@ namespace PhysicsGame.GameObjects
                                 currentCubeDescription.type = CubeType.HeavyCube;
                             else if (getSelectedNode() is HeavyCube)
                                 currentCubeDescription.type = CubeType.ShooterCube;
-                            else if (getSelectedNode() is ShooterCube)
-                                currentCubeDescription.type = CubeType.UnknownCube;
 
 
                         }
@@ -240,12 +239,14 @@ namespace PhysicsGame.GameObjects
         }
 
 
-        public void makeCurrentSelectionPermanent()
+        public bool makeCurrentSelectionPermanent()
         {
             if (getSelectedNode().isTempNode)
             {
                 getSelectedNode().isTempNode = false;
+                return true;
             }
+            return false;
         }
 
         public void cycleSelectedNode()

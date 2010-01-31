@@ -123,11 +123,17 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new ShieldCube();
                 defaultTextureList = textureStore.shieldTextures;
+
                 pgo.boxBody.Mass = 1f;
+
+                foreach (Texture2D tex in textureStore.rechargeTexture)
+                    pgo.getTextureSet("Energize").addTexture(tex);
+            }
             }*/
             else// ; if (cubeDescription.type == CubeType.HeavyCube)
             {
                 ret = new HeavyCube();
+                pgo.boxBody.Mass = 5;
                 defaultTextureList = textureStore.heavyTextures;
                 pgo.boxBody.Mass = 2f;
             }

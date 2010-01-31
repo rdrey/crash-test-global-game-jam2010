@@ -208,7 +208,7 @@ namespace PhysicsGame.GameObjects
         {
             foreach (string name in textureNames)
             {
-                spriteBatch.Draw(textures[name].textureList[(int)(textures[name].currentTextureListIndex)], 
+                spriteBatch.Draw(textures[name].textureList[(Math.Max(0,(int)textures[name].currentTextureListIndex))], 
                     boxGeom.Position, 
                     textures[name].sourceRectAdjustedForScale, 
                     colorValue, 

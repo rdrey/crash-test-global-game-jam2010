@@ -42,10 +42,10 @@ namespace PhysicsGame.GameObjects.Cubes
         public float damageMultiplier;
         public int cost;
 
-        public int hp;
-        int _maxHp;
+        public float hp;
+        float _maxHp;
 
-        public int maxHp
+        public float maxHp
         {
             get { return _maxHp; }
             set { hp = _maxHp = value; }

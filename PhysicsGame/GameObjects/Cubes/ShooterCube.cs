@@ -25,6 +25,8 @@ namespace PhysicsGame.GameObjects.Cubes
             bullets = 3;
             maxHp = 100;
             defaultAnimationSpeed = 0.1f;
+
+            cost = 5;
         }
 
         public void fire()
