@@ -11,6 +11,7 @@ namespace PhysicsGame.GameObjects.Cubes
 {
     class RocketCube : CubeNode
     {
+        public static float rocketTimeStep = 40;
         bool rocketsFireing = false;
         public float activationCountdown = 0;
 

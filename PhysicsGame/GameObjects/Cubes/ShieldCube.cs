@@ -9,6 +9,8 @@ namespace PhysicsGame.GameObjects.Cubes
     class ShieldCube : CubeNode
     {
 
+        public float shieldBattery = 500;
+
         public ShieldCube()
         {
             maxHp = 100;
@@ -19,6 +21,8 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
+            foreach(Direction dir in 
+
             base.Update(gameTime, speedAdjust);
         }
     }
