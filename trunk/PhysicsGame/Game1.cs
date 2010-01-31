@@ -329,6 +329,7 @@ namespace PhysicsGame
         KeyboardState previousState;
 
         ModSound sounds;
+        Muzak muzaks;
 
         PhysicsSimulator applicationPhysicsSimHach = new PhysicsSimulator();
 
@@ -450,6 +451,7 @@ namespace PhysicsGame
 
 
             sounds = new ModSound();
+            muzaks = new Muzak();
 
             sounds.addSound("sound", Content.Load<SoundEffect>("Sounds/testsound2"));
             sounds.addSound("dank", Content.Load<SoundEffect>("Sounds/Dank2"));
@@ -461,6 +463,15 @@ namespace PhysicsGame
             sounds.addSound("placeblock", Content.Load<SoundEffect>("Sounds/used sounds/placeblock3"));
             sounds.addSound("shield", Content.Load<SoundEffect>("Sounds/used sounds/shwang"));
             sounds.addSound("badwow", Content.Load<SoundEffect>("Sounds/used sounds/BADWOW"));
+
+            muzaks.addSound("menu", Content.Load<SoundEffect>("Sounds/done/MenuSound"));
+            muzaks.addSound("p1", Content.Load<SoundEffect>("Sounds/done/lvl1"));
+            muzaks.addSound("p2", Content.Load<SoundEffect>("Sounds/done/lvl2"));
+            muzaks.addSound("p3", Content.Load<SoundEffect>("Sounds/done/lvl3"));
+            muzaks.addSound("p4", Content.Load<SoundEffect>("Sounds/done/lvl4"));
+            muzaks.addSound("p5", Content.Load<SoundEffect>("Sounds/done/lvl5"));
+
+            muzaks.startMenu("menu");
         }
 
         protected override void UnloadContent()
@@ -471,6 +482,7 @@ namespace PhysicsGame
         //Main Menu state. Original game state and only reachable through pause menu.
         public void runMainMenu(GameTime gameTime)
         {
+            
 
             bool menuChange = false;
             if ((keyboardState.IsKeyDown(Keys.W) && previousState.IsKeyUp(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up) && previousState.IsKeyUp(Keys.Up)))
@@ -597,6 +609,7 @@ namespace PhysicsGame
 
 
             currentApplicationState = GameState.BuildPhase;
+            
         }
 
         public void runEndRound(GameTime gameTime)
@@ -613,6 +626,7 @@ namespace PhysicsGame
             }
 
             currentApplicationState = GameState.StartRound;
+            
         }
 
         public void runEndGame(GameTime gameTime)
@@ -759,6 +773,11 @@ namespace PhysicsGame
                 currentRound.p2.cubeSet.startActivationCountdowns();
                 currentRound.soundsToPlay[currentRound.p1.cubeSet.getSelectedNode().physicalObject.boxGeom] = new RoundSpecific.SoundInfo("badwow", 100f, currentRound.p1.cubeSet.getSelectedNode().physicalObject.boxGeom);
                 currentApplicationState = GameState.SimPhase;
+                if (currentGame.completedRounds == 0) muzaks.startLevel("p1");
+                if (currentGame.completedRounds == 1) muzaks.startLevel("p2");
+                if (currentGame.completedRounds == 2) muzaks.startLevel("p3");
+                if (currentGame.completedRounds == 3) muzaks.startLevel("p4");
+                if (currentGame.completedRounds == 4) muzaks.startLevel("p5");
             }
             float speedAdjust = 1.0f;
             if (keyboardState.IsKeyDown(Keys.P))
@@ -820,7 +839,7 @@ namespace PhysicsGame
             {
                 if (currentRound.physicsController.geomSndLookup[snd.geom] == 0)
                 {
-                    sounds.playSound(snd.name, snd.geom, Vector2.One, snd.volume / 1000f);
+                    sounds.playSound(snd.name, snd.geom, Vector2.One, snd.volume / 100f);
                     currentRound.physicsController.geomSndLookup[snd.geom]++;
                 }
 
