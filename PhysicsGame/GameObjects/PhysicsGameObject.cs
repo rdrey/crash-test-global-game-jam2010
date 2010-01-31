@@ -48,8 +48,8 @@ namespace PhysicsGame.GameObjects
                 this.pgo = pgo;
                 currentTextureListIndex = -1;
                 textureList = new List<Texture2D>();
-                scale = new Vector2(1.0f, 1.0f);
-                offset = new Vector2(0.0f, 0.0f);
+                scale = new Vector2(1f, 1f);
+                offset = new Vector2(0f, 0f);
 
 
                 sourceRect = new Rectangle(0, 0, (int)pgo.width, (int)pgo.height);
@@ -148,8 +148,9 @@ namespace PhysicsGame.GameObjects
             boxBody.IsStatic = isStatic;
             //boxBody.AngularVelocity = 0;
 
+
             boxGeom = GeomFactory.Instance.CreateRectangleGeom(physicsSimulator, boxBody, width, height);
-            //boxGeom.
+            
         }
 
 
@@ -207,7 +208,18 @@ namespace PhysicsGame.GameObjects
         {
             foreach (string name in textureNames)
             {
-                spriteBatch.Draw(textures[name].textureList[(int)(textures[name].currentTextureListIndex)], boxGeom.Position, textures[name].sourceRectAdjustedForScale, colorValue, boxGeom.Rotation, new Vector2(((width / 2) + textures[name].offset.X) / textures[name].scale.X, ((height / 2) + textures[name].offset.Y) / textures[name].scale.Y), textures[name].scale, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(textures[name].textureList[(int)(textures[name].currentTextureListIndex)], 
+                    boxGeom.Position, 
+                    textures[name].sourceRectAdjustedForScale, 
+                    colorValue, 
+                    boxGeom.Rotation, 
+                    new Vector2(
+                        ((width / 2) + textures[name].offset.X) / textures[name].scale.X, 
+                        ((height / 2) + textures[name].offset.Y) / textures[name].scale.Y
+                        ), 
+                        textures[name].scale, 
+                        SpriteEffects.None, 
+                        1.0f);
             }
         }
 
