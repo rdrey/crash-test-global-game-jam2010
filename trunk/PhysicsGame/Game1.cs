@@ -39,6 +39,8 @@ namespace PhysicsGame
 
         public List<Texture2D> bulletTexture = new List<Texture2D>();
 
+        public List<Texture2D> rechargeTexture = new List<Texture2D>();
+
         public TextureStore(ContentManager Content)
         {
             loadTextures(Content, rocketTimer, 16, "Sprites/RocketTimerB/RocketTiming");
@@ -54,6 +56,7 @@ namespace PhysicsGame
             unknownTextures.Add(Content.Load<Texture2D>("Sprites/plain_block"));
 
             bulletTexture.Add(Content.Load<Texture2D>("Sprites/Bullet"));
+            rechargeTexture.Add(Content.Load<Texture2D>("Sprites/Purple_block"));
         }
 
         //loads textures into desired texture list from given directory
@@ -70,10 +73,17 @@ namespace PhysicsGame
     {
         public class GameSpecific
         {
-            public List<Instruction> player1Instructions = new List<Instruction>();
-            public List<Instruction> player2Instructions = new List<Instruction>();
-            public Dictionary<Keys, Instruction> player1KeyMap = new Dictionary<Keys, Instruction>();
-            public Dictionary<Keys, Instruction> player2KeyMap = new Dictionary<Keys, Instruction>();
+            public class PlayerInfo
+            {
+
+                public List<Instruction> instructionList = new List<Instruction>();
+                public Dictionary<Keys, Instruction> keyMap = new Dictionary<Keys, Instruction>();
+
+                public int money = 0;
+            }
+
+            public PlayerInfo p1 = new PlayerInfo();
+            public PlayerInfo p2 = new PlayerInfo();
 
             public int completedRounds = 0;
 
@@ -84,42 +94,46 @@ namespace PhysicsGame
 
             public void setUpKeyboardMap()
             {
-                player1KeyMap[Keys.W] = Instruction.Up;
-                player1KeyMap[Keys.S] = Instruction.Down;
-                player1KeyMap[Keys.A] = Instruction.Left;
-                player1KeyMap[Keys.D] = Instruction.Right;
+                p1.keyMap[Keys.W] = Instruction.Up;
+                p1.keyMap[Keys.S] = Instruction.Down;
+                p1.keyMap[Keys.A] = Instruction.Left;
+                p1.keyMap[Keys.D] = Instruction.Right;
 
 
-                player1KeyMap[Keys.Q] = Instruction.CycleType;
-                player1KeyMap[Keys.E] = Instruction.CycleOption1;
-                player1KeyMap[Keys.R] = Instruction.CycleOption2;
-                player1KeyMap[Keys.Space] = Instruction.MainAction;
-                player1KeyMap[Keys.Tab] = Instruction.EndBuild;
+                p1.keyMap[Keys.Q] = Instruction.CycleType;
+                p1.keyMap[Keys.E] = Instruction.CycleOption1;
+                p1.keyMap[Keys.R] = Instruction.CycleOption2;
+                p1.keyMap[Keys.Space] = Instruction.MainAction;
+                p1.keyMap[Keys.Tab] = Instruction.EndBuild;
 
 
-                player2KeyMap[Keys.Up] = Instruction.Up;
-                player2KeyMap[Keys.Down] = Instruction.Down;
-                player2KeyMap[Keys.Left] = Instruction.Left;
-                player2KeyMap[Keys.Right] = Instruction.Right;
+                p2.keyMap[Keys.Up] = Instruction.Up;
+                p2.keyMap[Keys.Down] = Instruction.Down;
+                p2.keyMap[Keys.Left] = Instruction.Left;
+                p2.keyMap[Keys.Right] = Instruction.Right;
 
 
-                player2KeyMap[Keys.LeftShift] = Instruction.CycleType;
-                player2KeyMap[Keys.LeftControl] = Instruction.CycleOption1;
-                player2KeyMap[Keys.Enter] = Instruction.MainAction;
-                player2KeyMap[Keys.Insert] = Instruction.EndBuild;
+                p2.keyMap[Keys.RightShift] = Instruction.CycleType;
+                p2.keyMap[Keys.RightControl] = Instruction.CycleOption1;
+                p2.keyMap[Keys.RightAlt] = Instruction.CycleOption2;
+                p2.keyMap[Keys.Enter] = Instruction.MainAction;
+                p2.keyMap[Keys.Insert] = Instruction.EndBuild;
 
             }
         }
 
         public class RoundSpecific
         {
-            public int player1InstructionsPos = 0;
-            public int player2InstructionsPos = 0;
+            public class RoundPlayerInfo {
+                public int instructionsPos = 0;
+                public CubeSet cubeSet = null;
+            }
+            public RoundPlayerInfo p1 = new RoundPlayerInfo();
+            public RoundPlayerInfo p2 = new RoundPlayerInfo();
 
             public float counter = 2000;
 
             public bool recording = false;
-            public CubeSet player1, player2;
 
             public PhysicsController physicsController;
 
@@ -132,9 +146,9 @@ namespace PhysicsGame
                 _parent = parent;
                 physicsController = new PhysicsController();
 
-                player1 = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, parent.sounds);
+                p1.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(300, 300), 1, parent.sounds);
 
-                player2 = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, parent.sounds);
+                p2.cubeSet = new CubeSet(physicsController, parent.textureStore, new Vector2(900, 300), 2, parent.sounds);
 
 
                 int cubewidth = 1024;
@@ -458,9 +472,19 @@ namespace PhysicsGame
 
         public void runStartRound(GameTime gameTime)
         {
+            if (currentGame.completedRounds == 0)
+            {
+                currentGame.p1.money = 20;
+                currentGame.p1.money = 20;
+            }
+            else
+            {
+                currentGame.p1.money += 20;
+                currentGame.p1.money += 20;
+            }
 
 
-            Console.Write("runStartRound\n");
+            Console.Write("runStartRound " + currentGame.p1.money + ":" + currentGame.p1.money + "\n");
             currentRound = new RoundSpecific(this);
 
 
@@ -499,50 +523,45 @@ namespace PhysicsGame
             bool player2PlaybackComplete = false;
             for (int i = 0; i < 2; i++)
             {
-                CubeSet player;
-                Dictionary<Keys, Instruction> keyMap;
-                List<Instruction> instructionList;
-                int instructionsPos;
+                RoundSpecific.RoundPlayerInfo rplayer;
+                GameSpecific.PlayerInfo player;
 
                 if (i == 0)
                 {
-                    player = currentRound.player1;
-                    keyMap = currentGame.player1KeyMap;
-                    instructionList = currentGame.player1Instructions;
-                    instructionsPos = currentRound.player1InstructionsPos;
+                    rplayer = currentRound.p1;
+                    player = currentGame.p1;
                 }
                 else
                 {
-                    player = currentRound.player2;
-                    keyMap = currentGame.player2KeyMap;
-                    instructionList = currentGame.player2Instructions;
-                    instructionsPos = currentRound.player2InstructionsPos; // TODO save these values back afterwards
+                    rplayer = currentRound.p2;
+                    player = currentGame.p2;
                 }
+
+                if (rplayer.cubeSet.finishedEditing)
+                    break;
 
                 Instruction inst = Instruction.None;
                 if (currentRound.recording)
                 {
-                    foreach (Keys k in keyMap.Keys)
+                    foreach (Keys k in player.keyMap.Keys)
                     {
                         if (keyboardState.IsKeyDown(k) && previousState.IsKeyUp(k))
                         {
-                            inst = keyMap[k];
+                            inst = player.keyMap[k];
                             break;
                         }
 
                     }
                     if (inst != Instruction.None && inst != Instruction.EndBuild)
-                        instructionList.Add(inst);
+                        player.instructionList.Add(inst);
                 }
                 else // playback
                 {
-                    Console.Write("" + instructionList + " - " + instructionsPos + "\n");
-                    if (instructionsPos < instructionList.Count())
+                    Console.Write("" + player.instructionList + " - " + rplayer.instructionsPos + "\n");
+                    if (rplayer.instructionsPos < player.instructionList.Count())
                     {
-                        inst = instructionList[instructionsPos];
-                        instructionsPos++;
-                        if (i == 0) currentRound.player1InstructionsPos = instructionsPos;
-                        else currentRound.player2InstructionsPos = instructionsPos;
+                        inst = player.instructionList[rplayer.instructionsPos];
+                        rplayer.instructionsPos++;
                     }
                     else
                     {
@@ -552,25 +571,32 @@ namespace PhysicsGame
                 }
 
                 if (inst == Instruction.Right)
-                    player.changeSelectedNode(Direction.East);
+                    rplayer.cubeSet.changeSelectedNode(Direction.East);
                 else if (inst == Instruction.Left)
-                    player.changeSelectedNode(Direction.West);
+                    rplayer.cubeSet.changeSelectedNode(Direction.West);
                 else if (inst == Instruction.Up)
-                    player.changeSelectedNode(Direction.North);
+                    rplayer.cubeSet.changeSelectedNode(Direction.North);
                 else if (inst == Instruction.Down)
-                    player.changeSelectedNode(Direction.South);
+                    rplayer.cubeSet.changeSelectedNode(Direction.South);
                 else if (inst == Instruction.CycleType)
-                    player.cycleSelectedNode();
+                    rplayer.cubeSet.cycleSelectedNode();
                 else if (inst == Instruction.CycleOption1)
-                    player.cycleOption1();
+                    rplayer.cubeSet.cycleOption1();
                 else if (inst == Instruction.CycleOption2)
-                    player.cycleOption2();
+                    rplayer.cubeSet.cycleOption2();
                 else if (inst == Instruction.MainAction)
-                    player.makeCurrentSelectionPermanent();
+                {
+                    if (player.money >= rplayer.cubeSet.getSelectedNode().cost)
+                    {
+                        if(rplayer.cubeSet.makeCurrentSelectionPermanent())
+                            player.money -= rplayer.cubeSet.getSelectedNode().cost;
+                    }
+                    Console.Write(player.money + "\n");
+                }
                 else if (inst == Instruction.EndBuild)
                 {
-                    player.finishedEditing = true;
-                    player.deselectAll();
+                    rplayer.cubeSet.finishedEditing = true;
+                    rplayer.cubeSet.deselectAll();
                 }
             }
 
@@ -579,10 +605,10 @@ namespace PhysicsGame
                 currentRound.recording = true;
             }
 
-            if (currentRound.player1.finishedEditing && currentRound.player2.finishedEditing)
+            if (currentRound.p1.cubeSet.finishedEditing && currentRound.p2.cubeSet.finishedEditing)
             {
-                currentRound.player1.startActivationCountdowns();
-                currentRound.player2.startActivationCountdowns();
+                currentRound.p1.cubeSet.startActivationCountdowns();
+                currentRound.p2.cubeSet.startActivationCountdowns();
                 currentApplicationState = GameState.SimPhase;
             }
             float speedAdjust = 1.0f;
@@ -590,8 +616,8 @@ namespace PhysicsGame
                 speedAdjust = 0.2f;
 
 
-            currentRound.player1.Update(gameTime, speedAdjust);
-            currentRound.player2.Update(gameTime, speedAdjust);
+            currentRound.p1.cubeSet.Update(gameTime, speedAdjust);
+            currentRound.p2.cubeSet.Update(gameTime, speedAdjust);
 
             currentRound.physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
 
@@ -609,8 +635,8 @@ namespace PhysicsGame
                 sounds.Pitch = -0.5f;
             }
 
-            currentRound.player1.Update(gameTime, speedAdjust);
-            currentRound.player2.Update(gameTime, speedAdjust);
+            currentRound.p1.cubeSet.Update(gameTime, speedAdjust);
+            currentRound.p2.cubeSet.Update(gameTime, speedAdjust);
 
             currentRound.physicsController.physicsSimulator.Update(gameTime.ElapsedGameTime.Milliseconds * 0.001f * speedAdjust);
 

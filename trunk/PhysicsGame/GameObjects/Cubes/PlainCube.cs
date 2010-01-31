@@ -14,6 +14,7 @@ namespace PhysicsGame.GameObjects.Cubes
             maxHp = 100;
             defaultAnimationSpeed = 0f;
 
+            cost = 1;
         }
 
 

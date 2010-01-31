@@ -15,23 +15,23 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public CubeDescription()
         {
-            this.type = CubeType.UnknownCube;
+            this.type = CubeType.PlainCube;
             dir = Direction.West;
-            value = 0;
+            value = 400;
         }
 
         public CubeDescription(CubeType type)
         {
             this.type = type;
             dir = Direction.West;
-            value = 0;
+            value = 400;
         }
 
         public CubeDescription(CubeType type, Direction dir)
         {
             this.type = type;
             this.dir = dir;
-            value = 0;
+            value = 400;
         }
     }
 }
