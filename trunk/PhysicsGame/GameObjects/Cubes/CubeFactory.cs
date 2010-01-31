@@ -47,6 +47,7 @@ namespace PhysicsGame.GameObjects.Cubes
                 defaultTextureList = textureStore.plainTextures;
                 ret.visualOnly = true;
                 pgo = new ChainPhysicsGameObject(physicsController.physicsSimulator);
+                pgo.boxGeom.CollisionGroup = 13;
             }
             else if (cubeDescription.type == CubeType.PlainCube)
             {
