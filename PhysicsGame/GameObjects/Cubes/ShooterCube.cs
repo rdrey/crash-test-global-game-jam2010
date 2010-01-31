@@ -27,32 +27,28 @@ namespace PhysicsGame.GameObjects.Cubes
             maxHp = 100;
             defaultAnimationSpeed = 0.1f;
 
-            cost = 5;
+            cost = 8;
         }
 
         public void fire()
         {
-            BulletCube bullet = new BulletCube();
+
+            CubeNode node = CubeFactory.createCubeNode(parent.textureStore, physicsController, new CubeDescription(CubeType.BulletCube), new Vector2(20, 20), parent);
+            //BulletCube bullet = new BulletCube();
             
-            PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, this.physicalObject.getWidth()/.6f, this.physicalObject.getHeight()/.6f, false);
-            foreach (Texture2D tex in bulletTexture)
-                pgo.getTextureSet("Default").addTexture(tex);
+            //PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, this.physicalObject.getWidth()/.6f, this.physicalObject.getHeight()/.6f, false);
 
-
-            physicsController.registerPhysicsGameObject(pgo);
-            pgo.boxBody.Position = Vector2.Add(this.physicalObject.boxBody.Position, 
+            node.physicalObject.boxBody.Position = Vector2.Add(this.physicalObject.boxBody.Position, 
                                     Vector2.Transform(new Vector2(this.physicalObject.getWidth()+15, 0), 
                                     Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation - MathHelper.Pi)));
-            pgo.ID = this.physicalObject.ID;
             
             
-            bullet.physicalObject=pgo;
-            bullet.physicalObject.boxGeom = GeomFactory.Instance.CreateCircleGeom(pgo.boxBody, 12, 3);
-            physicsController.nodeLookup[pgo] = bullet;
-            bullet.physicsController = this.physicsController;
-            bullet.parent = this.parent;
-            bullet.hackz0r();
-            bullet.physicalObject.boxBody.ApplyForce(Vector2.Transform(new Vector2(10000, 0), Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation- MathHelper.Pi)));
+            
+            //physicsController.nodeLookup[pgo] = bullet;
+            //bullet.physicsController = this.physicsController;
+            node.parent = this.parent;
+            node.hackz0r();
+            node.physicalObject.boxBody.ApplyForce(Vector2.Transform(new Vector2(10000, 0), Matrix.CreateRotationZ(this.physicalObject.boxBody.Rotation- MathHelper.Pi)));
             
 
             

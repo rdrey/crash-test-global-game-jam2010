@@ -23,7 +23,8 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
             PhysicsGameObject pgo = new PhysicsGameObject(physicsController.physicsSimulator, cubeSize.X, cubeSize.Y, false);
-            
+
+            pgo.ID = parent.ID;
 
             //physicsController.deregisterPhysicsGameObject(pgo);
             //pgo.textures.Clear();
@@ -44,9 +45,11 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 ret = new ChainCube();
                 //todo TEXTURE
-                defaultTextureList = textureStore.plainTextures;
-                ret.visualOnly = true;
                 pgo = new ChainPhysicsGameObject(physicsController.physicsSimulator);
+                defaultTextureList = textureStore.plainTextures;
+                pgo.getTextureSet("Default").scale.X *= 2;
+                pgo.getTextureSet("Default").scale.Y *= 2;
+                //ret.visualOnly = true;
                 pgo.boxGeom.CollisionGroup = 13;
             }
             else if (cubeDescription.type == CubeType.PlainCube)
@@ -129,6 +132,12 @@ namespace PhysicsGame.GameObjects.Cubes
 
 
             }
+            else if (cubeDescription.type == CubeType.BulletCube)
+            {
+                ret = new BulletCube();
+                defaultTextureList = textureStore.bulletTexture;
+                pgo.getTextureSet("Default").scale *= 2;
+            }
             else if (cubeDescription.type == CubeType.ShieldCube)
             {
                 ret = new ShieldCube();
@@ -159,7 +168,20 @@ namespace PhysicsGame.GameObjects.Cubes
             foreach (Texture2D tex in textureStore.rocketTimer)
                 pgo.getTextureSet("Countdown").addTexture(tex);
 
-            
+            for (int i = 1; i <= 8; i++)
+            {
+                string name = "coin" + i;
+                pgo.getTextureSet(name).addTexture(textureStore.coinTexture);
+                pgo.getTextureSet(name).offset.Y += cubeSize.Y + (i*20);
+                if (cubeDescription.type == CubeType.ChainCube)
+                {
+                    pgo.getTextureSet(name).scale *= 40f;
+                    pgo.getTextureSet(name).offset.X += cubeSize.X / 2;
+                    pgo.getTextureSet(name).offset.Y += cubeSize.Y / 2;
+                }
+                
+            }
+
 
             ret.cubeDescription = cubeDescription;
 

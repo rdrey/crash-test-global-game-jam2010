@@ -211,14 +211,14 @@ namespace PhysicsGame.GameObjects
                     boxGeom.Position, 
                     textures[name].sourceRectAdjustedForScale, 
                     colorValue, 
-                    boxGeom.Rotation, 
+                    (name.StartsWith("coin")?0:boxGeom.Rotation), 
                     new Vector2(
                         ((width / 2) + textures[name].offset.X) / textures[name].scale.X, 
                         ((height / 2) + textures[name].offset.Y) / textures[name].scale.Y
                         ), 
-                        textures[name].scale, 
-                        SpriteEffects.None, 
-                        1.0f);
+                    textures[name].scale, 
+                    SpriteEffects.None, 
+                    1.0f);
             }
         }
 
@@ -232,7 +232,7 @@ namespace PhysicsGame.GameObjects
 
             for (int i = 0; i < pointsList.Length; i++)
             {
-                verticies[i] = new VertexPositionColor(new Vector3(pointsList[i], 0), Color.Black);
+                verticies[i] = new VertexPositionColor(new Vector3(pointsList[i], -0.5f), Color.Black);
             }
             verticies[verticies.Length - 1] = new VertexPositionColor(new Vector3(pointsList[0], 0), Color.Black);
 

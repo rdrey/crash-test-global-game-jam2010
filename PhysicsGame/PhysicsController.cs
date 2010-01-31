@@ -22,6 +22,9 @@ namespace PhysicsGame
         public Dictionary<Geom, int> geomSndLookup;
         public Dictionary<Geom, PhysicsGameObject.PhysicsMapID> IDLookup;
 
+        public float damageTotalPlayer1 = 0;
+        public float damageTotalPlayer2 = 0;
+
         public PhysicsController()
         {
             physicsSimulator = new PhysicsSimulator(new Vector2(0, 0));

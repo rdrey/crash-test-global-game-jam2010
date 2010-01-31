@@ -13,7 +13,7 @@ namespace PhysicsGame.GameObjects.Cubes
         {
             maxHp = 1;
             defaultAnimationSpeed = 0f;
-            damageMultiplier *= 1f;
+            damageMultiplier = 1f;
         }
 
 
