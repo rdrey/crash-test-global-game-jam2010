@@ -21,9 +21,7 @@ namespace PhysicsGame.GameObjects.Cubes
 
         public override void Update(GameTime gameTime, float speedAdjust)
         {
-            foreach(Direction dir in 
 
-            base.Update(gameTime, speedAdjust);
         }
     }
 }
