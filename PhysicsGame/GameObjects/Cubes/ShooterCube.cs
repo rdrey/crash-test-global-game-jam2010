@@ -14,6 +14,7 @@ namespace PhysicsGame.GameObjects.Cubes
     {
         bool shoot = false;
         int bullets;
+        public float activationCountdownTotal = 0;
         public float activationCountdown = 0;
         public List<Texture2D>  bulletTexture = new List<Texture2D>();
 
@@ -67,7 +68,7 @@ namespace PhysicsGame.GameObjects.Cubes
                     fire();
                     bullets--;
                     if (bullets > 0)
-                        activationCountdown = 550;
+                        activationCountdown = activationCountdownTotal;
                 }
             }
 

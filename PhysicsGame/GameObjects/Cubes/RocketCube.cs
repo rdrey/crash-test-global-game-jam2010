@@ -75,13 +75,15 @@ namespace PhysicsGame.GameObjects.Cubes
             {
                 physicalObject.getTextureSet("Countdown").currentTextureListIndex = 1;
             }
-            
+
+            physicalObject.getTextureSet("Boom").incrementIndex(1.0f);
 
             base.Update(gameTime, speedAdjust);
 
 
             if (hp < 0)
             {
+                physicalObject.addTextureSet("Boom");
                 markForDelete = false;
                 timeToDelete -= speedAdjust;
                 for (int x = -1; x <= 1; x++)
@@ -92,7 +94,7 @@ namespace PhysicsGame.GameObjects.Cubes
                         if (parent.isNodeAt(newPos))
                         {
                             CubeNode node = parent.getNodeAt(newPos);
-                            node.hp -= 5;
+                            node.hp -= 2;
                         }
                     }
                 }
