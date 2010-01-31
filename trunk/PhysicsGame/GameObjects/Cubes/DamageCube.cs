@@ -12,6 +12,7 @@ namespace PhysicsGame.GameObjects.Cubes
             maxHp = 250;
             defaultAnimationSpeed = 0.3f;
             damageMultiplier *= 2;
+            cost = 4;
         }
     }
 }
