@@ -58,7 +58,7 @@ namespace PhysicsGame.GameObjects.Cubes
                 physicalObject.colorValue = new Color(Color.White, 1.0f);
 
 
-            if(this.activationCountdown/100>1)
+            if(this.activationCountdown/40>=1)
                 physicalObject.getTextureSet("Countdown").currentTextureListIndex=this.activationCountdown/40+1;
             else if (!rocketsFireing)
                 physicalObject.getTextureSet("Countdown").currentTextureListIndex = 0;
